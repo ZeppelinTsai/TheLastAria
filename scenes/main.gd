@@ -5,11 +5,16 @@ extends Node2D
 @onready var speaker_name = $UI/DialogBox/SpeakerName
 @onready var speaker_avatar = $UI/DialogBox/SpeakerAvatar
 @onready var type_sound = $TypeSound
+@onready var background_music = $BackgroundMusic
 @onready var next_indicator = $UI/DialogBox/NextIndicator
 @onready var player = $Player
+@onready var lumi = $Lumi
 var avatars = {}
 var next_indicator_base_position = Vector2.ZERO
 var next_indicator_tween: Tween
+const NEXT_INDICATOR_FLOAT_DISTANCE = 4.0
+const NEXT_INDICATOR_BREATH_DURATION = 0.55
+const NEXT_INDICATOR_DIM_ALPHA = 0.45
 
 var dialogs = [
 	{"speaker": "Lumi", "text": "Hey! Wake up!"},
@@ -27,9 +32,11 @@ func _ready():
 	dialog_box.visible = false
 	avatars["Lumi"] = preload("res://img/lumi.png")
 	avatars["Lyra"] = preload("res://img/lyra.png")
-	next_indicator.text = "Press Enter to continue.\n▼"
+	next_indicator.text = "▼"
 	next_indicator_base_position = next_indicator.position
 	hide_next_indicator()
+	play_lumi_idle()
+	setup_background_music()
 
 func _input(event):
 	if event.is_action_pressed("ui_accept") and not event.is_echo():
@@ -100,16 +107,18 @@ func show_next_indicator():
 	if next_indicator_tween:
 		next_indicator_tween.kill()
 	next_indicator.position = next_indicator_base_position
-	next_indicator.modulate.a = 0.45
+	next_indicator.modulate.a = NEXT_INDICATOR_DIM_ALPHA
 	next_indicator.visible = true
 	next_indicator_tween = create_tween().set_loops()
+	next_indicator_tween.set_trans(Tween.TRANS_SINE)
+	next_indicator_tween.set_ease(Tween.EASE_IN_OUT)
 	next_indicator_tween.set_parallel(true)
-	next_indicator_tween.tween_property(next_indicator, "position:y", next_indicator_base_position.y - 4.0, 0.45)
-	next_indicator_tween.tween_property(next_indicator, "modulate:a", 1.0, 0.45)
+	next_indicator_tween.tween_property(next_indicator, "position:y", next_indicator_base_position.y - NEXT_INDICATOR_FLOAT_DISTANCE, NEXT_INDICATOR_BREATH_DURATION)
+	next_indicator_tween.tween_property(next_indicator, "modulate:a", 1.0, NEXT_INDICATOR_BREATH_DURATION)
 	next_indicator_tween.chain()
 	next_indicator_tween.set_parallel(true)
-	next_indicator_tween.tween_property(next_indicator, "position:y", next_indicator_base_position.y, 0.45)
-	next_indicator_tween.tween_property(next_indicator, "modulate:a", 0.45, 0.45)
+	next_indicator_tween.tween_property(next_indicator, "position:y", next_indicator_base_position.y, NEXT_INDICATOR_BREATH_DURATION)
+	next_indicator_tween.tween_property(next_indicator, "modulate:a", NEXT_INDICATOR_DIM_ALPHA, NEXT_INDICATOR_BREATH_DURATION)
 
 func hide_next_indicator():
 	if next_indicator_tween:
@@ -118,6 +127,29 @@ func hide_next_indicator():
 	next_indicator.visible = false
 	next_indicator.position = next_indicator_base_position
 	next_indicator.modulate.a = 1.0
+
+func play_lumi_idle():
+	for lumi_sprite in lumi.find_children("*", "AnimatedSprite2D", true, false):
+		if not lumi_sprite or not lumi_sprite.sprite_frames:
+			continue
+
+		var idle_animation = lumi_sprite.animation
+		if not lumi_sprite.sprite_frames.has_animation(idle_animation):
+			if lumi_sprite.sprite_frames.has_animation("idle_down"):
+				idle_animation = "idle_down"
+			elif lumi_sprite.sprite_frames.has_animation("default"):
+				idle_animation = "default"
+			else:
+				continue
+
+		lumi_sprite.play(idle_animation)
+
+func setup_background_music():
+	if background_music.stream is AudioStreamMP3:
+		background_music.stream.loop = true
+
+	if not background_music.playing:
+		background_music.play()
 
 
 func _on_lumi_body_entered(body: Node2D) -> void:

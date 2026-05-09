@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://c3wx8j05xjlgs"
+path="res://.godot/imported/StockTune-Drifting Amongst Stars_1778353519.mp3-b09a58b445cc0299c8bccc790b20ffca.mp3str"
+
+[deps]
+
+source_file="res://audio/BGM/StockTune-Drifting Amongst Stars_1778353519.mp3"
+dest_files=["res://.godot/imported/StockTune-Drifting Amongst Stars_1778353519.mp3-b09a58b445cc0299c8bccc790b20ffca.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

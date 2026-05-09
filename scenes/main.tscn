@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://b65njv17m4lq0" path="res://img/sprite/lyra.png" id="4_o6xl0"]
 [ext_resource type="Texture2D" uid="uid://dxp8k0y75vfds" path="res://img/sunken_city.png" id="5_tbgi4"]
 [ext_resource type="Texture2D" uid="uid://bjjrn7iet2git" path="res://img/sprite/lumi.png" id="7_o6xl0"]
+[ext_resource type="AudioStream" uid="uid://c3wx8j05xjlgs" path="res://audio/BGM/StockTune-Drifting Amongst Stars_1778353519.mp3" id="8_wgr8q"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sgp6g"]
 size = Vector2(41, 27)
@@ -147,18 +148,6 @@ size = Vector2(281, 1153)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_85g3d"]
 size = Vector2(1632, 224)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_0ld40"]
-atlas = ExtResource("7_o6xl0")
-region = Rect2(0, 0, 350, 350)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_gqmmt"]
-atlas = ExtResource("7_o6xl0")
-region = Rect2(350, 0, 350, 350)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_yc10j"]
-atlas = ExtResource("7_o6xl0")
-region = Rect2(700, 0, 350, 350)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_jscy8"]
 atlas = ExtResource("7_o6xl0")
 region = Rect2(0, 0, 350, 350)
@@ -173,16 +162,7 @@ region = Rect2(700, 0, 350, 350)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_og1vs"]
 animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_0ld40")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_gqmmt")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_yc10j")
-}],
+"frames": [],
 "loop": true,
 "name": &"default",
 "speed": 5.0
@@ -291,19 +271,23 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -132.0
-offset_top = -45.0
-offset_right = -12.0
+offset_left = -43.0
+offset_top = -30.0
+offset_right = -3.0
 offset_bottom = -7.0
 grow_horizontal = 0
 grow_vertical = 0
-text = "按 Enter 繼續
-▼"
+text = "▼"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="TypeSound" type="AudioStreamPlayer" parent="." unique_id=1205766608]
 stream = ExtResource("3_sugp2")
+
+[node name="BackgroundMusic" type="AudioStreamPlayer" parent="." unique_id=188412069]
+stream = ExtResource("8_wgr8q")
+volume_db = -12.0
+autoplay = true
 
 [node name="CollisionRoot" type="Node" parent="." unique_id=1991662324]
 
@@ -340,24 +324,9 @@ scale = Vector2(0.2, 0.2)
 sprite_frames = SubResource("SpriteFrames_og1vs")
 animation = &"idle_down"
 frame = 1
-frame_progress = 0.075043835
+frame_progress = 0.1988391
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Lumi" unique_id=257402283]
-position = Vector2(-74, 282)
-shape = SubResource("CircleShape2D_2wyq8")
-
-[node name="Lumi" type="Area2D" parent="Lumi" unique_id=1093978481]
-collision_layer = 2
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Lumi/Lumi" unique_id=2015338931]
-position = Vector2(-70.99999, 283)
-scale = Vector2(0.2, 0.2)
-sprite_frames = SubResource("SpriteFrames_og1vs")
-animation = &"idle_down"
-frame = 1
-frame_progress = 0.075043835
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Lumi/Lumi" unique_id=64878412]
 position = Vector2(-74, 282)
 shape = SubResource("CircleShape2D_2wyq8")
 
