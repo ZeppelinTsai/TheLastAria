@@ -33,6 +33,8 @@ func _ready():
 	dialog_box.visible = false
 	avatars["Lumi"] = preload("res://img/lumi.png")
 	avatars["Lyra"] = preload("res://img/lyra.png")
+	next_indicator.visible = true
+	await get_tree().process_frame
 	next_indicator_arrow_base_position = next_indicator_arrow.position
 	hide_next_indicator()
 	play_lumi_idle()
@@ -104,22 +106,48 @@ func end_dialog():
 	player.can_move = true
 
 func show_next_indicator():
+
 	if next_indicator_tween:
 		next_indicator_tween.kill()
+
+	next_indicator.visible = true
+
 	next_indicator_arrow.position = next_indicator_arrow_base_position
 	next_indicator_arrow.modulate.a = NEXT_INDICATOR_DIM_ALPHA
-	next_indicator.visible = true
-	next_indicator_tween = create_tween().set_loops()
+
+	next_indicator_tween = create_tween()
+	next_indicator_tween.set_loops()
+
 	next_indicator_tween.set_trans(Tween.TRANS_SINE)
 	next_indicator_tween.set_ease(Tween.EASE_IN_OUT)
-	next_indicator_tween.set_parallel(true)
-	next_indicator_tween.tween_property(next_indicator_arrow, "position:y", next_indicator_arrow_base_position.y - NEXT_INDICATOR_FLOAT_DISTANCE, NEXT_INDICATOR_BREATH_DURATION)
-	next_indicator_tween.tween_property(next_indicator_arrow, "modulate:a", 1.0, NEXT_INDICATOR_BREATH_DURATION)
-	next_indicator_tween.chain()
-	next_indicator_tween.set_parallel(true)
-	next_indicator_tween.tween_property(next_indicator_arrow, "position:y", next_indicator_arrow_base_position.y, NEXT_INDICATOR_BREATH_DURATION)
-	next_indicator_tween.tween_property(next_indicator_arrow, "modulate:a", NEXT_INDICATOR_DIM_ALPHA, NEXT_INDICATOR_BREATH_DURATION)
 
+	next_indicator_tween.tween_property(
+		next_indicator_arrow,
+		"position",
+		next_indicator_arrow_base_position + Vector2(0, -NEXT_INDICATOR_FLOAT_DISTANCE),
+		NEXT_INDICATOR_BREATH_DURATION
+	)
+
+	next_indicator_tween.parallel().tween_property(
+		next_indicator_arrow,
+		"modulate:a",
+		1.0,
+		NEXT_INDICATOR_BREATH_DURATION
+	)
+
+	next_indicator_tween.tween_property(
+		next_indicator_arrow,
+		"position",
+		next_indicator_arrow_base_position,
+		NEXT_INDICATOR_BREATH_DURATION
+	)
+
+	next_indicator_tween.parallel().tween_property(
+		next_indicator_arrow,
+		"modulate:a",
+		NEXT_INDICATOR_DIM_ALPHA,
+		NEXT_INDICATOR_BREATH_DURATION
+	)
 func hide_next_indicator():
 	if next_indicator_tween:
 		next_indicator_tween.kill()
