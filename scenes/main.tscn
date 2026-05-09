@@ -264,7 +264,7 @@ grow_vertical = 0
 texture = ExtResource("3_jyhfs")
 expand_mode = 1
 
-[node name="NextIndicator" type="Label" parent="UI/DialogBox" unique_id=1551030761]
+[node name="NextIndicator" type="Control" parent="UI/DialogBox" unique_id=1551030761]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -277,9 +277,10 @@ offset_right = -3.0
 offset_bottom = -7.0
 grow_horizontal = 0
 grow_vertical = 0
-text = "▼"
-horizontal_alignment = 1
-vertical_alignment = 1
+
+[node name="Arrow" type="Polygon2D" parent="UI/DialogBox/NextIndicator" unique_id=2046101594]
+position = Vector2(20, 12)
+polygon = PackedVector2Array(-8, -4, 8, -4, 0, 6)
 
 [node name="TypeSound" type="AudioStreamPlayer" parent="." unique_id=1205766608]
 stream = ExtResource("3_sugp2")
