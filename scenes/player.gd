@@ -3,11 +3,15 @@ extends CharacterBody2D
 const SPEED = 200.0
 var can_move = true
 @onready var anim = $AnimatedSprite2D
+var current_anim = ""
 
 func _physics_process(delta):
 	if not can_move:
 		velocity = Vector2.ZERO
 		move_and_slide()
+		if current_anim != "":
+			anim.stop()
+			current_anim = ""
 		return
 		
 	var direction = Vector2.ZERO
@@ -23,13 +27,20 @@ func _physics_process(delta):
 	velocity = direction * SPEED
 	move_and_slide()
 
-	if direction == Vector2.ZERO:
-		anim.stop()
-	elif direction.x < 0:
-		anim.play("walk_left")
+	var next_anim = ""
+	if direction.x < 0:
+		next_anim = "walk_left"
 	elif direction.x > 0:
-		anim.play("walk_right")
+		next_anim = "walk_right"
 	elif direction.y < 0:
-		anim.play("walk_up")
+		next_anim = "walk_up"
 	elif direction.y > 0:
-		anim.play("walk_down")
+		next_anim = "walk_down"
+
+	if next_anim == "":
+		if current_anim != "":
+			anim.stop()
+			current_anim = ""
+	elif current_anim != next_anim:
+		anim.play(next_anim)
+		current_anim = next_anim

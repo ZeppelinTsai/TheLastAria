@@ -8,6 +8,8 @@ extends Node2D
 @onready var next_indicator = $UI/DialogBox/NextIndicator
 @onready var player = $Player
 var avatars = {}
+var next_indicator_base_position = Vector2.ZERO
+var next_indicator_tween: Tween
 
 var dialogs = [
 	{"speaker": "Lumi", "text": "Hey! Wake up!"},
@@ -25,7 +27,9 @@ func _ready():
 	dialog_box.visible = false
 	avatars["Lumi"] = preload("res://img/lumi.png")
 	avatars["Lyra"] = preload("res://img/lyra.png")
-	next_indicator.visible = false
+	next_indicator.text = "Press Enter to continue.\n▼"
+	next_indicator_base_position = next_indicator.position
+	hide_next_indicator()
 
 func _input(event):
 	if event.is_action_pressed("ui_accept") and not event.is_echo():
@@ -35,7 +39,7 @@ func _input(event):
 		elif is_typing:
 			is_typing = false
 			dialog_text.text = full_text
-			next_indicator.visible = true
+			show_next_indicator()
 		else:
 			next_dialog()
 
@@ -64,7 +68,7 @@ func show_dialog(index):
 		speaker_avatar.texture = avatars[d["speaker"]]
 	is_typing = true
 	type_text()
-	next_indicator.visible = false
+	hide_next_indicator()
 
 func type_text():
 	for i in range(full_text.length()):
@@ -83,14 +87,37 @@ func type_text():
 	is_typing = false
 	if type_sound:
 		type_sound.stop()
-	next_indicator.visible = true
+	show_next_indicator()
 
 func end_dialog():
 	dialog_active = false
 	dialog_box.visible = false
-	next_indicator.visible = false
+	hide_next_indicator()
 
 	player.can_move = true
+
+func show_next_indicator():
+	if next_indicator_tween:
+		next_indicator_tween.kill()
+	next_indicator.position = next_indicator_base_position
+	next_indicator.modulate.a = 0.45
+	next_indicator.visible = true
+	next_indicator_tween = create_tween().set_loops()
+	next_indicator_tween.set_parallel(true)
+	next_indicator_tween.tween_property(next_indicator, "position:y", next_indicator_base_position.y - 4.0, 0.45)
+	next_indicator_tween.tween_property(next_indicator, "modulate:a", 1.0, 0.45)
+	next_indicator_tween.chain()
+	next_indicator_tween.set_parallel(true)
+	next_indicator_tween.tween_property(next_indicator, "position:y", next_indicator_base_position.y, 0.45)
+	next_indicator_tween.tween_property(next_indicator, "modulate:a", 0.45, 0.45)
+
+func hide_next_indicator():
+	if next_indicator_tween:
+		next_indicator_tween.kill()
+		next_indicator_tween = null
+	next_indicator.visible = false
+	next_indicator.position = next_indicator_base_position
+	next_indicator.modulate.a = 1.0
 
 
 func _on_lumi_body_entered(body: Node2D) -> void:
