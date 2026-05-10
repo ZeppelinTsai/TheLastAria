@@ -185,6 +185,21 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_2wyq8"]
 radius = 41.109608
 
+[sub_resource type="Gradient" id="Gradient_tipki"]
+offsets = PackedFloat32Array(0, 0.42, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 0.7607843, 0.18039216, 0.58, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_85g3d"]
+gradient = SubResource("Gradient_tipki")
+width = 96
+height = 96
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_orion_trigger"]
+radius = 24.0
+
 [node name="Main" type="Node2D" unique_id=958562685]
 script = ExtResource("1_0wfyh")
 
@@ -192,6 +207,7 @@ script = ExtResource("1_0wfyh")
 texture = ExtResource("5_tbgi4")
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=358588103]
+position = Vector2(-106, 241)
 script = ExtResource("1_o5qli")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=2024028112]
@@ -208,7 +224,7 @@ limit_bottom = 512
 position = Vector2(5.9604645e-08, -0.9999999)
 scale = Vector2(0.2657143, 0.2657143)
 sprite_frames = SubResource("SpriteFrames_0ld40")
-animation = &"walk_up"
+animation = &"walk_down"
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=1064311324]
 
@@ -317,6 +333,7 @@ position = Vector2(2, 597)
 shape = SubResource("RectangleShape2D_85g3d")
 
 [node name="Lumi" type="Area2D" parent="." unique_id=1927303735]
+position = Vector2(202, -37)
 collision_layer = 2
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Lumi" unique_id=750207343]
@@ -331,5 +348,22 @@ frame_progress = 0.1988391
 position = Vector2(-74, 282)
 shape = SubResource("CircleShape2D_2wyq8")
 
+[node name="OrionTrigger" type="Area2D" parent="." unique_id=473166322]
+position = Vector2(341, -413)
+
+[node name="GlowSprite" type="Sprite2D" parent="OrionTrigger" unique_id=1072118433]
+modulate = Color(1, 0.7058824, 0.11764706, 0.82)
+texture = SubResource("GradientTexture2D_85g3d")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OrionTrigger" unique_id=2012345678]
+shape = SubResource("CircleShape2D_orion_trigger")
+
+[node name="PointLight2D" type="PointLight2D" parent="OrionTrigger" unique_id=1524394837]
+color = Color(1, 0.7058824, 0.11764706, 1)
+energy = 2.6
+texture = SubResource("GradientTexture2D_85g3d")
+texture_scale = 1.15
+
 [connection signal="body_entered" from="Lumi" to="." method="_on_lumi_body_entered"]
 [connection signal="body_exited" from="Lumi" to="." method="_on_lumi_body_exited"]
+[connection signal="body_entered" from="OrionTrigger" to="." method="_on_orion_trigger_body_entered"]

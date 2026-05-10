@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="LUM"
+config/name="TheLastAria"
 run/main_scene="uid://ki7wt03k35j2"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
