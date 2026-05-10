@@ -200,6 +200,9 @@ fill_to = Vector2(1, 0.5)
 [sub_resource type="CircleShape2D" id="CircleShape2D_orion_trigger"]
 radius = 24.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dungeon_area"]
+size = Vector2(650, 520)
+
 [node name="Main" type="Node2D" unique_id=958562685]
 script = ExtResource("1_0wfyh")
 
@@ -364,6 +367,15 @@ energy = 2.6
 texture = SubResource("GradientTexture2D_85g3d")
 texture_scale = 1.15
 
+[node name="DungeonArea" type="Area2D" parent="." unique_id=1628601857]
+position = Vector2(205, -235)
+monitoring = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DungeonArea" unique_id=1348065321]
+shape = SubResource("RectangleShape2D_dungeon_area")
+
 [connection signal="body_entered" from="Lumi" to="." method="_on_lumi_body_entered"]
 [connection signal="body_exited" from="Lumi" to="." method="_on_lumi_body_exited"]
 [connection signal="body_entered" from="OrionTrigger" to="." method="_on_orion_trigger_body_entered"]
+[connection signal="body_entered" from="DungeonArea" to="." method="_on_dungeon_area_body_entered"]
+[connection signal="body_exited" from="DungeonArea" to="." method="_on_dungeon_area_body_exited"]

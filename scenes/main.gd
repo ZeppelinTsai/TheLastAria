@@ -10,6 +10,7 @@ extends Node2D
 @onready var next_indicator_arrow = $UI/DialogBox/NextIndicator/Arrow
 @onready var player = $Player
 @onready var lumi = $Lumi
+@onready var lumi_follow_pivot = $Lumi/CollisionShape2D
 @onready var orion_glow = $OrionTrigger/GlowSprite
 @onready var orion_light = $OrionTrigger/PointLight2D
 var avatars = {}
@@ -23,6 +24,11 @@ const ORION_GLOW_BASE_SCALE = Vector2(1.0, 1.0)
 const ORION_GLOW_PEAK_SCALE = Vector2(1.22, 1.22)
 const ORION_GLOW_DIM_ALPHA = 0.62
 const ORION_GLOW_PEAK_ALPHA = 1.0
+const LUMI_FOLLOW_OFFSET = Vector2(-42, -34)
+const LUMI_FOLLOW_SPEED = 165.0
+const LUMI_FOLLOW_STOP_DISTANCE = 18.0
+const LUMI_FOLLOW_DRIFT_DISTANCE = 7.0
+const LUMI_FOLLOW_DRIFT_SPEED = 2.2
 var tutorial_dialogs = [
 	{"speaker": "System", "text": "Use arrow keys to move."},
 	{"speaker": "System", "text": "Press Enter to investigate or talk."},
@@ -48,6 +54,8 @@ var is_typing = false
 var full_text = ""
 
 var can_talk_to_lumi = false
+var lumi_follow_enabled = false
+var lumi_follow_time = 0.0
 func _ready():
 	dialog_box.visible = false
 	avatars["Lumi"] = preload("res://img/lumi.png")
@@ -60,6 +68,10 @@ func _ready():
 	setup_background_music()
 	pulse_orion_light()
 	start_dialog(tutorial_dialogs)
+
+func _physics_process(delta):
+	update_lumi_follow(delta)
+
 func pulse_orion_light():
 	orion_light.energy = 2.0
 	orion_glow.scale = ORION_GLOW_BASE_SCALE
@@ -74,6 +86,26 @@ func pulse_orion_light():
 	tween.tween_property(orion_light, "energy", 1.35, 0.9)
 	tween.parallel().tween_property(orion_glow, "scale", ORION_GLOW_BASE_SCALE, 0.9)
 	tween.parallel().tween_property(orion_glow, "modulate:a", ORION_GLOW_DIM_ALPHA, 0.9)
+
+func update_lumi_follow(delta):
+	if not lumi_follow_enabled:
+		return
+
+	lumi_follow_time += delta
+	var drift = Vector2(
+		sin(lumi_follow_time * LUMI_FOLLOW_DRIFT_SPEED),
+		cos(lumi_follow_time * LUMI_FOLLOW_DRIFT_SPEED * 0.8)
+	) * LUMI_FOLLOW_DRIFT_DISTANCE
+	var target_position = player.global_position + LUMI_FOLLOW_OFFSET + drift
+	var current_position = lumi_follow_pivot.global_position
+	var distance = current_position.distance_to(target_position)
+
+	if distance <= LUMI_FOLLOW_STOP_DISTANCE:
+		return
+
+	var next_position = current_position.move_toward(target_position, LUMI_FOLLOW_SPEED * delta)
+	lumi.global_position += next_position - current_position
+
 func _input(event):
 	if event.is_action_pressed("ui_accept") and not event.is_echo():
 		if not dialog_active:
@@ -231,3 +263,13 @@ func _on_lumi_body_exited(body: Node2D) -> void:
 func _on_orion_trigger_body_entered(body: Node2D) -> void:
 	if body.name == "Player" and not dialog_active:
 		start_dialog(orion_dialogs)
+
+
+func _on_dungeon_area_body_entered(body: Node2D) -> void:
+	if body.name == "Player":
+		lumi_follow_enabled = true
+
+
+func _on_dungeon_area_body_exited(body: Node2D) -> void:
+	if body.name == "Player":
+		lumi_follow_enabled = false
