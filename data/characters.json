@@ -1,0 +1,20 @@
+{
+	"Lyra": {
+		"display_name": "Lyra",
+		"portraits": {
+			"default": "res://img/lyra.png"
+		},
+		"busts": {
+			"default": "res://img/lyra.png"
+		}
+	},
+	"Lumi": {
+		"display_name": "Lumi",
+		"portraits": {
+			"default": "res://img/lumi.png"
+		},
+		"busts": {
+			"default": "res://img/lumi.png"
+		}
+	}
+}

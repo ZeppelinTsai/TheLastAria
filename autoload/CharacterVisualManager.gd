@@ -1,0 +1,64 @@
+extends Node
+
+const CHARACTER_CONFIG_PATH = "res://data/characters.json"
+const DEFAULT_EXPRESSION = "default"
+
+var characters := {}
+var texture_cache := {}
+
+func _ready() -> void:
+	load_character_config()
+
+func load_character_config() -> void:
+	var file = FileAccess.open(CHARACTER_CONFIG_PATH, FileAccess.READ)
+	if not file:
+		push_warning("Could not load character config: %s" % CHARACTER_CONFIG_PATH)
+		return
+
+	var parsed = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) != TYPE_DICTIONARY:
+		push_warning("Character config data is invalid: %s" % CHARACTER_CONFIG_PATH)
+		return
+
+	characters = parsed
+
+func get_display_name(character_id: String) -> String:
+	var character_data: Dictionary = characters.get(character_id, {})
+	return str(character_data.get("display_name", character_id))
+
+func get_portrait(character_id: String, expression := DEFAULT_EXPRESSION) -> Texture2D:
+	return get_visual_texture(character_id, "portraits", expression)
+
+func get_bust(character_id: String, expression := DEFAULT_EXPRESSION) -> Texture2D:
+	return get_visual_texture(character_id, "busts", expression)
+
+func get_visual_texture(character_id: String, visual_group: String, expression := DEFAULT_EXPRESSION) -> Texture2D:
+	var path = get_visual_path(character_id, visual_group, expression)
+	if path == "":
+		return null
+
+	if texture_cache.has(path):
+		return texture_cache[path]
+
+	var texture = load(path)
+	if not texture:
+		push_warning("Could not load character visual: %s" % path)
+		return null
+
+	texture_cache[path] = texture
+	return texture
+
+func get_visual_path(character_id: String, visual_group: String, expression := DEFAULT_EXPRESSION) -> String:
+	var character_data: Dictionary = characters.get(character_id, {})
+	if character_data.is_empty():
+		return ""
+
+	var visual_data: Dictionary = character_data.get(visual_group, {})
+	if visual_data.is_empty():
+		return ""
+
+	var path = str(visual_data.get(expression, ""))
+	if path != "":
+		return path
+
+	return str(visual_data.get(DEFAULT_EXPRESSION, ""))

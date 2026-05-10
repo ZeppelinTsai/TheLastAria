@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b65njv17m4lq0"
-path="res://.godot/imported/lyra.png-8dc756163986a24c1a079106b77b9187.ctex"
+uid="uid://c6b42pu58oyrr"
+path="res://.godot/imported/lyra.png-07f5200e6869b9bfe71962acae73f821.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://img/sprite/lyra.png"
-dest_files=["res://.godot/imported/lyra.png-8dc756163986a24c1a079106b77b9187.ctex"]
+source_file="res://img/sprite/lyra/lyra.png"
+dest_files=["res://.godot/imported/lyra.png-07f5200e6869b9bfe71962acae73f821.ctex"]
 
 [params]
 

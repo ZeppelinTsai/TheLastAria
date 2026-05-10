@@ -1,0 +1,18 @@
+{
+	"overworld": {
+		"path": "res://audio/bgm/StockTune-Drifting Amongst Stars_1778353519.mp3",
+		"volume_db": -12.0
+	},
+	"dungeon": {
+		"path": "res://audio/bgm/StockTune-Drifting Amongst Stars_1778353519.mp3",
+		"volume_db": -16.0
+	},
+	"mystery": {
+		"path": "res://audio/bgm/StockTune-Drifting Amongst Stars_1778353519.mp3",
+		"volume_db": -10.0
+	},
+	"boss": {
+		"path": "res://audio/bgm/StockTune-Drifting Amongst Stars_1778353519.mp3",
+		"volume_db": -8.0
+	}
+}

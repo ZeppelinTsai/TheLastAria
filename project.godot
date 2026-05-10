@@ -11,9 +11,15 @@ config_version=5
 [application]
 
 config/name="TheLastAria"
-run/main_scene="uid://ki7wt03k35j2"
+run/main_scene="res://scenes/ui/main_menu.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+SaveManager="*res://autoload/SaveManager.gd"
+MusicManager="*res://autoload/MusicManager.gd"
+CharacterVisualManager="*res://autoload/CharacterVisualManager.gd"
 
 [physics]
 

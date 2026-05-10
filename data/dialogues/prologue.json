@@ -1,0 +1,21 @@
+{
+	"tutorial": [
+		{"speaker": "System", "text": "Use arrow keys to move."},
+		{"speaker": "System", "text": "Press Enter to investigate or talk."},
+		{"speaker": "System", "text": "Press Esc to open the menu."},
+		{"speaker": "System", "text": "Talk to Lumi first. She may know something."}
+	],
+	"lumi_intro": [
+		{"speaker": "Lumi", "text": "Hey! Wake up!"},
+		{"speaker": "Lyra", "text": "...Lumi? Why are you shaking?"},
+		{"speaker": "Lumi", "text": "I saw something strange."},
+		{"speaker": "Lyra", "text": "Strange?"},
+		{"speaker": "Lumi", "text": "Near the upper-right ruins... something is glowing."}
+	],
+	"orion_first_seen": [
+		{"speaker": "Lumi", "text": "Lyra, over here!"},
+		{"speaker": "Lyra", "text": "That shape... is that a person?"},
+		{"speaker": "Lumi", "text": "He has legs!"},
+		{"speaker": "Lyra", "text": "A human...?"}
+	]
+}
