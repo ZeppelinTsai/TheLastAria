@@ -1,6 +1,8 @@
 extends Node
 
-const SAVE_PATH = "user://savegame.json"
+const LEGACY_SAVE_PATH = "user://savegame.json"
+const SAVE_PATH_TEMPLATE = "user://save_slot_%d.json"
+const SLOT_COUNT = 9
 const AUTOSAVE_INTERVAL = 15.0
 const POSITION_SAVE_DISTANCE = 12.0
 const DEFAULT_GAME_SCENE = "res://scenes/main.tscn"
@@ -12,15 +14,17 @@ var default_save_data := {
 	"flags": {},
 	"story": {},
 	"saved_at_unix": 0,
+	"location": "亞特蘭提斯",
 }
 
 var player: Node2D
 var save_data := default_save_data.duplicate(true)
+var active_slot := 1
 var dirty := false
 var last_saved_player_position := Vector2.INF
 
 func _ready() -> void:
-	load_game()
+	load_game(active_slot)
 	var timer = Timer.new()
 	timer.name = "AutosaveTimer"
 	timer.wait_time = AUTOSAVE_INTERVAL
@@ -42,12 +46,30 @@ func unregister_player(node: Node2D) -> void:
 		player = null
 		last_saved_player_position = Vector2.INF
 
-func has_save_file() -> bool:
-	return FileAccess.file_exists(SAVE_PATH)
+func get_save_path(slot := -1) -> String:
+	var resolved_slot = get_valid_slot(slot)
+	return SAVE_PATH_TEMPLATE % resolved_slot
 
-func start_new_game() -> void:
+func get_valid_slot(slot: int) -> int:
+	if slot < 1 or slot > SLOT_COUNT:
+		return active_slot
+
+	return slot
+
+func set_active_slot(slot: int) -> void:
+	active_slot = get_valid_slot(slot)
+
+func has_save_file(slot := -1) -> bool:
+	var resolved_slot = get_valid_slot(slot)
+	return FileAccess.file_exists(get_save_path(resolved_slot)) or (resolved_slot == 1 and FileAccess.file_exists(LEGACY_SAVE_PATH))
+
+func start_new_game(slot := -1) -> void:
+	set_active_slot(get_valid_slot(slot))
 	reset_save_data()
-	delete_save_file()
+	delete_save_file(active_slot)
+	if active_slot == 1:
+		delete_legacy_save_file()
+	set_location("亞特蘭提斯")
 
 func reset_save_data() -> void:
 	save_data = default_save_data.duplicate(true)
@@ -88,6 +110,13 @@ func set_story_value(key: String, value: Variant) -> void:
 func get_story_value(key: String, default_value: Variant = null) -> Variant:
 	return save_data["story"].get(key, default_value)
 
+func set_location(location: String) -> void:
+	if save_data.get("location", "") == location:
+		return
+
+	save_data["location"] = location
+	dirty = true
+
 func autosave(force := false) -> void:
 	if player:
 		if force:
@@ -100,27 +129,38 @@ func autosave(force := false) -> void:
 
 	save_game()
 
-func save_game() -> bool:
+func save_game(slot := -1) -> bool:
+	if slot != -1:
+		set_active_slot(slot)
+
 	save_data["scene"] = get_current_scene_path()
 	save_data["saved_at_unix"] = Time.get_unix_time_from_system()
 
-	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	var file = FileAccess.open(get_save_path(active_slot), FileAccess.WRITE)
 	if not file:
-		push_warning("Could not open save file: %s" % SAVE_PATH)
+		push_warning("Could not open save file: %s" % get_save_path(active_slot))
 		return false
 
 	file.store_string(JSON.stringify(save_data, "\t"))
 	dirty = false
 	return true
 
-func load_game() -> bool:
-	if not FileAccess.file_exists(SAVE_PATH):
+func load_game(slot := -1) -> bool:
+	if slot != -1:
+		set_active_slot(slot)
+
+	var save_path = get_save_path(active_slot)
+	if not FileAccess.file_exists(save_path):
+		if active_slot == 1 and FileAccess.file_exists(LEGACY_SAVE_PATH):
+			save_path = LEGACY_SAVE_PATH
+		else:
+			return false
+
+	var file = FileAccess.open(save_path, FileAccess.READ)
+	if not file:
+		push_warning("Could not read save file: %s" % save_path)
 		return false
 
-	var file = FileAccess.open(SAVE_PATH, FileAccess.READ)
-	if not file:
-		push_warning("Could not read save file: %s" % SAVE_PATH)
-		return false
 
 	var parsed = JSON.parse_string(file.get_as_text())
 	if typeof(parsed) != TYPE_DICTIONARY:
@@ -132,14 +172,24 @@ func load_game() -> bool:
 	dirty = false
 	return true
 
-func delete_save_file() -> void:
-	if not FileAccess.file_exists(SAVE_PATH):
+func delete_save_file(slot := -1) -> void:
+	var save_path = get_save_path(slot)
+	if not FileAccess.file_exists(save_path):
 		return
 
-	var absolute_path = ProjectSettings.globalize_path(SAVE_PATH)
+	var absolute_path = ProjectSettings.globalize_path(save_path)
 	var error = DirAccess.remove_absolute(absolute_path)
 	if error != OK:
-		push_warning("Could not delete save file: %s" % SAVE_PATH)
+		push_warning("Could not delete save file: %s" % save_path)
+
+func delete_legacy_save_file() -> void:
+	if not FileAccess.file_exists(LEGACY_SAVE_PATH):
+		return
+
+	var absolute_path = ProjectSettings.globalize_path(LEGACY_SAVE_PATH)
+	var error = DirAccess.remove_absolute(absolute_path)
+	if error != OK:
+		push_warning("Could not delete save file: %s" % LEGACY_SAVE_PATH)
 
 func get_saved_scene_path() -> String:
 	var scene_path = str(save_data.get("scene", ""))
@@ -148,16 +198,85 @@ func get_saved_scene_path() -> String:
 
 	return scene_path
 
-func get_save_summary() -> Dictionary:
-	var position_data: Dictionary = save_data.get("player_position", {})
+func get_scene_path_from_data(source_data: Dictionary) -> String:
+	var scene_path = str(source_data.get("scene", ""))
+	if scene_path == "":
+		return DEFAULT_GAME_SCENE
+
+	return scene_path
+
+func get_save_summary(slot := -1) -> Dictionary:
+	var source_data = save_data
+	var has_data = true
+	var summary_slot = get_valid_slot(slot)
+	if slot != -1:
+		source_data = read_save_data(summary_slot)
+		has_data = not source_data.is_empty()
+
+	if not has_data:
+		return {
+			"slot": summary_slot,
+			"exists": false,
+			"scene": "",
+			"saved_at_unix": 0,
+			"location": "",
+			"player_position": Vector2.ZERO,
+		}
+
+	var position_data: Dictionary = source_data.get("player_position", {})
 	return {
-		"scene": get_saved_scene_path(),
-		"saved_at_unix": int(save_data.get("saved_at_unix", 0)),
+		"slot": summary_slot,
+		"exists": true,
+		"scene": get_scene_path_from_data(source_data),
+		"saved_at_unix": int(source_data.get("saved_at_unix", 0)),
+		"location": str(source_data.get("location", "")),
 		"player_position": Vector2(
 			float(position_data.get("x", 0.0)),
 			float(position_data.get("y", 0.0))
 		),
 	}
+
+func read_save_data(slot: int) -> Dictionary:
+	var save_path = get_save_path(slot)
+	if not FileAccess.file_exists(save_path):
+		if slot == 1 and FileAccess.file_exists(LEGACY_SAVE_PATH):
+			save_path = LEGACY_SAVE_PATH
+		else:
+			return {}
+
+	var file = FileAccess.open(save_path, FileAccess.READ)
+	if not file:
+		return {}
+
+	var parsed = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) != TYPE_DICTIONARY:
+		return {}
+
+	var merged = default_save_data.duplicate(true)
+	merged.merge(parsed, true)
+	return merged
+
+func get_all_save_summaries() -> Array:
+	var summaries = []
+	for slot in range(1, SLOT_COUNT + 1):
+		summaries.append(get_save_summary(slot))
+
+	return summaries
+
+func get_latest_save_slot(default_slot := 1) -> int:
+	var latest_slot = get_valid_slot(default_slot)
+	var latest_saved_at = -1
+	for slot in range(1, SLOT_COUNT + 1):
+		var summary = get_save_summary(slot)
+		if not bool(summary["exists"]):
+			continue
+
+		var saved_at = int(summary.get("saved_at_unix", 0))
+		if saved_at > latest_saved_at:
+			latest_saved_at = saved_at
+			latest_slot = slot
+
+	return latest_slot
 
 func apply_player_position() -> void:
 	if not player:

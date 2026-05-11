@@ -16,5 +16,40 @@
 		"busts": {
 			"default": "res://img/lumi.png"
 		}
+	},
+	"Orion": {
+		"display_name": "Orion",
+		"portraits": {},
+		"busts": {}
+	},
+	"Witch": {
+		"display_name": "巫師",
+		"portraits": {},
+		"busts": {}
+	},
+	"Narration": {
+		"display_name": "旁白",
+		"portraits": {},
+		"busts": {}
+	},
+	"StageDir": {
+		"display_name": "演出",
+		"portraits": {},
+		"busts": {}
+	},
+	"SFX": {
+		"display_name": "SFX",
+		"portraits": {},
+		"busts": {}
+	},
+	"System": {
+		"display_name": "系統",
+		"portraits": {},
+		"busts": {}
+	},
+	"Choice": {
+		"display_name": "選擇",
+		"portraits": {},
+		"busts": {}
 	}
 }

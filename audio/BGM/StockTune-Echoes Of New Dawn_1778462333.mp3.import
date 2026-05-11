@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://b0jgemmvelirn"
+path="res://.godot/imported/StockTune-Echoes Of New Dawn_1778462333.mp3-1f520aad8e1541d4894988f2ef48ae8f.mp3str"
+
+[deps]
+
+source_file="res://audio/bgm/StockTune-Echoes Of New Dawn_1778462333.mp3"
+dest_files=["res://.godot/imported/StockTune-Echoes Of New Dawn_1778462333.mp3-1f520aad8e1541d4894988f2ef48ae8f.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
