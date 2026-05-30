@@ -4,11 +4,16 @@ extends Area2D
 @export var trigger_once: bool = true
 @export var flag_name: String = ""
 
+var _has_triggered := false
+
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 
 func _on_body_entered(body: Node2D) -> void:
 	if body.name != "Player":
+		return
+
+	if trigger_once and _has_triggered:
 		return
 
 	if trigger_once and flag_name != "" and SaveManager.has_flag(flag_name):
@@ -20,6 +25,7 @@ func _on_body_entered(body: Node2D) -> void:
 		return
 
 	scene_root.start_dialog(dialogue_id)
+	_has_triggered = true
 
 	if flag_name != "":
 		SaveManager.set_flag(flag_name)

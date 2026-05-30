@@ -234,11 +234,23 @@ After modifying code:
 1. Save files
 2. Run:
 
-C:\\Godot\\godot.exe --headless --path .
+check_godot.bat
 
 3. Fix all errors before continuing
 
 Do not consider a task complete if Godot headless validation fails.
+
+After modifying Godot scripts, scenes, or project code, always run:
+
+check_godot.bat
+
+After modifying export settings or CI, always run:
+
+export_web.bat
+
+Do not manually commit Web build output unless the workflow explicitly requires it.
+
+Do not add a backend or database. The Last Aria is currently a pure static Web playable demo.
 
 ---
 
