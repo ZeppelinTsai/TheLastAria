@@ -8,6 +8,9 @@ const SILENT_VOLUME_DB = -80.0
 var tracks := {}
 var current_context := ""
 var current_track_path := ""
+var pending_music_context := ""
+var pending_fade_duration := DEFAULT_FADE_DURATION
+var audio_unlocked := false
 var player: AudioStreamPlayer
 var fade_tween: Tween
 
@@ -17,6 +20,27 @@ func _ready() -> void:
 	player.volume_db = SILENT_VOLUME_DB
 	add_child(player)
 	load_track_config()
+	audio_unlocked = not OS.has_feature("web")
+	if not audio_unlocked:
+		print("Audio unlock requested")
+		set_process_input(true)
+	else:
+		set_process_input(false)
+
+func _input(event: InputEvent) -> void:
+	if audio_unlocked:
+		return
+	if event is InputEventKey or event is InputEventMouseButton or event is InputEventScreenTouch:
+		if event is InputEventKey and not event.pressed:
+			return
+		if event is InputEventMouseButton and not event.pressed:
+			return
+		if event is InputEventScreenTouch and not event.pressed:
+			return
+		audio_unlocked = true
+		set_process_input(false)
+		print("Audio unlocked")
+		resume_or_play_current_context()
 
 func load_track_config() -> void:
 	var file = FileAccess.open(TRACK_CONFIG_PATH, FileAccess.READ)
@@ -32,6 +56,30 @@ func load_track_config() -> void:
 	tracks = parsed
 
 func play_context(context: String, fade_duration := DEFAULT_FADE_DURATION) -> void:
+	if not audio_unlocked:
+		pending_music_context = context
+		pending_fade_duration = fade_duration
+		return
+
+	_play_context_now(context, fade_duration)
+
+func resume_or_play_current_context() -> void:
+	if not audio_unlocked:
+		return
+
+	if pending_music_context != "":
+		var context = pending_music_context
+		var fade_duration = pending_fade_duration
+		pending_music_context = ""
+		pending_fade_duration = DEFAULT_FADE_DURATION
+		print("Playing pending music context")
+		_play_context_now(context, fade_duration)
+		return
+
+	if current_context != "":
+		_play_context_now(current_context, DEFAULT_FADE_DURATION)
+
+func _play_context_now(context: String, fade_duration := DEFAULT_FADE_DURATION) -> void:
 	var track_data: Dictionary = tracks.get(context, {})
 	if track_data.is_empty():
 		push_warning("Music context not found: %s" % context)
