@@ -20,6 +20,8 @@ config/icon="res://icon.svg"
 SaveManager="*res://autoload/SaveManager.gd"
 MusicManager="*res://autoload/MusicManager.gd"
 CharacterVisualManager="*res://autoload/CharacterVisualManager.gd"
+GameState="*uid://ftpdcfddxxep"
+SceneTransition="*uid://ocbbo2bq52ih"
 
 [physics]
 

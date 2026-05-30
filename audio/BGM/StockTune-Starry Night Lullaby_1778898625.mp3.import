@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cnxedra0pcl5r"
+path="res://.godot/imported/StockTune-Starry Night Lullaby_1778898625.mp3-582d63c0bbc492fc88855c5d78da09a2.mp3str"
+
+[deps]
+
+source_file="res://audio/bgm/StockTune-Starry Night Lullaby_1778898625.mp3"
+dest_files=["res://.godot/imported/StockTune-Starry Night Lullaby_1778898625.mp3-582d63c0bbc492fc88855c5d78da09a2.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

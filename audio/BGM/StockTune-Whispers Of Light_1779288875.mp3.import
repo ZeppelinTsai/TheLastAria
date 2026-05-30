@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://brb7kk3aoxrm0"
+path="res://.godot/imported/StockTune-Whispers Of Light_1779288875.mp3-1633f1bfa7766063d6f7622ae0fb1cb9.mp3str"
+
+[deps]
+
+source_file="res://audio/bgm/StockTune-Whispers Of Light_1779288875.mp3"
+dest_files=["res://.godot/imported/StockTune-Whispers Of Light_1779288875.mp3-1633f1bfa7766063d6f7622ae0fb1cb9.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

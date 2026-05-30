@@ -63,28 +63,10 @@ var pause_last_slot_press_msec := 0
 var was_player_movable_before_menu = true
 
 func _ready():
-	dialog_box.visible = false
-	SaveManager.register_player(player)
-	load_dialogue_sets()
-	build_prelude_overlay()
-	build_choice_overlay()
-	setup_pause_menu()
-	next_indicator.visible = true
-	dialog_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	await get_tree().process_frame
-	next_indicator_arrow_base_position = next_indicator_arrow.position
-	hide_next_indicator()
-	play_lumi_idle()
-	MusicManager.play_context("overworld")
-	pulse_orion_light()
-	if SaveManager.has_flag("prelude_complete"):
-		SaveManager.set_location("小島")
-	else:
-		SaveManager.set_location("亞特蘭提斯")
-	if not SaveManager.has_flag("prelude_opening_complete"):
-		start_dialog("prelude_opening")
-	elif not SaveManager.has_flag("tutorial_complete"):
-		start_dialog("tutorial")
+	await SceneTransition.go("res://scenes/world/act2_skyisland.tscn", "空島・永晝觀測站")	
+	
+	
 
 func _physics_process(delta):
 	update_lumi_follow(delta)

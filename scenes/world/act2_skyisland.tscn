@@ -1,0 +1,240 @@
+[gd_scene format=3 uid="uid://dulmrr2l53308"]
+
+[ext_resource type="Script" uid="uid://dnlfxaspt45dm" path="res://scenes/main.gd" id="1_ragq7"]
+[ext_resource type="Texture2D" uid="uid://dfqbexmh845vf" path="res://img/bg/ChatGPT Image 2026年5月30日 下午11_57_44.png" id="2_1n7wy"]
+[ext_resource type="Script" uid="uid://b12dyjrtbc0s5" path="res://scenes/player.gd" id="3_pt7ew"]
+[ext_resource type="Texture2D" uid="uid://c6b42pu58oyrr" path="res://img/sprite/lyra/lyra.png" id="4_48sk2"]
+[ext_resource type="AudioStream" uid="uid://dkyvtknblt5m8" path="res://audio/sfx/468927__malakme__medium-text-blip.ogg" id="5_vewyr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sgp6g"]
+size = Vector2(41, 27)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tipki"]
+atlas = ExtResource("4_48sk2")
+region = Rect2(0, 0, 350, 350)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_85g3d"]
+atlas = ExtResource("4_48sk2")
+region = Rect2(350, 0, 350, 350)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_choun"]
+atlas = ExtResource("4_48sk2")
+region = Rect2(700, 0, 350, 350)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ya4ey"]
+atlas = ExtResource("4_48sk2")
+region = Rect2(0, 700, 350, 350)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eb6dy"]
+atlas = ExtResource("4_48sk2")
+region = Rect2(350, 700, 350, 350)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_trceg"]
+atlas = ExtResource("4_48sk2")
+region = Rect2(700, 700, 350, 350)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a8y0u"]
+atlas = ExtResource("4_48sk2")
+region = Rect2(0, 350, 350, 350)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jkv2x"]
+atlas = ExtResource("4_48sk2")
+region = Rect2(350, 350, 350, 350)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jbj1t"]
+atlas = ExtResource("4_48sk2")
+region = Rect2(700, 350, 350, 350)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_muem4"]
+atlas = ExtResource("4_48sk2")
+region = Rect2(0, 1050, 350, 350)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dp3eg"]
+atlas = ExtResource("4_48sk2")
+region = Rect2(350, 1050, 350, 350)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_og1vs"]
+atlas = ExtResource("4_48sk2")
+region = Rect2(700, 1050, 350, 350)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0ld40"]
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tipki")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_85g3d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_choun")
+}],
+"loop": true,
+"name": &"walk_down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ya4ey")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eb6dy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_trceg")
+}],
+"loop": true,
+"name": &"walk_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a8y0u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jkv2x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jbj1t")
+}],
+"loop": true,
+"name": &"walk_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_muem4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dp3eg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_og1vs")
+}],
+"loop": true,
+"name": &"walk_up",
+"speed": 5.0
+}]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jyhfs"]
+bg_color = Color(0.039215688, 0.08627451, 0.15686275, 0.8)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35686275, 0.78431374, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="Main" type="Node2D" unique_id=958562685]
+script = ExtResource("1_ragq7")
+
+[node name="Background" type="Sprite2D" parent="." unique_id=38697303]
+texture = ExtResource("2_1n7wy")
+
+[node name="Player" type="CharacterBody2D" parent="." unique_id=358588103 node_paths=PackedStringArray("walkable_area")]
+position = Vector2(-106, 241)
+script = ExtResource("3_pt7ew")
+walkable_area = NodePath("../WalkableArea")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=2024028112]
+position = Vector2(1.5, 21.5)
+shape = SubResource("RectangleShape2D_sgp6g")
+
+[node name="Camera2D" type="Camera2D" parent="Player" unique_id=1547181586]
+limit_left = -768
+limit_top = -512
+limit_right = 768
+limit_bottom = 512
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Player" unique_id=516352408]
+position = Vector2(5.9604645e-08, -0.9999999)
+scale = Vector2(0.2657143, 0.2657143)
+sprite_frames = SubResource("SpriteFrames_0ld40")
+animation = &"walk_down"
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=1064311324]
+
+[node name="DialogBox" type="Panel" parent="UI" unique_id=296463956]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -262.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_jyhfs")
+metadata/_edit_use_anchors_ = true
+
+[node name="SpeakerName" type="Label" parent="UI/DialogBox" unique_id=129658207]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.33800438
+anchor_top = 0.09173284
+anchor_right = 0.33800438
+anchor_bottom = 0.09936642
+offset_left = -81.39203
+offset_top = -17.034002
+offset_right = 80.61896
+offset_bottom = 16.965998
+grow_horizontal = 2
+grow_vertical = 2
+vertical_alignment = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="DialogText" type="Label" parent="UI/DialogBox" unique_id=180396839]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.63100004
+anchor_top = 0.597
+anchor_right = 0.63100004
+anchor_bottom = 0.597
+offset_left = -415.91205
+offset_top = -102.414
+offset_right = 415.08795
+offset_bottom = 90.586
+
+[node name="SpeakerAvatar" type="TextureRect" parent="UI/DialogBox" unique_id=367731687]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -289.0
+offset_right = 289.0
+grow_vertical = 0
+expand_mode = 1
+
+[node name="NextIndicator" type="Control" parent="UI/DialogBox" unique_id=1551030761]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -43.0
+offset_top = -30.0
+offset_right = -3.0
+offset_bottom = -7.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="Arrow" type="Polygon2D" parent="UI/DialogBox/NextIndicator" unique_id=2046101594]
+position = Vector2(20, 12)
+polygon = PackedVector2Array(-8, -4, 8, -4, 0, 6)
+
+[node name="TypeSound" type="AudioStreamPlayer" parent="." unique_id=1205766608]
+stream = ExtResource("5_vewyr")
+
+[node name="WalkableArea" type="Area2D" parent="." unique_id=280883501]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="WalkableArea" unique_id=1804364667]
+polygon = PackedVector2Array(-198, 281, 17, 193, 114, 144, 272, 140, 629, 185, 671, 220, 652, 304, 310, 232, 149, 417)
