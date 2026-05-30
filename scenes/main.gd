@@ -63,10 +63,7 @@ var pause_last_slot_press_msec := 0
 var was_player_movable_before_menu = true
 
 func _ready():
-	await get_tree().process_frame
-	await SceneTransition.go("res://scenes/world/act2_skyisland.tscn", "空島・永晝觀測站")	
-	
-	
+	pass
 
 func _physics_process(delta):
 	update_lumi_follow(delta)

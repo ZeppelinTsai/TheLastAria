@@ -1,0 +1,30 @@
+{
+	"skyisland_intro": [
+		{
+			"speaker": "Lumi",
+			"expression": "default",
+			"text": "The sky island is quiet. Too quiet."
+		}
+	],
+	"lumi_event": [
+		{
+			"speaker": "Lumi",
+			"expression": "default",
+			"text": "I can feel a current moving under the clouds."
+		}
+	],
+	"boss_intro": [
+		{
+			"speaker": "",
+			"expression": "default",
+			"text": "A distant pressure gathers near the observatory."
+		}
+	],
+	"exit_portal": [
+		{
+			"speaker": "Lumi",
+			"expression": "default",
+			"text": "This portal should take us onward."
+		}
+	]
+}

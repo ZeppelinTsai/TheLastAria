@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dulmrr2l53308"]
 
-[ext_resource type="Script" uid="uid://dnlfxaspt45dm" path="res://scenes/main.gd" id="1_ragq7"]
+[ext_resource type="Script" path="res://scripts/world/act2_skyisland.gd" id="1_ragq7"]
+[ext_resource type="Script" path="res://scripts/world/EventTrigger.gd" id="2_event"]
 [ext_resource type="Texture2D" uid="uid://dfqbexmh845vf" path="res://img/bg/ChatGPT Image 2026年5月30日 下午11_57_44.png" id="2_1n7wy"]
 [ext_resource type="Script" uid="uid://b12dyjrtbc0s5" path="res://scenes/player.gd" id="3_pt7ew"]
 [ext_resource type="Texture2D" uid="uid://c6b42pu58oyrr" path="res://img/sprite/lyra/lyra.png" id="4_48sk2"]
@@ -8,6 +9,9 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sgp6g"]
 size = Vector2(41, 27)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_intro"]
+size = Vector2(180, 140)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tipki"]
 atlas = ExtResource("4_48sk2")
@@ -135,9 +139,21 @@ corner_radius_bottom_left = 8
 
 [node name="Main" type="Node2D" unique_id=958562685]
 script = ExtResource("1_ragq7")
+dialogue_path = "res://data/dialogues/act2_skyisland.json"
 
 [node name="Background" type="Sprite2D" parent="." unique_id=38697303]
 texture = ExtResource("2_1n7wy")
+
+[node name="EventRoot" type="Node2D" parent="."]
+
+[node name="IntroTrigger" type="Area2D" parent="EventRoot"]
+position = Vector2(-106, 241)
+script = ExtResource("2_event")
+dialogue_id = "skyisland_intro"
+flag_name = "act2_skyisland_intro_seen"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EventRoot/IntroTrigger"]
+shape = SubResource("RectangleShape2D_intro")
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=358588103 node_paths=PackedStringArray("walkable_area")]
 position = Vector2(-106, 241)
