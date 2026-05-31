@@ -153,6 +153,20 @@ Each map should contain:
 4. Event Layer
 5. Dialogue JSON
 
+Each new map must also create:
+
+data/maps/<map_id>.json
+
+Map JSON is the preferred source for:
+
+- Story and dialogue references
+- Event data
+- Music context
+- Background paths
+- Walkable polygon coordinates
+
+Godot scenes should be treated as the current player/runtime layer: they display and execute map data, while JSON remains the real content source. Do not hardcode large story content into .gd files.
+
 AI-generated maps should follow:
 
 Background only

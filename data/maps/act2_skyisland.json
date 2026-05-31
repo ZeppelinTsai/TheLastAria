@@ -1,0 +1,38 @@
+{
+  "id": "act2_skyisland",
+  "name": "空島・永晝觀測站",
+  "background": "res://img/bg/ChatGPT Image 2026年5月31日 上午02_23_09.png",
+  "dialogue_path": "res://data/dialogues/act2_skyisland.json",
+  "music_context": "overworld",
+  "walkable_polygons": [
+    [
+      [-436, 329],
+      [-191, 279],
+      [-25, 269],
+      [261, 296],
+      [454, 349],
+      [656, 420],
+      [768, 504],
+      [-765, 509],
+      [-764, 414]
+    ]
+  ],
+  "events": [
+    {
+      "id": "intro",
+      "type": "dialogue",
+      "dialogue_id": "skyisland_intro",
+      "flag_name": "act2_skyisland_intro_seen",
+      "position": [-106, 241],
+      "radius": 80
+    },
+    {
+      "id": "exit",
+      "type": "scene_exit",
+      "target_scene": "res://scenes/world/act2_skyisland_core.tscn",
+      "location_title": "空島・能源核心",
+      "position": [626, 244],
+      "radius": 80
+    }
+  ]
+}

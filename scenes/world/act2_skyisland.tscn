@@ -1,21 +1,21 @@
 [gd_scene format=3 uid="uid://dulmrr2l53308"]
 
-[ext_resource type="Script" path="res://scripts/world/act2_skyisland.gd" id="1_ragq7"]
-[ext_resource type="Script" path="res://scripts/world/EventTrigger.gd" id="2_event"]
-[ext_resource type="Script" path="res://scripts/world/SceneExitTrigger.gd" id="3_exit"]
-[ext_resource type="Texture2D" uid="uid://dfqbexmh845vf" path="res://img/bg/ChatGPT Image 2026年5月30日 下午11_57_44.png" id="2_1n7wy"]
+[ext_resource type="Script" uid="uid://cihpu1ybwc2g4" path="res://scripts/world/act2_skyisland.gd" id="1_ragq7"]
+[ext_resource type="Texture2D" uid="uid://bnsiaul2hhrqy" path="res://img/bg/ChatGPT Image 2026年5月31日 上午02_23_09.png" id="2_d8xo5"]
+[ext_resource type="Script" uid="uid://3coemwwc2wj8" path="res://scripts/world/EventTrigger.gd" id="2_event"]
+[ext_resource type="Script" uid="uid://wmwqvlml1da7" path="res://scripts/world/SceneExitTrigger.gd" id="3_exit"]
 [ext_resource type="Script" uid="uid://b12dyjrtbc0s5" path="res://scenes/player.gd" id="3_pt7ew"]
 [ext_resource type="Texture2D" uid="uid://c6b42pu58oyrr" path="res://img/sprite/lyra/lyra.png" id="4_48sk2"]
 [ext_resource type="AudioStream" uid="uid://dkyvtknblt5m8" path="res://audio/sfx/468927__malakme__medium-text-blip.ogg" id="5_vewyr"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_sgp6g"]
-size = Vector2(41, 27)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_intro"]
 size = Vector2(180, 140)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_exit"]
 size = Vector2(80, 120)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sgp6g"]
+size = Vector2(41, 27)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tipki"]
 atlas = ExtResource("4_48sk2")
@@ -146,26 +146,26 @@ script = ExtResource("1_ragq7")
 dialogue_path = "res://data/dialogues/act2_skyisland.json"
 
 [node name="Background" type="Sprite2D" parent="." unique_id=38697303]
-texture = ExtResource("2_1n7wy")
+texture = ExtResource("2_d8xo5")
 
-[node name="EventRoot" type="Node2D" parent="."]
+[node name="EventRoot" type="Node2D" parent="." unique_id=1349173413]
 
-[node name="IntroTrigger" type="Area2D" parent="EventRoot"]
+[node name="IntroTrigger" type="Area2D" parent="EventRoot" unique_id=1844419983]
 position = Vector2(-106, 241)
 script = ExtResource("2_event")
 dialogue_id = "skyisland_intro"
 flag_name = "act2_skyisland_intro_seen"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EventRoot/IntroTrigger"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EventRoot/IntroTrigger" unique_id=2015797546]
 shape = SubResource("RectangleShape2D_intro")
 
-[node name="ExitTrigger" type="Area2D" parent="EventRoot"]
+[node name="ExitTrigger" type="Area2D" parent="EventRoot" unique_id=767568797]
 position = Vector2(626, 244)
 script = ExtResource("3_exit")
-target_scene = "res://scenes/ui/main_menu.tscn"
-location_title = "Main Menu"
+target_scene = "res://scenes/world/act2_skyisland_core.tscn"
+location_title = "空島・能源核心"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EventRoot/ExitTrigger"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EventRoot/ExitTrigger" unique_id=1445620776]
 shape = SubResource("RectangleShape2D_exit")
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=358588103 node_paths=PackedStringArray("walkable_area")]
@@ -266,4 +266,4 @@ stream = ExtResource("5_vewyr")
 [node name="WalkableArea" type="Area2D" parent="." unique_id=280883501]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="WalkableArea" unique_id=1804364667]
-polygon = PackedVector2Array(-198, 281, 17, 193, 114, 144, 272, 140, 629, 185, 671, 220, 652, 304, 310, 232, 149, 417)
+polygon = PackedVector2Array(-436, 329, -191, 279, -25, 269, 261, 296, 454, 349, 656, 420, 768, 504, -765, 509, -764, 414)

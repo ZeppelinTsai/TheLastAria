@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" uid="uid://dnlfxaspt45dm" path="res://scenes/main.gd" id="1_0wfyh"]
 [ext_resource type="Script" uid="uid://b12dyjrtbc0s5" path="res://scenes/player.gd" id="1_o5qli"]
+[ext_resource type="Texture2D" uid="uid://bnsiaul2hhrqy" path="res://img/bg/ChatGPT Image 2026年5月31日 上午02_23_09.png" id="2_tefeu"]
 [ext_resource type="AudioStream" uid="uid://dkyvtknblt5m8" path="res://audio/sfx/468927__malakme__medium-text-blip.ogg" id="3_sugp2"]
 [ext_resource type="Texture2D" uid="uid://c6b42pu58oyrr" path="res://img/sprite/lyra/lyra.png" id="4_o6xl0"]
-[ext_resource type="Texture2D" uid="uid://dxp8k0y75vfds" path="res://img/sunken_city.png" id="5_tbgi4"]
 [ext_resource type="Texture2D" uid="uid://dpym7g6m8qpp" path="res://img/sprite/lumi/lumi.png" id="7_o6xl0"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sgp6g"]
@@ -205,14 +205,14 @@ size = Vector2(650, 520)
 script = ExtResource("1_0wfyh")
 
 [node name="Background" type="Sprite2D" parent="." unique_id=38697303]
-texture = ExtResource("5_tbgi4")
+texture = ExtResource("2_tefeu")
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=358588103]
 position = Vector2(-106, 241)
 script = ExtResource("1_o5qli")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=2024028112]
-position = Vector2(1.5, 21.5)
+position = Vector2(-84, 90)
 shape = SubResource("RectangleShape2D_sgp6g")
 
 [node name="Camera2D" type="Camera2D" parent="Player" unique_id=1547181586]
@@ -222,7 +222,7 @@ limit_right = 768
 limit_bottom = 512
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Player" unique_id=516352408]
-position = Vector2(5.9604645e-08, -0.9999999)
+position = Vector2(-84.99999, 62.999992)
 scale = Vector2(0.2657143, 0.2657143)
 sprite_frames = SubResource("SpriteFrames_0ld40")
 animation = &"walk_down"
@@ -364,6 +364,11 @@ position = Vector2(205, -235)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DungeonArea" unique_id=1348065321]
 shape = SubResource("RectangleShape2D_dungeon_area")
+
+[node name="WalkableArea" type="Area2D" parent="." unique_id=437339676]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="WalkableArea" unique_id=550447368]
+polygon = PackedVector2Array(-748, 389, -529, 336, -132, 270, 108, 270, 504, 348, 747, 424, 751, 484, -751, 488)
 
 [connection signal="body_entered" from="Lumi" to="." method="_on_lumi_body_entered"]
 [connection signal="body_exited" from="Lumi" to="." method="_on_lumi_body_exited"]
