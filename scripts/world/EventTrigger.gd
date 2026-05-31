@@ -73,12 +73,12 @@ func _is_player_inside_trigger(player: Node) -> bool:
 
 func _get_player_trigger_points(player: Node) -> Array[Vector2]:
 	var points: Array[Vector2] = []
-	if player is Node2D:
-		points.append(player.global_position)
 	if player.has_method("get_walkable_sample_points"):
 		points.append_array(player.get_walkable_sample_points())
 	elif player.has_method("get_walkable_check_position"):
 		points.append(player.get_walkable_check_position())
+	elif player is Node2D:
+		points.append(player.global_position)
 
 	return points
 
