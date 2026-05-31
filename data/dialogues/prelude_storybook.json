@@ -1,20 +1,49 @@
 {
   "storybook_intro": [
     {
+      "image_path": "res://img/prelude/0.png",
       "speaker": "",
-      "text": "很久以前，\n有一位無法成為人類的人魚公主。"
+      "text": "The Last Aria"
     },
     {
+      "image_path": "res://img/prelude/1.png",
       "speaker": "",
-      "text": "她愛上了海面上的光，\n也因此離開了熟悉的深海。"
+      "text": "很久以前，\n\n有一位無法成為人類的人魚公主。"
     },
     {
-      "speaker": "Lumi",
-      "text": "Lyra，故事要開始了。"
+      "image_path": "res://img/prelude/2.png",
+      "speaker": "",
+      "text": "她愛上了海面上的光。\n\n也愛上了，\n那個來自光中的人。"
     },
     {
+      "image_path": "res://img/prelude/3.png",
       "speaker": "",
-      "text": "而故事，\n從那一天開始。"
+      "text": "於是，\n\n她前往深海最古老的神殿。\n\n尋求巫師的幫助。"
+    },
+    {
+      "image_path": "res://img/prelude/4.png",
+      "speaker": "",
+      "text": "巫師警告她：\n\n「想獲得雙腳，\n\n就必須失去聲音。」"
+    },
+    {
+      "image_path": "res://img/prelude/5.png",
+      "speaker": "",
+      "text": "而且，\n\n每一步都會十分痛苦。\n\n即使如此，\n\n她仍然答應了。"
+    },
+    {
+      "image_path": "res://img/prelude/6.png",
+      "speaker": "",
+      "text": "於是，\n\n她離開了熟悉的深海。\n\n向著那道光走去。"
+    },
+    {
+      "image_path": "res://img/prelude/7.png",
+      "speaker": "",
+      "text": "她想告訴他，\n\n自己是誰。\n\n可是，\n\n她再也無法說話。"
+    },
+    {
+      "image_path": "res://img/prelude/8.png",
+      "speaker": "",
+      "text": "可是最後，\n\n那個人類沒有愛上她。\n\n她變成了海上的泡泡。"
     }
   ]
 }

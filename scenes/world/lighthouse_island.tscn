@@ -1,4 +1,4 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://c1bffabulu0iv"]
 
 [ext_resource type="Script" uid="uid://cwqe8tehhogo0" path="res://scripts/world/lighthouse_island.gd" id="1_ragq7"]
 [ext_resource type="Texture2D" uid="uid://c80o5w7wbtfhd" path="res://img/bg/lighthouse_island.png" id="2_d8xo5"]
