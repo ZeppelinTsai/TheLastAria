@@ -13,7 +13,7 @@ C:\Godot\godot.exe --headless --path . --export-release "Web" build/web/index.ht
 
 if %ERRORLEVEL% neq 0 (
     echo FAILED
-    echo If the error mentions missing export templates, install Godot 4.6.2 Export Templates in the Godot Editor.
+    echo If the error mentions missing export templates, install the matching Godot Export Templates for your current Godot version.
     exit /b 1
 )
 
