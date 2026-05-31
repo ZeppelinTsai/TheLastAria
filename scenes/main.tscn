@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dnlfxaspt45dm" path="res://scenes/main.gd" id="1_0wfyh"]
 [ext_resource type="Script" uid="uid://b12dyjrtbc0s5" path="res://scenes/player.gd" id="1_o5qli"]
-[ext_resource type="Texture2D" uid="uid://bnsiaul2hhrqy" path="res://img/bg/ChatGPT Image 2026年5月31日 上午02_23_09.png" id="2_tefeu"]
+[ext_resource type="Texture2D" uid="uid://dxp8k0y75vfds" path="res://img/sunken_city.png" id="2_tefeu"]
 [ext_resource type="AudioStream" uid="uid://dkyvtknblt5m8" path="res://audio/sfx/468927__malakme__medium-text-blip.ogg" id="3_sugp2"]
 [ext_resource type="Texture2D" uid="uid://c6b42pu58oyrr" path="res://img/sprite/lyra/lyra.png" id="4_o6xl0"]
 [ext_resource type="Texture2D" uid="uid://dpym7g6m8qpp" path="res://img/sprite/lumi/lumi.png" id="7_o6xl0"]
@@ -215,6 +215,9 @@ script = ExtResource("1_o5qli")
 position = Vector2(-84, 90)
 shape = SubResource("RectangleShape2D_sgp6g")
 
+[node name="FootPoint" type="Marker2D" parent="Player"]
+position = Vector2(-84, 104)
+
 [node name="Camera2D" type="Camera2D" parent="Player" unique_id=1547181586]
 limit_left = -768
 limit_top = -512
@@ -332,7 +335,7 @@ position = Vector2(200, -68)
 collision_layer = 2
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Lumi" unique_id=750207343]
-position = Vector2(-70.99999, 283)
+position = Vector2(-198, 391)
 scale = Vector2(0.2, 0.2)
 sprite_frames = SubResource("SpriteFrames_og1vs")
 animation = &"idle_down"
@@ -340,7 +343,7 @@ frame = 1
 frame_progress = 0.1988391
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Lumi" unique_id=257402283]
-position = Vector2(-74, 282)
+position = Vector2(-198, 392)
 shape = SubResource("CircleShape2D_2wyq8")
 
 [node name="OrionTrigger" type="Area2D" parent="." unique_id=473166322]
@@ -366,9 +369,6 @@ position = Vector2(205, -235)
 shape = SubResource("RectangleShape2D_dungeon_area")
 
 [node name="WalkableArea" type="Area2D" parent="." unique_id=437339676]
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="WalkableArea" unique_id=550447368]
-polygon = PackedVector2Array(-748, 389, -529, 336, -132, 270, 108, 270, 504, 348, 747, 424, 751, 484, -751, 488)
 
 [connection signal="body_entered" from="Lumi" to="." method="_on_lumi_body_entered"]
 [connection signal="body_exited" from="Lumi" to="." method="_on_lumi_body_exited"]

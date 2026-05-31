@@ -151,6 +151,9 @@ script = ExtResource("3_player")
 position = Vector2(1.5, 21.5)
 shape = SubResource("RectangleShape2D_player")
 
+[node name="FootPoint" type="Marker2D" parent="Player"]
+position = Vector2(1.5, 35)
+
 [node name="Camera2D" type="Camera2D" parent="Player"]
 limit_left = -768
 limit_top = -512

@@ -5,34 +5,34 @@
   "dialogue_path": "res://data/dialogues/act2_skyisland.json",
   "music_context": "overworld",
   "walkable_polygons": [
-    [
-      [-436, 329],
-      [-191, 279],
-      [-25, 269],
-      [261, 296],
-      [454, 349],
-      [656, 420],
-      [768, 504],
-      [-765, 509],
-      [-764, 414]
-    ]
+	[
+	  [-422, 330],
+	  [-381, -216],
+	  [60, -302],
+	  [732, -143],
+	  [759, 278],
+	  [782, 387],
+	  [782, 505],
+	  [-751, 510],
+	  [-750, 415]
+	]
   ],
   "events": [
-    {
-      "id": "intro",
-      "type": "dialogue",
-      "dialogue_id": "skyisland_intro",
-      "flag_name": "act2_skyisland_intro_seen",
-      "position": [-106, 241],
-      "radius": 80
-    },
-    {
-      "id": "exit",
-      "type": "scene_exit",
-      "target_scene": "res://scenes/world/act2_skyisland_core.tscn",
-      "location_title": "空島・能源核心",
-      "position": [626, 244],
-      "radius": 80
-    }
+	{
+	  "id": "intro",
+	  "type": "dialogue",
+	  "dialogue_id": "skyisland_intro",
+	  "flag_name": "act2_skyisland_intro_seen_test",
+	  "position": [-179, 376],
+	  "radius": 80
+	},
+	{
+	  "id": "exit",
+	  "type": "scene_exit",
+	  "target_scene": "res://scenes/world/act2_skyisland_core.tscn",
+	  "location_title": "空島・能源核心",
+	  "position": [553, 379],
+	  "radius": 80
+	}
   ]
 }

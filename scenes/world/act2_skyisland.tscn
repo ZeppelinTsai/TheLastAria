@@ -9,7 +9,7 @@
 [ext_resource type="AudioStream" uid="uid://dkyvtknblt5m8" path="res://audio/sfx/468927__malakme__medium-text-blip.ogg" id="5_vewyr"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_intro"]
-size = Vector2(180, 140)
+size = Vector2(224, 124)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_exit"]
 size = Vector2(80, 120)
@@ -151,16 +151,17 @@ texture = ExtResource("2_d8xo5")
 [node name="EventRoot" type="Node2D" parent="." unique_id=1349173413]
 
 [node name="IntroTrigger" type="Area2D" parent="EventRoot" unique_id=1844419983]
-position = Vector2(-106, 241)
+position = Vector2(-179, 376)
 script = ExtResource("2_event")
 dialogue_id = "skyisland_intro"
-flag_name = "act2_skyisland_intro_seen"
+flag_name = "act2_skyisland_intro_seen_test"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EventRoot/IntroTrigger" unique_id=2015797546]
+position = Vector2(215, -167)
 shape = SubResource("RectangleShape2D_intro")
 
 [node name="ExitTrigger" type="Area2D" parent="EventRoot" unique_id=767568797]
-position = Vector2(626, 244)
+position = Vector2(553, 379)
 script = ExtResource("3_exit")
 target_scene = "res://scenes/world/act2_skyisland_core.tscn"
 location_title = "空島・能源核心"
@@ -174,17 +175,21 @@ script = ExtResource("3_pt7ew")
 walkable_area = NodePath("../WalkableArea")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=2024028112]
-position = Vector2(1.5, 21.5)
+position = Vector2(-73, 135)
 shape = SubResource("RectangleShape2D_sgp6g")
+
+[node name="FootPoint" type="Marker2D" parent="Player" unique_id=1060826215]
+position = Vector2(-73, 149)
 
 [node name="Camera2D" type="Camera2D" parent="Player" unique_id=1547181586]
 limit_left = -768
 limit_top = -512
 limit_right = 768
 limit_bottom = 512
+metadata/_edit_lock_ = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Player" unique_id=516352408]
-position = Vector2(5.9604645e-08, -0.9999999)
+position = Vector2(-74.99999, 108.99999)
 scale = Vector2(0.2657143, 0.2657143)
 sprite_frames = SubResource("SpriteFrames_0ld40")
 animation = &"walk_down"
@@ -266,4 +271,5 @@ stream = ExtResource("5_vewyr")
 [node name="WalkableArea" type="Area2D" parent="." unique_id=280883501]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="WalkableArea" unique_id=1804364667]
-polygon = PackedVector2Array(-436, 329, -191, 279, -25, 269, 261, 296, 454, 349, 656, 420, 768, 504, -765, 509, -764, 414)
+polygon = PackedVector2Array(-422, 330, -381, -216, 60, -302, 732, -143, 759, 278, 782, 387, 782, 505, -751, 510, -750, 415)
+metadata/_edit_lock_ = true
