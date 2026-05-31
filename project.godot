@@ -23,6 +23,10 @@ CharacterVisualManager="*res://autoload/CharacterVisualManager.gd"
 GameState="*uid://ftpdcfddxxep"
 SceneTransition="*uid://ocbbo2bq52ih"
 
+[gui]
+
+theme/custom="res://theme/default_theme.tres"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

@@ -2,9 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/world/prelude_storybook.gd" id="1_script"]
 [ext_resource type="AudioStream" uid="uid://dkyvtknblt5m8" path="res://audio/sfx/468927__malakme__medium-text-blip.ogg" id="2_page_sound"]
-
-[sub_resource type="SystemFont" id="SystemFont_storybook"]
-font_names = PackedStringArray("Microsoft JhengHei", "Noto Sans CJK TC", "Noto Sans TC", "PingFang TC", "Arial Unicode MS", "sans-serif")
+[ext_resource type="FontFile" path="res://assets/fonts/NotoSansTC-Medium.ttf" id="3_font"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_text_panel"]
 bg_color = Color(0, 0, 0, 0.46)
@@ -62,7 +60,7 @@ theme_override_constants/separation = 8
 [node name="SpeakerLabel" type="Label" parent="UI/TextPanel/Margin/VBox"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_fonts/font = SubResource("SystemFont_storybook")
+theme_override_fonts/font = ExtResource("3_font")
 theme_override_colors/font_color = Color(1, 1, 1, 0.92)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.85)
 theme_override_constants/shadow_offset_x = 2
@@ -76,7 +74,7 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_fonts/font = SubResource("SystemFont_storybook")
+theme_override_fonts/font = ExtResource("3_font")
 theme_override_colors/font_color = Color(1, 1, 1, 0.96)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
 theme_override_constants/shadow_offset_x = 2
