@@ -1,0 +1,84 @@
+{
+  "id": "sunken_city_lyra_room",
+  "name": "Lyra Room",
+  "player_spawn": [
+    0,
+    180
+  ],
+  "background": "res://img/bg/sunken_city_lyra_room.png",
+  "dialogue_path": "res://data/dialogues/sunken_city_lyra_room.json",
+  "music_context": "overworld",
+  "walkable_polygons": [
+    [
+      [
+        -420,
+        80
+      ],
+      [
+        420,
+        80
+      ],
+      [
+        520,
+        350
+      ],
+      [
+        -520,
+        350
+      ]
+    ]
+  ],
+  "events": [
+    {
+      "id": "storybook",
+      "type": "dialogue",
+      "dialogue_id": "storybook_after_reading",
+      "position": [
+        -260,
+        130
+      ],
+      "radius": 64
+    },
+    {
+      "id": "window",
+      "type": "dialogue",
+      "dialogue_id": "window",
+      "position": [
+        275,
+        75
+      ],
+      "radius": 64
+    },
+    {
+      "id": "bookshelf",
+      "type": "dialogue",
+      "dialogue_id": "bookshelf",
+      "position": [
+        -380,
+        70
+      ],
+      "radius": 64
+    },
+    {
+      "id": "bed",
+      "type": "dialogue",
+      "dialogue_id": "bed",
+      "position": [
+        215,
+        230
+      ],
+      "radius": 72
+    },
+    {
+      "id": "door",
+      "type": "scene_exit",
+      "target_scene": "res://scenes/world/sunken_city.tscn",
+      "location_title": "Sunken City",
+      "position": [
+        0,
+        345
+      ],
+      "radius": 76
+    }
+  ]
+}

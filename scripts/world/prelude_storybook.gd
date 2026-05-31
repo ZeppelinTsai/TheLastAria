@@ -1,6 +1,6 @@
 extends Node2D
 
-const TARGET_SCENE := "res://scenes/world/sunken_city.tscn"
+const TARGET_SCENE := "res://scenes/world/sunken_city_lyra_room.tscn"
 const PAGE_DATA_PATH := "res://data/dialogues/prelude_storybook.json"
 const PAGE_SOUND_PITCH := 1.0
 const QUAKE_SOUND_PITCH := 0.55

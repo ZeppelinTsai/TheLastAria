@@ -1,0 +1,38 @@
+{
+  "storybook_after_reading": [
+    {
+      "speaker": "Lumi",
+      "text": "\u4f60\u53c8\u5728\u770b\u90a3\u672c\u554a\uff1f"
+    },
+    {
+      "speaker": "Lumi",
+      "text": "\u660e\u660e\u6700\u5f8c\u8b8a\u6210\u6ce1\u6ce1\u4e86\uff0c\u70ba\u4ec0\u9ebc\u9084\u7b97 Happy Ending\uff1f"
+    },
+    {
+      "speaker": "Lyra",
+      "text": "\u2026\u2026"
+    },
+    {
+      "speaker": "Lumi",
+      "text": "\u4f60\u7b11\u4ec0\u9ebc\u5566\u3002"
+    }
+  ],
+  "window": [
+    {
+      "speaker": "Lumi",
+      "text": "\u5916\u9762\u7684\u6c34\u5149\u4eca\u5929\u5f88\u5b89\u975c\u3002"
+    }
+  ],
+  "bookshelf": [
+    {
+      "speaker": "Lumi",
+      "text": "\u9019\u88e1\u5168\u90fd\u662f\u4f60\u53cd\u8986\u770b\u904e\u7684\u66f8\u3002"
+    }
+  ],
+  "bed": [
+    {
+      "speaker": "Lumi",
+      "text": "\u73fe\u5728\u4e0d\u662f\u7761\u56de\u7c60\u89ba\u7684\u6642\u5019\u5427\uff1f"
+    }
+  ]
+}
