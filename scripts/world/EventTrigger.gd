@@ -1,18 +1,25 @@
 extends Area2D
 
 @export var dialogue_id: String
+@export var dialogue_ids: Array[String] = []
 @export var trigger_once: bool = true
 @export var flag_name: String = ""
 
 var _has_triggered := false
+var _can_trigger := true
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 
 func _physics_process(_delta: float) -> void:
 	var player := get_tree().current_scene.get_node_or_null("Player") if get_tree().current_scene else null
-	if player and _is_player_inside_trigger(player):
+	if not player:
+		return
+
+	if _is_player_inside_trigger(player):
 		_try_trigger(player)
+	else:
+		_can_trigger = true
 
 func _on_body_entered(body: Node2D) -> void:
 	if body.name != "Player":
@@ -21,6 +28,9 @@ func _on_body_entered(body: Node2D) -> void:
 	_try_trigger(body)
 
 func _try_trigger(body: Node2D) -> void:
+	if not _can_trigger:
+		return
+
 	if trigger_once and _has_triggered:
 		return
 
@@ -32,12 +42,27 @@ func _try_trigger(body: Node2D) -> void:
 		push_warning("EventTrigger could not find start_dialog on the current scene root.")
 		return
 
-	print("EventTrigger started dialogue: %s" % dialogue_id)
-	scene_root.start_dialog(dialogue_id)
+	if bool(scene_root.get("dialog_active")):
+		return
+
+	var selected_dialogue_id := _select_dialogue_id()
+	if selected_dialogue_id == "":
+		push_warning("EventTrigger has no dialogue_id.")
+		return
+
+	print("EventTrigger started dialogue: %s" % selected_dialogue_id)
+	scene_root.start_dialog(selected_dialogue_id)
 	_has_triggered = true
+	_can_trigger = false
 
 	if flag_name != "":
 		SaveManager.set_flag(flag_name)
+
+func _select_dialogue_id() -> String:
+	if not dialogue_ids.is_empty():
+		return dialogue_ids.pick_random()
+
+	return dialogue_id.strip_edges()
 
 func _is_player_inside_trigger(player: Node) -> bool:
 	for point in _get_player_trigger_points(player):

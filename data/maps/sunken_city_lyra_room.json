@@ -33,6 +33,12 @@
       "id": "storybook",
       "type": "dialogue",
       "dialogue_id": "storybook_after_reading",
+      "dialogue_ids": [
+        "storybook_after_reading",
+        "storybook_after_reading_again",
+        "storybook_after_reading_quiet"
+      ],
+      "trigger_once": false,
       "position": [
         -260,
         130
@@ -43,6 +49,12 @@
       "id": "window",
       "type": "dialogue",
       "dialogue_id": "window",
+      "dialogue_ids": [
+        "window",
+        "window_lights",
+        "window_surface"
+      ],
+      "trigger_once": false,
       "position": [
         275,
         75
@@ -53,6 +65,12 @@
       "id": "bookshelf",
       "type": "dialogue",
       "dialogue_id": "bookshelf",
+      "dialogue_ids": [
+        "bookshelf",
+        "bookshelf_notes",
+        "bookshelf_old_story"
+      ],
+      "trigger_once": false,
       "position": [
         -380,
         70
@@ -63,6 +81,12 @@
       "id": "bed",
       "type": "dialogue",
       "dialogue_id": "bed",
+      "dialogue_ids": [
+        "bed",
+        "bed_blanket",
+        "bed_morning"
+      ],
+      "trigger_once": false,
       "position": [
         215,
         230

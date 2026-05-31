@@ -42,7 +42,8 @@ static func _spawn_event(event: Dictionary, event_root: Node) -> void:
 
 static func _spawn_dialogue_event(event: Dictionary, event_root: Node) -> void:
 	var dialogue_id := str(event.get("dialogue_id", "")).strip_edges()
-	if dialogue_id == "":
+	var dialogue_ids := _event_dialogue_ids(event)
+	if dialogue_id == "" and dialogue_ids.is_empty():
 		push_warning("Dialogue map event missing dialogue_id.")
 		return
 
@@ -50,6 +51,8 @@ static func _spawn_dialogue_event(event: Dictionary, event_root: Node) -> void:
 	trigger.name = _event_node_name(event, "JsonDialogueTrigger")
 	trigger.set_script(DIALOGUE_TRIGGER_SCRIPT)
 	trigger.dialogue_id = dialogue_id
+	trigger.dialogue_ids = dialogue_ids
+	trigger.trigger_once = bool(event.get("trigger_once", true))
 	trigger.flag_name = str(event.get("flag_name", "")).strip_edges()
 	trigger.position = _event_position(event)
 	_add_collision_shape(trigger, _event_radius(event))
@@ -96,6 +99,19 @@ static func _event_radius(event: Dictionary) -> float:
 		return 80.0
 
 	return radius
+
+static func _event_dialogue_ids(event: Dictionary) -> Array[String]:
+	var ids: Array[String] = []
+	var id_data = event.get("dialogue_ids", [])
+	if typeof(id_data) != TYPE_ARRAY:
+		return ids
+
+	for id in id_data:
+		var clean_id := str(id).strip_edges()
+		if clean_id != "":
+			ids.append(clean_id)
+
+	return ids
 
 static func _has_existing_equivalent(event: Dictionary, event_root: Node) -> bool:
 	var event_type := str(event.get("type", "")).strip_edges()

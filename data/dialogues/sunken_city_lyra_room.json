@@ -17,10 +17,42 @@
       "text": "\u4f60\u7b11\u4ec0\u9ebc\u5566\u3002"
     }
   ],
+  "storybook_after_reading_again": [
+    {
+      "speaker": "Lumi",
+      "text": "\u4f60\u5df2\u7d93\u628a\u90a3\u9801\u770b\u5230\u6703\u80cc\u4e86\u5427\u3002"
+    },
+    {
+      "speaker": "Lyra",
+      "text": "\u2026\u2026"
+    },
+    {
+      "speaker": "Lumi",
+      "text": "\u597d\u5566\uff0c\u6211\u77e5\u9053\u4f60\u559c\u6b61\u3002"
+    }
+  ],
+  "storybook_after_reading_quiet": [
+    {
+      "speaker": "Lumi",
+      "text": "\u9019\u672c\u66f8\u660e\u660e\u5f88\u820a\uff0c\u4f46\u4f60\u6bcf\u6b21\u770b\u90fd\u5f88\u5b89\u975c\u3002"
+    }
+  ],
   "window": [
     {
       "speaker": "Lumi",
       "text": "\u5916\u9762\u7684\u6c34\u5149\u4eca\u5929\u5f88\u5b89\u975c\u3002"
+    }
+  ],
+  "window_lights": [
+    {
+      "speaker": "Lumi",
+      "text": "\u9060\u8655\u7684\u71c8\u597d\u50cf\u6bd4\u5e73\u5e38\u6697\u4e00\u9ede\u3002"
+    }
+  ],
+  "window_surface": [
+    {
+      "speaker": "Lumi",
+      "text": "\u4f60\u53c8\u5728\u60f3\u6d77\u9762\u4e0a\u9762\u7684\u4e8b\u55ce\uff1f"
     }
   ],
   "bookshelf": [
@@ -29,10 +61,34 @@
       "text": "\u9019\u88e1\u5168\u90fd\u662f\u4f60\u53cd\u8986\u770b\u904e\u7684\u66f8\u3002"
     }
   ],
+  "bookshelf_notes": [
+    {
+      "speaker": "Lumi",
+      "text": "\u66f8\u9801\u88e1\u593e\u8457\u4f60\u7684\u7b46\u8a18\u3002\u5b57\u9084\u662f\u4e00\u6a23\u5c0f\u3002"
+    }
+  ],
+  "bookshelf_old_story": [
+    {
+      "speaker": "Lumi",
+      "text": "\u7ae5\u8a71\u66f8\u3001\u6b77\u53f2\u66f8\u3001\u9084\u6709\u4e00\u5806\u770b\u8d77\u4f86\u5f88\u96e3\u7684\u66f8\u3002"
+    }
+  ],
   "bed": [
     {
       "speaker": "Lumi",
       "text": "\u73fe\u5728\u4e0d\u662f\u7761\u56de\u7c60\u89ba\u7684\u6642\u5019\u5427\uff1f"
+    }
+  ],
+  "bed_blanket": [
+    {
+      "speaker": "Lumi",
+      "text": "\u88ab\u5b50\u6298\u5f97\u5f88\u6574\u9f4a\u3002\u771f\u96e3\u5f97\u3002"
+    }
+  ],
+  "bed_morning": [
+    {
+      "speaker": "Lumi",
+      "text": "\u518d\u8eba\u56de\u53bb\u7684\u8a71\uff0c\u6211\u6703\u628a\u4f60\u53eb\u8d77\u4f86\u5594\u3002"
     }
   ]
 }

@@ -1,18 +1,27 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dkyyxdk1p7skv"]
 
-[ext_resource type="Script" path="res://scripts/world/sunken_city_lyra_room.gd" id="1_ragq7"]
-[ext_resource type="Texture2D" path="res://img/bg/sunken_city_lyra_room.png" id="2_d8xo5"]
+[ext_resource type="Script" uid="uid://b5bnka0vof2bi" path="res://scripts/world/sunken_city_lyra_room.gd" id="1_ragq7"]
+[ext_resource type="Texture2D" uid="uid://1x7dm3rn7m7n" path="res://img/bg/sunken_city_lyra_room.png" id="2_d8xo5"]
 [ext_resource type="Script" uid="uid://3coemwwc2wj8" path="res://scripts/world/EventTrigger.gd" id="2_event"]
 [ext_resource type="Script" uid="uid://wmwqvlml1da7" path="res://scripts/world/SceneExitTrigger.gd" id="3_exit"]
 [ext_resource type="Script" uid="uid://b12dyjrtbc0s5" path="res://scenes/player.gd" id="3_pt7ew"]
 [ext_resource type="Texture2D" uid="uid://c6b42pu58oyrr" path="res://img/sprite/lyra/lyra.png" id="4_48sk2"]
 [ext_resource type="AudioStream" uid="uid://dkyvtknblt5m8" path="res://audio/sfx/468927__malakme__medium-text-blip.ogg" id="5_vewyr"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_intro"]
-size = Vector2(224, 124)
+[sub_resource type="CircleShape2D" id="CircleShape2D_storybook"]
+radius = 123.97581
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_exit"]
-size = Vector2(80, 120)
+[sub_resource type="CircleShape2D" id="CircleShape2D_window"]
+radius = 116.72617
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bookshelf"]
+radius = 152.19067
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bed"]
+radius = 209.17218
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_door"]
+radius = 169.85287
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sgp6g"]
 size = Vector2(41, 27)
@@ -144,12 +153,65 @@ corner_radius_bottom_left = 8
 [node name="Main" type="Node2D" unique_id=958562685]
 script = ExtResource("1_ragq7")
 dialogue_path = "res://data/dialogues/sunken_city_lyra_room.json"
-map_data_path = "res://data/maps/sunken_city_lyra_room.json"
 
 [node name="Background" type="Sprite2D" parent="." unique_id=38697303]
 texture = ExtResource("2_d8xo5")
 
 [node name="EventRoot" type="Node2D" parent="." unique_id=1349173413]
+
+[node name="StorybookTrigger" type="Area2D" parent="EventRoot" unique_id=766638407]
+position = Vector2(-260, 130)
+script = ExtResource("2_event")
+dialogue_id = "storybook_after_reading"
+dialogue_ids = Array[String](["storybook_after_reading", "storybook_after_reading_again", "storybook_after_reading_quiet"])
+trigger_once = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EventRoot/StorybookTrigger" unique_id=1715764334]
+position = Vector2(187, -291)
+shape = SubResource("CircleShape2D_storybook")
+
+[node name="WindowTrigger" type="Area2D" parent="EventRoot" unique_id=1789809370]
+position = Vector2(275, 75)
+script = ExtResource("2_event")
+dialogue_id = "window"
+dialogue_ids = Array[String](["window", "window_lights", "window_surface"])
+trigger_once = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EventRoot/WindowTrigger" unique_id=151437019]
+position = Vector2(-116, -312)
+shape = SubResource("CircleShape2D_window")
+
+[node name="BookshelfTrigger" type="Area2D" parent="EventRoot" unique_id=2048146366]
+position = Vector2(-380, 70)
+script = ExtResource("2_event")
+dialogue_id = "bookshelf"
+dialogue_ids = Array[String](["bookshelf", "bookshelf_notes", "bookshelf_old_story"])
+trigger_once = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EventRoot/BookshelfTrigger" unique_id=558100383]
+position = Vector2(776, -186)
+shape = SubResource("CircleShape2D_bookshelf")
+
+[node name="BedTrigger" type="Area2D" parent="EventRoot" unique_id=870653167]
+position = Vector2(215, 230)
+script = ExtResource("2_event")
+dialogue_id = "bed"
+dialogue_ids = Array[String](["bed", "bed_blanket", "bed_morning"])
+trigger_once = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EventRoot/BedTrigger" unique_id=432835258]
+position = Vector2(-645, -289)
+shape = SubResource("CircleShape2D_bed")
+
+[node name="DoorTrigger" type="Area2D" parent="EventRoot" unique_id=384987289]
+position = Vector2(0, 345)
+script = ExtResource("3_exit")
+target_scene = "res://scenes/world/sunken_city.tscn"
+location_title = "Sunken City"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EventRoot/DoorTrigger" unique_id=119744202]
+position = Vector2(556, -69)
+shape = SubResource("CircleShape2D_door")
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=358588103 node_paths=PackedStringArray("walkable_area")]
 position = Vector2(-106, 241)
@@ -251,3 +313,7 @@ polygon = PackedVector2Array(-8, -4, 8, -4, 0, 6)
 stream = ExtResource("5_vewyr")
 
 [node name="WalkableArea" type="Area2D" parent="." unique_id=280883501]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="WalkableArea" unique_id=1172369346]
+polygon = PackedVector2Array(-276, -198, 118, -188, 386, -131, 611, 69, 611, 514, -502, 457, -703, 295, -691, -15, -584, -13, -436, 97, -243, -32, -346, -131)
+metadata/_edit_lock_ = true
