@@ -167,6 +167,21 @@ Map JSON is the preferred source for:
 
 Godot scenes should be treated as the current player/runtime layer: they display and execute map data, while JSON remains the real content source. Do not hardcode large story content into .gd files.
 
+## 建立新地圖標準流程
+
+Use the map template generator from the project root:
+
+python tools/create_map_template.py --map-id <map_id> --map-name "<map name>" --background "res://path/to/background.png"
+
+The generator creates:
+
+- data/maps/<map_id>.json
+- data/dialogues/<map_id>.json
+- scenes/world/<map_id>.tscn
+- scripts/world/<map_id>.gd
+
+Never overwrite existing map files. After generation, fill in walkable_polygons and events in data/maps/<map_id>.json first, then tune the Godot scene only as the player/runtime layer.
+
 AI-generated maps should follow:
 
 Background only

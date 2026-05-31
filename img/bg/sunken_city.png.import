@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dxp8k0y75vfds"
-path="res://.godot/imported/sunken_city.png-3e2a33870c10fadc8c2776cb3714588c.ctex"
+path="res://.godot/imported/sunken_city.png-3af56b2b9a766a4fa358bc74f5215530.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://img/sunken_city.png"
-dest_files=["res://.godot/imported/sunken_city.png-3e2a33870c10fadc8c2776cb3714588c.ctex"]
+source_file="res://img/bg/sunken_city.png"
+dest_files=["res://.godot/imported/sunken_city.png-3af56b2b9a766a4fa358bc74f5215530.ctex"]
 
 [params]
 

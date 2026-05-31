@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dnlfxaspt45dm" path="res://scenes/main.gd" id="1_0wfyh"]
 [ext_resource type="Script" uid="uid://b12dyjrtbc0s5" path="res://scenes/player.gd" id="1_o5qli"]
-[ext_resource type="Texture2D" uid="uid://dxp8k0y75vfds" path="res://img/sunken_city.png" id="2_tefeu"]
+[ext_resource type="Texture2D" uid="uid://dxp8k0y75vfds" path="res://img/bg/sunken_city.png" id="2_tefeu"]
 [ext_resource type="AudioStream" uid="uid://dkyvtknblt5m8" path="res://audio/sfx/468927__malakme__medium-text-blip.ogg" id="3_sugp2"]
 [ext_resource type="Texture2D" uid="uid://c6b42pu58oyrr" path="res://img/sprite/lyra/lyra.png" id="4_o6xl0"]
 [ext_resource type="Texture2D" uid="uid://dpym7g6m8qpp" path="res://img/sprite/lumi/lumi.png" id="7_o6xl0"]
@@ -215,7 +215,7 @@ script = ExtResource("1_o5qli")
 position = Vector2(-84, 90)
 shape = SubResource("RectangleShape2D_sgp6g")
 
-[node name="FootPoint" type="Marker2D" parent="Player"]
+[node name="FootPoint" type="Marker2D" parent="Player" unique_id=864732035]
 position = Vector2(-84, 104)
 
 [node name="Camera2D" type="Camera2D" parent="Player" unique_id=1547181586]

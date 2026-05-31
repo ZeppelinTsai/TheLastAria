@@ -1,7 +1,7 @@
 extends Control
 
 const GAME_SCENE_PATH = "res://scenes/main.tscn"
-const BACKGROUND_PATH = "res://img/sunken_city.png"
+const BACKGROUND_PATH = "res://img/bg/sunken_city.png"
 const SLOT_DOUBLE_PRESS_MS = 450
 
 enum SlotMode { NONE, NEW_GAME, LOAD_GAME }
