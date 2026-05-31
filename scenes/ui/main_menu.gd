@@ -1,6 +1,7 @@
 extends Control
 
-const GAME_SCENE_PATH = "res://scenes/main.tscn"
+const GAME_SCENE_PATH = "res://scenes/world/prelude_storybook.tscn"
+const NEW_GAME_LOCATION_TITLE = "序章・童話書"
 const BACKGROUND_PATH = "res://img/bg/sunken_city.png"
 const SLOT_DOUBLE_PRESS_MS = 450
 
@@ -295,6 +296,7 @@ func quick_confirm_slot_action() -> void:
 
 func start_new_game() -> void:
 	SaveManager.start_new_game(selected_slot)
+	SaveManager.set_location(NEW_GAME_LOCATION_TITLE)
 	get_tree().change_scene_to_file(GAME_SCENE_PATH)
 
 func load_game() -> void:

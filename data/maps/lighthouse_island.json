@@ -1,0 +1,36 @@
+{
+  "id": "lighthouse_island",
+  "name": "燈塔島",
+  "player_spawn": [
+    0,
+    0
+  ],
+  "background": "res://img/bg/lighthouse_island.png",
+  "dialogue_path": "res://data/dialogues/lighthouse_island.json",
+  "music_context": "overworld",
+  "walkable_polygons": [],
+  "events": [
+    {
+      "id": "intro",
+      "type": "dialogue",
+      "dialogue_id": "intro",
+      "flag_name": "lighthouse_island_intro_seen",
+      "position": [
+        36,
+        209
+      ],
+      "radius": 112
+    },
+    {
+      "id": "exit_to_skyisland",
+      "type": "scene_exit",
+      "target_scene": "res://scenes/world/act2_skyisland.tscn",
+      "location_title": "空島・永晝觀測站",
+      "position": [
+        553,
+        379
+      ],
+      "radius": 80
+    }
+  ]
+}

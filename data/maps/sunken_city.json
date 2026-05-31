@@ -1,0 +1,71 @@
+{
+  "id": "sunken_city",
+  "name": "沉沒之城",
+  "player_spawn": [
+    -106,
+    241
+  ],
+  "background": "res://img/bg/sunken_city.png",
+  "dialogue_path": "res://data/dialogues/sunken_city.json",
+  "music_context": "overworld",
+  "walkable_polygons": [
+    [
+      [
+        -422,
+        330
+      ],
+      [
+        -381,
+        -216
+      ],
+      [
+        60,
+        -302
+      ],
+      [
+        732,
+        -143
+      ],
+      [
+        759,
+        278
+      ],
+      [
+        782,
+        505
+      ],
+      [
+        -751,
+        510
+      ],
+      [
+        -750,
+        415
+      ]
+    ]
+  ],
+  "events": [
+    {
+      "id": "intro",
+      "type": "dialogue",
+      "dialogue_id": "sunken_city_intro",
+      "flag_name": "sunken_city_intro_seen",
+      "position": [
+        36,
+        209
+      ],
+      "radius": 112
+    },
+    {
+      "id": "exit_to_lighthouse",
+      "type": "scene_exit",
+      "target_scene": "res://scenes/world/lighthouse_island.tscn",
+      "location_title": "燈塔島",
+      "position": [
+        553,
+        379
+      ],
+      "radius": 80
+    }
+  ]
+}

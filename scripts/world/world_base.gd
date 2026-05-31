@@ -127,6 +127,33 @@ func load_dialogue_sets() -> void:
 
 	dialogue_sets = parsed
 
+func apply_background_from_map_data(data: Dictionary) -> void:
+	var background_path: String = str(data.get("background", "")).strip_edges()
+	if background_path == "":
+		push_warning("Map data missing background.")
+		return
+
+	var background_node: Node = get_node_or_null("Background")
+	if not background_node:
+		push_warning("World has no Background node for map background: %s" % background_path)
+		return
+	if not (background_node is Sprite2D) and not (background_node is TextureRect):
+		push_warning("Background node must be Sprite2D or TextureRect: %s" % background_path)
+		return
+
+	var texture_resource: Resource = load(background_path)
+	if texture_resource == null or not (texture_resource is Texture2D):
+		push_warning("Could not load map background texture: %s" % background_path)
+		return
+
+	var texture: Texture2D = texture_resource as Texture2D
+	if background_node is Sprite2D:
+		var sprite_background: Sprite2D = background_node as Sprite2D
+		sprite_background.texture = texture
+	elif background_node is TextureRect:
+		var texture_background: TextureRect = background_node as TextureRect
+		texture_background.texture = texture
+
 func start_dialog(dialogue_id: String) -> void:
 	if not dialogue_sets.has(dialogue_id):
 		push_warning("Dialogue id not found: %s" % dialogue_id)

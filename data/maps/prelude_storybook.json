@@ -1,0 +1,9 @@
+{
+  "id": "prelude_storybook",
+  "name": "序章・童話書",
+  "background": "",
+  "dialogue_path": "res://data/dialogues/prelude_storybook.json",
+  "music_context": "overworld",
+  "walkable_polygons": [],
+  "events": []
+}
