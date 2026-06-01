@@ -261,21 +261,39 @@ MusicManager.play_context("skyisland")
 After modifying code:
 
 1. Save files
-2. Run:
+2. Run the platform-appropriate Godot validation command:
+
+Windows:
 
 check_godot.bat
+
+Linux/macOS:
+
+bash check_godot.sh
 
 3. Fix all errors before continuing
 
 Do not consider a task complete if Godot headless validation fails.
 
-After modifying Godot scripts, scenes, or project code, always run:
+After modifying Godot scripts, scenes, or project code, always run the platform-appropriate validation script:
+
+Windows:
 
 check_godot.bat
 
-After modifying export settings or CI, always run:
+Linux/macOS:
+
+bash check_godot.sh
+
+After modifying export settings or CI, always run the platform-appropriate Web export script:
+
+Windows:
 
 export_web.bat
+
+Linux/macOS:
+
+bash export_web.sh
 
 Do not manually commit Web build output unless the workflow explicitly requires it.
 
