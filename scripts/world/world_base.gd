@@ -26,6 +26,7 @@ var current_index := 0
 var dialog_active := false
 var is_typing := false
 var full_text := ""
+var typing_run_id := 0
 
 var next_indicator_arrow_base_position := Vector2.ZERO
 var next_indicator_tween: Tween
@@ -86,6 +87,7 @@ func _input(event: InputEvent) -> void:
 		if not dialog_active:
 			return
 		if is_typing:
+			typing_run_id += 1
 			is_typing = false
 			if dialog_text:
 				dialog_text.text = full_text
@@ -197,23 +199,27 @@ func show_dialog(index: int) -> void:
 		speaker_avatar.visible = portrait != null
 
 	is_typing = true
+	typing_run_id += 1
+	var run_id := typing_run_id
 	hide_next_indicator()
-	type_text()
+	type_text(full_text, run_id)
 
-func type_text() -> void:
-	for i in range(full_text.length()):
-		if not is_typing:
+func type_text(text: String, run_id: int) -> void:
+	for i in range(text.length()):
+		if not is_typing or run_id != typing_run_id:
 			break
 		if dialog_text:
-			dialog_text.text = full_text.substr(0, i + 1)
-		if full_text[i] != " " and type_sound:
+			dialog_text.text = text.substr(0, i + 1)
+		if text[i] != " " and type_sound:
 			type_sound.stop()
 			type_sound.play()
 		await get_tree().create_timer(TYPE_DELAY).timeout
 
+	if run_id != typing_run_id:
+		return
 	is_typing = false
 	if dialog_text:
-		dialog_text.text = full_text
+		dialog_text.text = text
 	if type_sound:
 		type_sound.stop()
 	show_next_indicator()

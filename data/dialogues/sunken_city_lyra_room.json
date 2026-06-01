@@ -1,4 +1,48 @@
 {
+  "opening_after_storybook": [
+    {
+      "speaker": "Lumi",
+      "text": "又在看那本啊？",
+      "scene": "atlantis"
+    },
+    {
+      "speaker": "StageDir",
+      "text": "Lyra 點頭。",
+      "scene": "atlantis"
+    },
+    {
+      "speaker": "Lumi",
+      "text": "你都不會看膩嗎？",
+      "scene": "atlantis"
+    },
+    {
+      "speaker": "StageDir",
+      "text": "Lyra 抱著書，看向遠方海面。",
+      "scene": "atlantis"
+    },
+    {
+      "speaker": "Lumi",
+      "text": "我還是不懂。",
+      "scene": "atlantis"
+    },
+    {
+      "speaker": "Lumi",
+      "text": "明明最後變成泡泡了，為什麼還算 Happy Ending？",
+      "scene": "atlantis"
+    },
+    {
+      "speaker": "Lumi",
+      "text": "地震？！",
+      "scene": "quake",
+      "effect": "shake"
+    },
+    {
+      "speaker": "Lumi",
+      "text": "快去外面看看——！",
+      "scene": "quake",
+      "effect": "shake"
+    }
+  ],
   "storybook_after_reading": [
     {
       "speaker": "Lumi",

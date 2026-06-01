@@ -44,6 +44,7 @@ var current_index = 0
 var dialog_active = false
 var is_typing = false
 var full_text = ""
+var typing_run_id = 0
 
 var can_talk_to_lumi = false
 var lumi_follow_enabled = false
@@ -132,6 +133,7 @@ func _input(event):
 			if can_talk_to_lumi:
 				start_dialog("lumi_intro")
 		elif is_typing:
+			typing_run_id += 1
 			is_typing = false
 			dialog_text.text = full_text
 			show_next_indicator()
@@ -187,24 +189,29 @@ func show_dialog(index):
 	speaker_avatar.texture = portrait
 	speaker_avatar.visible = portrait != null
 	is_typing = true
-	type_text()
+	typing_run_id += 1
+	var run_id = typing_run_id
+	type_text(full_text, run_id)
 	hide_next_indicator()
 
-func type_text():
-	for i in range(full_text.length()):
-		if not is_typing:
+func type_text(text: String, run_id: int):
+	for i in range(text.length()):
+		if not is_typing or run_id != typing_run_id:
 			break
 
-		dialog_text.text = full_text.substr(0, i + 1)
+		dialog_text.text = text.substr(0, i + 1)
 
-		if full_text[i] != " ":
+		if text[i] != " ":
 			if type_sound:
 				type_sound.stop()
 				type_sound.play()
 
 		await get_tree().create_timer(0.05).timeout
 
+	if run_id != typing_run_id:
+		return
 	is_typing = false
+	dialog_text.text = text
 	if type_sound:
 		type_sound.stop()
 	show_next_indicator()

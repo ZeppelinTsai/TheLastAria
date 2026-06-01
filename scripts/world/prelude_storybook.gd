@@ -184,6 +184,7 @@ func _finish_storybook() -> void:
 	await _fade_text_panel_to(0.0, TEXT_FADE_DURATION)
 	await _quake()
 	await _fade_overlay_to(1.0, 0.7)
+	SceneTransition.set_meta("post_storybook_sequence", true)
 	await SceneTransition.go(TARGET_SCENE)
 
 func _quake() -> void:
