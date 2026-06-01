@@ -7,6 +7,7 @@ const NEXT_INDICATOR_BREATH_DURATION = 0.55
 const NEXT_INDICATOR_DIM_ALPHA = 0.45
 const SLOT_DOUBLE_PRESS_MS = 450
 const TYPE_DELAY = 0.05
+const POINTER_ADVANCE_DEBOUNCE_MS = 180
 
 @export var dialogue_path: String = ""
 
@@ -45,6 +46,7 @@ var pause_overwrite_confirm_slot := -1
 var pause_last_slot_press_slot := -1
 var pause_last_slot_press_msec := 0
 var was_player_movable_before_menu := true
+var last_pointer_advance_msec := 0
 
 func _ready() -> void:
 	_validate_world_nodes()
@@ -83,17 +85,40 @@ func _input(event: InputEvent) -> void:
 	if pause_slot_modal and pause_slot_modal.visible:
 		return
 
+	if is_dialog_advance_event(event):
+		advance_active_dialog()
+
+func is_dialog_advance_event(event: InputEvent) -> bool:
+	if not dialog_active:
+		return false
 	if event.is_action_pressed("ui_accept") and not event.is_echo():
-		if not dialog_active:
-			return
-		if is_typing:
-			typing_run_id += 1
-			is_typing = false
-			if dialog_text:
-				dialog_text.text = full_text
-			show_next_indicator()
-		else:
-			next_dialog()
+		return true
+	if event is InputEventScreenTouch:
+		var touch_event := event as InputEventScreenTouch
+		return touch_event.pressed and not is_duplicate_pointer_advance()
+	if event is InputEventMouseButton:
+		var mouse_event := event as InputEventMouseButton
+		return mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_LEFT and not is_duplicate_pointer_advance()
+	return false
+
+func is_duplicate_pointer_advance() -> bool:
+	var now := Time.get_ticks_msec()
+	if now - last_pointer_advance_msec <= POINTER_ADVANCE_DEBOUNCE_MS:
+		return true
+	last_pointer_advance_msec = now
+	return false
+
+func advance_active_dialog() -> void:
+	if not dialog_active:
+		return
+	if is_typing:
+		typing_run_id += 1
+		is_typing = false
+		if dialog_text:
+			dialog_text.text = full_text
+		show_next_indicator()
+	else:
+		next_dialog()
 
 func _validate_world_nodes() -> void:
 	if not player:

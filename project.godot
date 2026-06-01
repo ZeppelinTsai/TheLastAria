@@ -23,6 +23,13 @@ CharacterVisualManager="*res://autoload/CharacterVisualManager.gd"
 GameState="*uid://ftpdcfddxxep"
 SceneTransition="*uid://ocbbo2bq52ih"
 
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
+
 [gui]
 
 theme/custom="res://theme/default_theme.tres"
