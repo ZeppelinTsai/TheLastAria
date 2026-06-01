@@ -38,6 +38,7 @@ const LUMI_FOLLOW_STOP_DISTANCE = 18.0
 const LUMI_FOLLOW_DRIFT_DISTANCE = 7.0
 const LUMI_FOLLOW_DRIFT_SPEED = 2.2
 const PROLOGUE_DIALOGUE_PATH = "res://data/dialogues/prologue.json"
+const POINTER_ADVANCE_DEBOUNCE_MS = 180
 var dialogue_sets = {}
 var active_dialogue_id = ""
 var current_index = 0
@@ -62,6 +63,7 @@ var pause_overwrite_confirm_slot := -1
 var pause_last_slot_press_slot := -1
 var pause_last_slot_press_msec := 0
 var was_player_movable_before_menu = true
+var last_pointer_advance_msec := 0
 
 func _ready():
 	pass
@@ -132,13 +134,41 @@ func _input(event):
 		if not dialog_active:
 			if can_talk_to_lumi:
 				start_dialog("lumi_intro")
-		elif is_typing:
-			typing_run_id += 1
-			is_typing = false
-			dialog_text.text = full_text
-			show_next_indicator()
-		else:
-			next_dialog()
+			return
+
+	if is_dialog_advance_event(event):
+		advance_active_dialog()
+
+func is_dialog_advance_event(event: InputEvent) -> bool:
+	if not dialog_active:
+		return false
+	if event.is_action_pressed("ui_accept") and not event.is_echo():
+		return true
+	if event is InputEventScreenTouch:
+		var touch_event := event as InputEventScreenTouch
+		return touch_event.pressed and not is_duplicate_pointer_advance()
+	if event is InputEventMouseButton:
+		var mouse_event := event as InputEventMouseButton
+		return mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_LEFT and not is_duplicate_pointer_advance()
+	return false
+
+func is_duplicate_pointer_advance() -> bool:
+	var now := Time.get_ticks_msec()
+	if now - last_pointer_advance_msec <= POINTER_ADVANCE_DEBOUNCE_MS:
+		return true
+	last_pointer_advance_msec = now
+	return false
+
+func advance_active_dialog() -> void:
+	if not dialog_active:
+		return
+	if is_typing:
+		typing_run_id += 1
+		is_typing = false
+		dialog_text.text = full_text
+		show_next_indicator()
+	else:
+		next_dialog()
 
 func load_dialogue_sets():
 	var file = FileAccess.open(PROLOGUE_DIALOGUE_PATH, FileAccess.READ)
