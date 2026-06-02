@@ -47,13 +47,13 @@ func build_menu() -> void:
 	menu.custom_minimum_size = Vector2(380, 0)
 	menu.alignment = BoxContainer.ALIGNMENT_CENTER
 	menu.add_theme_constant_override("separation", 10)
-	menu.anchor_left = 0.08
+	menu.anchor_left = 0.5
 	menu.anchor_top = 0.52
-	menu.anchor_right = 0.08
+	menu.anchor_right = 0.5
 	menu.anchor_bottom = 0.52
-	menu.offset_left = 0
+	menu.offset_left = -190
 	menu.offset_top = -120
-	menu.offset_right = 380
+	menu.offset_right = 190
 	menu.offset_bottom = 120
 	add_child(menu)
 

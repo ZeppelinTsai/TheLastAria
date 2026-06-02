@@ -148,6 +148,8 @@ map_data_path = "res://data/maps/sunken_city.json"
 
 [node name="Background" type="Sprite2D" parent="." unique_id=38697303]
 texture = ExtResource("2_d8xo5")
+centered = false
+offset = Vector2(0, 0)
 
 [node name="EventRoot" type="Node2D" parent="." unique_id=1349173413]
 

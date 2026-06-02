@@ -194,9 +194,33 @@ func apply_background_from_map_data(data: Dictionary) -> void:
 	if background_node is Sprite2D:
 		var sprite_background: Sprite2D = background_node as Sprite2D
 		sprite_background.texture = texture
+		fit_sprite_background_to_viewport(sprite_background)
 	elif background_node is TextureRect:
 		var texture_background: TextureRect = background_node as TextureRect
 		texture_background.texture = texture
+		texture_background.set_anchors_preset(Control.PRESET_FULL_RECT, false)
+		texture_background.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+		texture_background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+
+func fit_sprite_background_to_viewport(sprite_background: Sprite2D) -> void:
+	if not sprite_background or not sprite_background.texture:
+		return
+
+	var texture_size := sprite_background.texture.get_size()
+	if texture_size.x <= 0.0 or texture_size.y <= 0.0:
+		return
+
+	var viewport_size := get_viewport().get_visible_rect().size
+	var scale_factor := maxf(viewport_size.x / texture_size.x, viewport_size.y / texture_size.y)
+	var target_size := texture_size * scale_factor
+	var camera := get_viewport().get_camera_2d()
+	var screen_center := viewport_size * 0.5
+	if camera:
+		screen_center = camera.get_screen_center_position()
+	sprite_background.centered = false
+	sprite_background.offset = Vector2.ZERO
+	sprite_background.scale = Vector2(scale_factor, scale_factor)
+	sprite_background.global_position = screen_center - target_size * 0.5
 
 func start_dialog(dialogue_id: String) -> void:
 	if not dialogue_sets.has(dialogue_id):
