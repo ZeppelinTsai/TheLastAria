@@ -85,6 +85,7 @@ func _ready():
 	if lumi:
 		lumi_prev_position = lumi.global_position
 		play_lumi_idle()
+		_ensure_lumi_spriteframes()
 
 func _physics_process(delta):
 	update_lumi_follow(delta)
@@ -867,6 +868,82 @@ func _update_lumi_animation(movement: Vector2, delta: float) -> void:
 		else:
 			# fallback to idle or default animation
 			play_lumi_idle()
+
+func _ensure_lumi_spriteframes() -> void:
+	if not lumi:
+		return
+	var sprite_node := lumi.get_node_or_null("AnimatedSprite2D")
+	if not sprite_node:
+		return
+	var sf := sprite_node.sprite_frames
+	var need_build := false
+	if not sf or not (sf is SpriteFrames):
+		need_build = true
+	else:
+		# ensure required animations exist
+		for name in ["walk_up", "walk_down", "walk_left", "walk_right", "idle_down"]:
+			if not sf.has_animation(name):
+				need_build = true
+				break
+
+	if not need_build:
+		return
+
+	var new_sf := SpriteFrames.new()
+	func load_frames(range_arr):
+		var texs := []
+		for i in range_arr:
+			var path = "res://img/sprite/lumi/default/Layer %d.png" % i
+			var t = load(path)
+			if t:
+				texs.append(t)
+		return texs
+
+	# mapping based on asset naming: 2-4 up, 5-7 down, 8-10 right, 11-13 left
+	var up = load_frames([2,3,4])
+	var down = load_frames([5,6,7])
+	var right = load_frames([8,9,10])
+	var left = load_frames([11,12,13])
+
+	if down.size() > 0:
+		new_sf.add_animation("idle_down")
+		for t in down:
+			new_sf.add_frame("idle_down", t)
+		new_sf.set_animation_speed("idle_down", 5.0)
+		new_sf.set_animation_loop("idle_down", true)
+
+	if down.size() > 0:
+		new_sf.add_animation("walk_down")
+		for t in down:
+			new_sf.add_frame("walk_down", t)
+		new_sf.set_animation_speed("walk_down", 8.0)
+		new_sf.set_animation_loop("walk_down", true)
+
+	if up.size() > 0:
+		new_sf.add_animation("walk_up")
+		for t in up:
+			new_sf.add_frame("walk_up", t)
+		new_sf.set_animation_speed("walk_up", 8.0)
+		new_sf.set_animation_loop("walk_up", true)
+
+	if right.size() > 0:
+		new_sf.add_animation("walk_right")
+		for t in right:
+			new_sf.add_frame("walk_right", t)
+		new_sf.set_animation_speed("walk_right", 8.0)
+		new_sf.set_animation_loop("walk_right", true)
+
+	if left.size() > 0:
+		new_sf.add_animation("walk_left")
+		for t in left:
+			new_sf.add_frame("walk_left", t)
+		new_sf.set_animation_speed("walk_left", 8.0)
+		new_sf.set_animation_loop("walk_left", true)
+
+	# assign
+	sprite_node.sprite_frames = new_sf
+	# ensure default idle
+	sprite_node.animation = "idle_down" if new_sf.has_animation("idle_down") else sprite_node.animation
 
 func setup_pause_menu() -> void:
 	var layer = CanvasLayer.new()
