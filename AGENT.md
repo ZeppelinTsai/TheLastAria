@@ -211,6 +211,11 @@ Scenes should reference:
 
 Never hardcode dialogue into scene scripts.
 
+Dialogue standee placement, multi-character staging, per-line overrides,
+and debug controls are documented in:
+
+docs/dialog_standee.md
+
 ---
 
 # Event Design

@@ -77,6 +77,7 @@ var dialog_debug_frame: ColorRect
 var dialog_debug_speaker_id := ""
 var dialog_debug_expression := ""
 var dialog_debug_small_preview := false
+var dialog_standee_nodes := {}
 
 func _ready():
 	pass
@@ -249,10 +250,7 @@ func show_dialog(index):
 	speaker_name.text = CharacterVisualManager.get_display_name(speaker_id)
 	full_text = d["text"]
 	dialog_text.text = ""
-	var standee = CharacterVisualManager.get_dialog_standee(speaker_id, expression)
-	speaker_avatar.texture = standee
-	speaker_avatar.visible = standee != null
-	configure_dialog_standee(speaker_id)
+	show_dialog_standees(d, speaker_id, expression)
 	is_typing = true
 	typing_run_id += 1
 	var run_id = typing_run_id
@@ -304,7 +302,7 @@ func end_dialog():
 		SaveManager.autosave(true)
 		dialog_active = false
 		dialog_box.visible = false
-		speaker_avatar.visible = false
+		hide_dialog_standees()
 		hide_next_indicator()
 		active_dialogue_id = ""
 		show_orion_choice()
@@ -317,7 +315,7 @@ func end_dialog():
 
 	dialog_active = false
 	dialog_box.visible = false
-	speaker_avatar.visible = false
+	hide_dialog_standees()
 	hide_next_indicator()
 	active_dialogue_id = ""
 
@@ -504,16 +502,86 @@ func hide_next_indicator():
 	next_indicator_arrow.position = next_indicator_arrow_base_position
 	next_indicator_arrow.modulate.a = 1.0
 
-func configure_dialog_standee(speaker_id: String) -> void:
-	if not speaker_avatar or not dialog_box:
+func show_dialog_standees(entry: Dictionary, speaker_id: String, expression: String) -> void:
+	hide_dialog_standees()
+
+	var standee_entries: Array = []
+	if entry.has("standees") and typeof(entry["standees"]) == TYPE_ARRAY:
+		standee_entries = entry["standees"]
+
+	var speaker_in_stage := false
+	for item in standee_entries:
+		if typeof(item) != TYPE_DICTIONARY:
+			continue
+		var item_character := str(item.get("character", item.get("speaker", "")))
+		if item_character == speaker_id:
+			speaker_in_stage = true
+			break
+
+	if standee_entries.is_empty() and speaker_id != "":
+		standee_entries.append({
+			"character": speaker_id,
+			"expression": expression,
+			"layout": entry.get("standee", {})
+		})
+	elif not speaker_in_stage and speaker_id != "":
+		standee_entries.append({
+			"character": speaker_id,
+			"expression": expression,
+			"layout": entry.get("standee", {})
+		})
+
+	for item in standee_entries:
+		if typeof(item) != TYPE_DICTIONARY:
+			continue
+		var item_character := str(item.get("character", item.get("speaker", "")))
+		if item_character == "":
+			continue
+		var item_expression := str(item.get("expression", expression))
+		var overrides := {}
+		if item.has("layout") and typeof(item["layout"]) == TYPE_DICTIONARY:
+			overrides = item["layout"]
+		else:
+			overrides = item.duplicate(true)
+		var node := get_dialog_standee_node(item_character)
+		var texture := CharacterVisualManager.get_dialog_standee(item_character, item_expression)
+		node.texture = texture
+		node.visible = texture != null
+		var layout := CharacterVisualManager.get_dialog_standee_layout(item_character, overrides)
+		configure_dialog_standee_node(node, layout, item_character == speaker_id)
+		if item_character == speaker_id:
+			speaker_avatar = node
+			update_dialog_debug_overlay(item_character, layout)
+
+func get_dialog_standee_node(character_id: String) -> TextureRect:
+	if dialog_standee_nodes.has(character_id):
+		return dialog_standee_nodes[character_id]
+
+	var node: TextureRect
+	if dialog_standee_nodes.is_empty() and speaker_avatar:
+		node = speaker_avatar
+	else:
+		node = TextureRect.new()
+		node.name = "Standee_%s" % character_id
+		dialog_box.add_child(node)
+
+	dialog_standee_nodes[character_id] = node
+	return node
+
+func hide_dialog_standees() -> void:
+	for node in dialog_standee_nodes.values():
+		if node:
+			node.visible = false
+
+func configure_dialog_standee_node(standee_node: TextureRect, layout: Dictionary, is_speaking: bool) -> void:
+	if not standee_node or not dialog_box:
 		return
 
-	var layout := CharacterVisualManager.get_dialog_standee_layout(speaker_id)
 	var viewport_size := get_dialog_debug_layout_size()
 	var dialog_height: float = dialog_box.size.y
 	if dialog_height <= 0.0:
 		dialog_height = 262.0
-	var texture: Texture2D = speaker_avatar.texture
+	var texture: Texture2D = standee_node.texture
 	var aspect: float = DIALOG_STANDEE_DEFAULT_ASPECT
 	if texture and texture.get_height() > 0:
 		aspect = float(texture.get_width()) / float(texture.get_height())
@@ -548,20 +616,19 @@ func configure_dialog_standee(speaker_id: String) -> void:
 		bottom_offset = viewport_size.y * bottom_ratio
 	var bottom: float = dialog_height - bottom_offset
 
-	speaker_avatar.set_anchors_preset(Control.PRESET_BOTTOM_LEFT, false)
-	speaker_avatar.offset_left = left
-	speaker_avatar.offset_top = bottom - target_height
-	speaker_avatar.offset_right = left + target_width
-	speaker_avatar.offset_bottom = bottom
-	speaker_avatar.grow_horizontal = Control.GROW_DIRECTION_END
-	speaker_avatar.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	speaker_avatar.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	speaker_avatar.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
-	speaker_avatar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	speaker_avatar.focus_mode = Control.FOCUS_NONE
-	speaker_avatar.z_index = -1
-	dialog_box.move_child(speaker_avatar, 0)
-	update_dialog_debug_overlay(speaker_id, layout)
+	standee_node.set_anchors_preset(Control.PRESET_BOTTOM_LEFT, false)
+	standee_node.offset_left = left
+	standee_node.offset_top = bottom - target_height
+	standee_node.offset_right = left + target_width
+	standee_node.offset_bottom = bottom
+	standee_node.grow_horizontal = Control.GROW_DIRECTION_END
+	standee_node.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	standee_node.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	standee_node.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
+	standee_node.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	standee_node.focus_mode = Control.FOCUS_NONE
+	standee_node.z_index = (-1 if is_speaking else -3) + int(layout.get("z_offset", 0))
+	dialog_box.move_child(standee_node, 0)
 
 func configure_dialog_text_style() -> void:
 	if not dialog_box:
@@ -619,7 +686,9 @@ func toggle_dialog_debug_window_size() -> void:
 	update_dialog_debug_preview_frame()
 	configure_dialog_text_style()
 	if dialog_debug_speaker_id != "":
-		configure_dialog_standee(dialog_debug_speaker_id)
+		var layout := CharacterVisualManager.get_dialog_standee_layout(dialog_debug_speaker_id)
+		configure_dialog_standee_node(speaker_avatar, layout, true)
+		update_dialog_debug_overlay(dialog_debug_speaker_id, layout)
 
 func get_dialog_debug_layout_size() -> Vector2:
 	if dialog_debug_visible and dialog_debug_small_preview:

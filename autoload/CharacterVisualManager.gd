@@ -26,9 +26,13 @@ func get_display_name(character_id: String) -> String:
 	var character_data: Dictionary = characters.get(character_id, {})
 	return str(character_data.get("display_name", character_id))
 
-func get_dialog_standee_layout(character_id: String) -> Dictionary:
+func get_dialog_standee_layout(character_id: String, overrides := {}) -> Dictionary:
 	var character_data: Dictionary = characters.get(character_id, {})
-	var layout: Dictionary = character_data.get("dialog_standee", {})
+	var layout: Dictionary = character_data.get("dialog_standee", {}).duplicate(true)
+	if typeof(overrides) == TYPE_DICTIONARY:
+		for key in overrides:
+			layout[key] = overrides[key]
+
 	return {
 		"x": float(layout.get("x", 92.0)),
 		"bottom": float(layout.get("bottom", 46.0)),
@@ -39,7 +43,9 @@ func get_dialog_standee_layout(character_id: String) -> Dictionary:
 		"x_offset_ratio": float(layout.get("x_offset_ratio", 0.0)),
 		"bottom_ratio": float(layout.get("bottom_ratio", 999.0)),
 		"height_ratio": float(layout.get("height_ratio", 0.94)),
-		"scale": float(layout.get("scale", 1.0))
+		"scale": float(layout.get("scale", 1.0)),
+		"z_offset": int(layout.get("z_offset", 0)),
+		"visible": bool(layout.get("visible", true))
 	}
 
 func get_portrait(character_id: String, expression := DEFAULT_EXPRESSION) -> Texture2D:
