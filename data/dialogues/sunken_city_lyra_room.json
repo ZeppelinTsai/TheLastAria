@@ -1,148 +1,175 @@
 {
-  "opening_after_storybook": [
-    {
-      "speaker": "Lumi",
-      "text": "\u4f60\u53c8\u5728\u770b\u90a3\u672c\u66f8\u554a\uff1f",
-      "scene": "atlantis"
-    },
-    {
-      "speaker": "StageDir",
-      "text": "Lyra \u5c07\u66f8\u9801\u8f15\u8f15\u95d4\u4e0a\u3002",
-      "scene": "atlantis"
-    },
-    {
-      "speaker": "Lumi",
-      "text": "\u660e\u660e\u6700\u5f8c\u90fd\u8b8a\u6210\u6ce1\u6ce1\u4e86\uff0c\u70ba\u4ec0\u9ebc\u9084\u7b97 Happy Ending\uff1f",
-      "scene": "atlantis"
-    },
-    {
-      "speaker": "StageDir",
-      "text": "Lyra \u6c92\u6709\u56de\u7b54\uff0c\u53ea\u662f\u5fae\u5fae\u7b11\u4e86\u4e00\u4e0b\u3002",
-      "scene": "atlantis"
-    },
-    {
-      "speaker": "Lumi",
-      "text": "\u4f60\u7b11\u4ec0\u9ebc\u5566\u3002",
-      "scene": "atlantis"
-    },
-    {
-      "speaker": "Lumi",
-      "text": "\u597d\u5427\uff0c\u53cd\u6b63\u4f60\u6bcf\u6b21\u770b\u5b8c\u90fd\u9019\u500b\u8868\u60c5\u3002",
-      "scene": "atlantis"
-    },
-    {
-      "speaker": "Lumi",
-      "text": "\u54a6\uff1f",
-      "scene": "quake",
-      "effect": "shake"
-    },
-    {
-      "speaker": "Lumi",
-      "text": "\u5730\u9707\uff1f\u5feb\uff0c\u6211\u5011\u5f97\u51fa\u53bb\u770b\u770b\uff01",
-      "scene": "quake",
-      "effect": "shake"
-    }
-  ],
-  "movement_tutorial_after_storybook": [
-    {
-      "speaker": "System",
-      "text": "\u64cd\u4f5c\u8aaa\u660e\uff1a\u4f7f\u7528 WASD \u6216\u65b9\u5411\u9375\u79fb\u52d5\uff0c\u4e5f\u53ef\u4ee5\u7528\u6ed1\u9f20\u5de6\u9375\u9ede\u64ca\u5730\u9762\u79fb\u52d5\u3002"
-    },
-    {
-      "speaker": "System",
-      "text": "\u9760\u8fd1\u53ef\u4e92\u52d5\u7684\u5730\u65b9\u6703\u89f8\u767c\u5c0d\u8a71\u3002\u5c0d\u8a71\u4e2d\u53ef\u4ee5\u6309 Enter \u6216\u9ede\u64ca\u6ed1\u9f20\u5de6\u9375\u7e7c\u7e8c\u3002"
-    }
-  ],
-  "storybook_after_reading": [
-    {
-      "speaker": "Lumi",
-      "text": "\u4f60\u53c8\u5728\u770b\u90a3\u672c\u554a\uff1f"
-    },
-    {
-      "speaker": "Lumi",
-      "text": "\u660e\u660e\u6700\u5f8c\u8b8a\u6210\u6ce1\u6ce1\u4e86\uff0c\u70ba\u4ec0\u9ebc\u9084\u7b97 Happy Ending\uff1f"
-    },
-    {
-      "speaker": "Lyra",
-      "text": "\u2026\u2026"
-    },
-    {
-      "speaker": "Lumi",
-      "text": "\u4f60\u7b11\u4ec0\u9ebc\u5566\u3002"
-    }
-  ],
-  "storybook_after_reading_again": [
-    {
-      "speaker": "Lumi",
-      "text": "\u4f60\u5df2\u7d93\u628a\u90a3\u9801\u770b\u5230\u6703\u80cc\u4e86\u5427\u3002"
-    },
-    {
-      "speaker": "Lyra",
-      "text": "\u2026\u2026"
-    },
-    {
-      "speaker": "Lumi",
-      "text": "\u597d\u5566\uff0c\u6211\u77e5\u9053\u4f60\u559c\u6b61\u3002"
-    }
-  ],
-  "storybook_after_reading_quiet": [
-    {
-      "speaker": "Lumi",
-      "text": "\u9019\u672c\u66f8\u660e\u660e\u5f88\u820a\uff0c\u4f46\u4f60\u6bcf\u6b21\u770b\u90fd\u5f88\u5b89\u975c\u3002"
-    }
-  ],
-  "window": [
-    {
-      "speaker": "Lumi",
-      "text": "\u5916\u9762\u7684\u6c34\u5149\u4eca\u5929\u5f88\u5b89\u975c\u3002"
-    }
-  ],
-  "window_lights": [
-    {
-      "speaker": "Lumi",
-      "text": "\u9060\u8655\u7684\u71c8\u597d\u50cf\u6bd4\u5e73\u5e38\u6697\u4e00\u9ede\u3002"
-    }
-  ],
-  "window_surface": [
-    {
-      "speaker": "Lumi",
-      "text": "\u4f60\u53c8\u5728\u60f3\u6d77\u9762\u4e0a\u9762\u7684\u4e8b\u55ce\uff1f"
-    }
-  ],
-  "bookshelf": [
-    {
-      "speaker": "Lumi",
-      "text": "\u9019\u88e1\u5168\u90fd\u662f\u4f60\u53cd\u8986\u770b\u904e\u7684\u66f8\u3002"
-    }
-  ],
-  "bookshelf_notes": [
-    {
-      "speaker": "Lumi",
-      "text": "\u66f8\u9801\u88e1\u593e\u8457\u4f60\u7684\u7b46\u8a18\u3002\u5b57\u9084\u662f\u4e00\u6a23\u5c0f\u3002"
-    }
-  ],
-  "bookshelf_old_story": [
-    {
-      "speaker": "Lumi",
-      "text": "\u7ae5\u8a71\u66f8\u3001\u6b77\u53f2\u66f8\u3001\u9084\u6709\u4e00\u5806\u770b\u8d77\u4f86\u5f88\u96e3\u7684\u66f8\u3002"
-    }
-  ],
-  "bed": [
-    {
-      "speaker": "Lumi",
-      "text": "\u73fe\u5728\u4e0d\u662f\u7761\u56de\u7c60\u89ba\u7684\u6642\u5019\u5427\uff1f"
-    }
-  ],
-  "bed_blanket": [
-    {
-      "speaker": "Lumi",
-      "text": "\u88ab\u5b50\u6298\u5f97\u5f88\u6574\u9f4a\u3002\u771f\u96e3\u5f97\u3002"
-    }
-  ],
-  "bed_morning": [
-    {
-      "speaker": "Lumi",
-      "text": "\u518d\u8eba\u56de\u53bb\u7684\u8a71\uff0c\u6211\u6703\u628a\u4f60\u53eb\u8d77\u4f86\u5594\u3002"
-    }
-  ]
+	"opening_after_storybook": [
+		{
+			"speaker": "Lumi",
+			"text": "你又在看那本書啊？",
+			"scene": "atlantis",
+			"text_key": "sunken_city_lyra_room.opening_after_storybook.001.lumi.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "Lyra 將書頁輕輕闔上。",
+			"scene": "atlantis",
+			"text_key": "sunken_city_lyra_room.opening_after_storybook.002.stagedir.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "明明最後都變成泡泡了，為什麼還算 Happy Ending？",
+			"scene": "atlantis",
+			"text_key": "sunken_city_lyra_room.opening_after_storybook.003.lumi.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "Lyra 沒有回答，只是微微笑了一下。",
+			"scene": "atlantis",
+			"text_key": "sunken_city_lyra_room.opening_after_storybook.004.stagedir.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "你笑什麼啦。",
+			"scene": "atlantis",
+			"text_key": "sunken_city_lyra_room.opening_after_storybook.005.lumi.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "好吧，反正你每次看完都這個表情。",
+			"scene": "atlantis",
+			"text_key": "sunken_city_lyra_room.opening_after_storybook.006.lumi.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "咦？",
+			"scene": "quake",
+			"effect": "shake",
+			"text_key": "sunken_city_lyra_room.opening_after_storybook.007.lumi.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "地震？快，我們得出去看看！",
+			"scene": "quake",
+			"effect": "shake",
+			"text_key": "sunken_city_lyra_room.opening_after_storybook.008.lumi.text"
+		}
+	],
+	"movement_tutorial_after_storybook": [
+		{
+			"speaker": "System",
+			"text": "操作說明：使用 WASD 或方向鍵移動，也可以用滑鼠左鍵點擊地面移動。",
+			"text_key": "sunken_city_lyra_room.movement_tutorial_after_storybook.001.system.text"
+		},
+		{
+			"speaker": "System",
+			"text": "靠近可互動的地方會觸發對話。對話中可以按 Enter 或點擊滑鼠左鍵繼續。",
+			"text_key": "sunken_city_lyra_room.movement_tutorial_after_storybook.002.system.text"
+		}
+	],
+	"storybook_after_reading": [
+		{
+			"speaker": "Lumi",
+			"text": "你又在看那本啊？",
+			"text_key": "sunken_city_lyra_room.storybook_after_reading.001.lumi.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "明明最後變成泡泡了，為什麼還算 Happy Ending？",
+			"text_key": "sunken_city_lyra_room.storybook_after_reading.002.lumi.text"
+		},
+		{
+			"speaker": "Lyra",
+			"text": "……",
+			"text_key": "sunken_city_lyra_room.storybook_after_reading.003.lyra.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "你笑什麼啦。",
+			"text_key": "sunken_city_lyra_room.storybook_after_reading.004.lumi.text"
+		}
+	],
+	"storybook_after_reading_again": [
+		{
+			"speaker": "Lumi",
+			"text": "你已經把那頁看到會背了吧。",
+			"text_key": "sunken_city_lyra_room.storybook_after_reading_again.001.lumi.text"
+		},
+		{
+			"speaker": "Lyra",
+			"text": "……",
+			"text_key": "sunken_city_lyra_room.storybook_after_reading_again.002.lyra.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "好啦，我知道你喜歡。",
+			"text_key": "sunken_city_lyra_room.storybook_after_reading_again.003.lumi.text"
+		}
+	],
+	"storybook_after_reading_quiet": [
+		{
+			"speaker": "Lumi",
+			"text": "這本書明明很舊，但你每次看都很安靜。",
+			"text_key": "sunken_city_lyra_room.storybook_after_reading_quiet.001.lumi.text"
+		}
+	],
+	"window": [
+		{
+			"speaker": "Lumi",
+			"text": "外面的水光今天很安靜。",
+			"text_key": "sunken_city_lyra_room.window.001.lumi.text"
+		}
+	],
+	"window_lights": [
+		{
+			"speaker": "Lumi",
+			"text": "遠處的燈好像比平常暗一點。",
+			"text_key": "sunken_city_lyra_room.window_lights.001.lumi.text"
+		}
+	],
+	"window_surface": [
+		{
+			"speaker": "Lumi",
+			"text": "你又在想海面上面的事嗎？",
+			"text_key": "sunken_city_lyra_room.window_surface.001.lumi.text"
+		}
+	],
+	"bookshelf": [
+		{
+			"speaker": "Lumi",
+			"text": "這裡全都是你反覆看過的書。",
+			"text_key": "sunken_city_lyra_room.bookshelf.001.lumi.text"
+		}
+	],
+	"bookshelf_notes": [
+		{
+			"speaker": "Lumi",
+			"text": "書頁裡夾著你的筆記。字還是一樣小。",
+			"text_key": "sunken_city_lyra_room.bookshelf_notes.001.lumi.text"
+		}
+	],
+	"bookshelf_old_story": [
+		{
+			"speaker": "Lumi",
+			"text": "童話書、歷史書、還有一堆看起來很難的書。",
+			"text_key": "sunken_city_lyra_room.bookshelf_old_story.001.lumi.text"
+		}
+	],
+	"bed": [
+		{
+			"speaker": "Lumi",
+			"text": "現在不是睡回籠覺的時候吧？",
+			"text_key": "sunken_city_lyra_room.bed.001.lumi.text"
+		}
+	],
+	"bed_blanket": [
+		{
+			"speaker": "Lumi",
+			"text": "被子折得很整齊。真難得。",
+			"text_key": "sunken_city_lyra_room.bed_blanket.001.lumi.text"
+		}
+	],
+	"bed_morning": [
+		{
+			"speaker": "Lumi",
+			"text": "再躺回去的話，我會把你叫起來喔。",
+			"text_key": "sunken_city_lyra_room.bed_morning.001.lumi.text"
+		}
+	]
 }

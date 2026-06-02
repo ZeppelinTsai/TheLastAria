@@ -77,6 +77,14 @@ python tools/fill_prologue_english.py
 
 This keeps `data/dialogues/prologue.json` entries wired with `text_key` and fills the curated English strings in `data/localization/dialogues/prologue.json`.
 
+Current Lyra room English bootstrap:
+
+```powershell
+python tools/fill_lyra_room_english.py
+```
+
+This keeps `data/dialogues/sunken_city_lyra_room.json` entries wired with `text_key` and fills the curated English strings in `data/localization/dialogues/sunken_city_lyra_room.json`.
+
 Post-commit hook installation:
 
 ```powershell

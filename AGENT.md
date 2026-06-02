@@ -363,6 +363,8 @@ To extract localization key scaffolds from changed dialogue/script files manuall
 python tools/extract_localization_keys.py --files data/dialogues/prologue.json
 ```
 
+Curated English bootstrap helpers currently include `tools/fill_prologue_english.py` and `tools/fill_lyra_room_english.py`.
+
 To install the local post-commit hook:
 
 ```powershell

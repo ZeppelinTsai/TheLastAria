@@ -14,7 +14,7 @@ var target_position: Vector2
 @onready var anim = $AnimatedSprite2D
 @onready var foot_point: Node2D = get_node_or_null("FootPoint")
 @onready var collision_shape: CollisionShape2D = get_node_or_null("CollisionShape2D")
-@onready var bubble_particles: GPUParticles2D = $BubbleParticles
+@onready var bubble_particles: GPUParticles2D = get_node_or_null("BubbleParticles") as GPUParticles2D
 
 func _ready() -> void:
 	call_deferred("pull_inside_walkable_area")

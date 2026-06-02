@@ -92,9 +92,9 @@ func get_supported_locales() -> Array[String]:
 
 func get_locale_name(locale_id: String) -> String:
 	var locale_texts := get_locale_texts(locale_id)
-	var name := str(locale_texts.get("language_name", ""))
-	if name != "":
-		return name
+	var locale_name := str(locale_texts.get("language_name", ""))
+	if locale_name != "":
+		return locale_name
 	return str(EMPTY_LOCALE_NAMES.get(locale_id, locale_id))
 
 func tr_text(key: String) -> String:
