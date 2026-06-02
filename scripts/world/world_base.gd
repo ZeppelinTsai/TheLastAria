@@ -9,6 +9,11 @@ const SLOT_DOUBLE_PRESS_MS = 450
 const TYPE_DELAY = 0.05
 const POINTER_ADVANCE_DEBOUNCE_MS = 180
 const DIALOG_STANDEE_DEFAULT_ASPECT = 2.0 / 3.0
+const DIALOG_TEXT_MIN_FONT_SIZE = 28
+const DIALOG_TEXT_MAX_FONT_SIZE = 38
+const DIALOG_NAME_MIN_FONT_SIZE = 22
+const DIALOG_NAME_MAX_FONT_SIZE = 30
+const DIALOG_DEBUG_SMALL_WINDOW_SIZE = Vector2i(640, 360)
 
 @export var dialogue_path: String = ""
 
@@ -48,11 +53,19 @@ var pause_last_slot_press_slot := -1
 var pause_last_slot_press_msec := 0
 var was_player_movable_before_menu := true
 var last_pointer_advance_msec := 0
+var dialog_debug_visible := false
+var dialog_debug_layer: CanvasLayer
+var dialog_debug_label: Label
+var dialog_debug_frame: ColorRect
+var dialog_debug_speaker_id := ""
+var dialog_debug_expression := ""
+var dialog_debug_small_preview := false
 
 func _ready() -> void:
 	_validate_world_nodes()
 	if dialog_box:
 		dialog_box.visible = false
+	configure_dialog_text_style()
 	if next_indicator_arrow:
 		next_indicator_arrow_base_position = next_indicator_arrow.position
 	hide_next_indicator()
@@ -72,6 +85,17 @@ func _exit_tree() -> void:
 		SaveManager.unregister_player(player)
 
 func _input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		var key_event := event as InputEventKey
+		if key_event.pressed and not key_event.echo and key_event.keycode == KEY_F3:
+			toggle_dialog_debug_overlay()
+			get_viewport().set_input_as_handled()
+			return
+		if key_event.pressed and not key_event.echo and key_event.keycode == KEY_TAB and dialog_debug_visible:
+			toggle_dialog_debug_window_size()
+			get_viewport().set_input_as_handled()
+			return
+
 	if event.is_action_pressed("ui_cancel") and not event.is_echo():
 		if dialog_active:
 			return
@@ -89,14 +113,28 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept") and not event.is_echo():
 		if not dialog_active:
 			return
-		if is_typing:
-			typing_run_id += 1
-			is_typing = false
-			if dialog_text:
-				dialog_text.text = full_text
-			show_next_indicator()
-		else:
-			next_dialog()
+		_advance_active_dialog()
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not dialog_active:
+		return
+	if event is InputEventMouseButton:
+		var mouse_event := event as InputEventMouseButton
+		if mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_LEFT:
+			get_viewport().set_input_as_handled()
+			_advance_active_dialog()
+
+func _advance_active_dialog() -> void:
+	if is_typing:
+		typing_run_id += 1
+		is_typing = false
+		if dialog_text:
+			dialog_text.text = full_text
+		if type_sound:
+			type_sound.stop()
+		show_next_indicator()
+	else:
+		next_dialog()
 
 func _validate_world_nodes() -> void:
 	if not player:
@@ -188,8 +226,11 @@ func show_dialog(index: int) -> void:
 
 	var speaker_id = str(entry.get("speaker", ""))
 	var expression = str(entry.get("expression", "default"))
+	dialog_debug_speaker_id = speaker_id
+	dialog_debug_expression = expression
 	if str(entry.get("effect", "")) == "shake":
 		shake_scene()
+	configure_dialog_text_style()
 	if speaker_name:
 		speaker_name.text = CharacterVisualManager.get_display_name(speaker_id)
 
@@ -213,7 +254,7 @@ func configure_dialog_standee(speaker_id: String) -> void:
 		return
 
 	var layout := CharacterVisualManager.get_dialog_standee_layout(speaker_id)
-	var viewport_size := get_viewport_rect().size
+	var viewport_size := get_dialog_debug_layout_size()
 	var dialog_height: float = dialog_box.size.y
 	if dialog_height <= 0.0:
 		dialog_height = 262.0
@@ -224,8 +265,33 @@ func configure_dialog_standee(speaker_id: String) -> void:
 
 	var target_height: float = viewport_size.y * float(layout["height_ratio"]) * float(layout["scale"])
 	var target_width: float = target_height * aspect
+	var position := str(layout["position"])
+	var x_ratio: float = float(layout["x_ratio"])
+	var x_anchor: float = float(layout["x_anchor"])
+	var bottom_ratio: float = float(layout["bottom_ratio"])
 	var left: float = float(layout["x"])
-	var bottom: float = dialog_height - float(layout["bottom"])
+	var bottom_offset: float = float(layout["bottom"])
+	if position != "":
+		match position:
+			"left":
+				x_ratio = 0.0
+				x_anchor = 0.0
+			"center":
+				x_ratio = 0.5
+				x_anchor = 0.5
+			"right":
+				x_ratio = 1.0
+				x_anchor = 1.0
+			_:
+				push_warning("Unknown dialog standee position: %s" % position)
+	if x_ratio >= 0.0:
+		if x_anchor < 0.0:
+			x_anchor = 0.0
+		left = (viewport_size.x * x_ratio) - (target_width * x_anchor)
+	left += float(layout["x_offset"]) + viewport_size.x * float(layout["x_offset_ratio"])
+	if bottom_ratio != 999.0:
+		bottom_offset = viewport_size.y * bottom_ratio
+	var bottom: float = dialog_height - bottom_offset
 
 	speaker_avatar.set_anchors_preset(Control.PRESET_BOTTOM_LEFT, false)
 	speaker_avatar.offset_left = left
@@ -237,8 +303,177 @@ func configure_dialog_standee(speaker_id: String) -> void:
 	speaker_avatar.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	speaker_avatar.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
 	speaker_avatar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	speaker_avatar.z_index = 20
-	dialog_box.move_child(speaker_avatar, dialog_box.get_child_count() - 1)
+	speaker_avatar.focus_mode = Control.FOCUS_NONE
+	speaker_avatar.z_index = -1
+	dialog_box.move_child(speaker_avatar, 0)
+	update_dialog_debug_overlay(speaker_id, layout)
+
+func configure_dialog_text_style() -> void:
+	if not dialog_box:
+		return
+
+	var viewport_size := get_dialog_debug_layout_size()
+	var dialog_height: float = dialog_box.size.y
+	if dialog_height <= 0.0:
+		dialog_height = 262.0
+
+	var text_font_size := int(round(clampf(viewport_size.y * 0.048, DIALOG_TEXT_MIN_FONT_SIZE, DIALOG_TEXT_MAX_FONT_SIZE)))
+	var name_font_size := int(round(clampf(viewport_size.y * 0.037, DIALOG_NAME_MIN_FONT_SIZE, DIALOG_NAME_MAX_FONT_SIZE)))
+	var content_left: float = maxf(300.0, viewport_size.x * 0.30)
+	var content_right: float = 46.0
+	var name_top: float = maxf(16.0, dialog_height * 0.08)
+	var text_top: float = maxf(62.0, dialog_height * 0.25)
+	var text_bottom: float = 34.0
+
+	if speaker_name:
+		speaker_name.set_anchors_preset(Control.PRESET_TOP_LEFT, false)
+		speaker_name.offset_left = content_left
+		speaker_name.offset_top = name_top
+		speaker_name.offset_right = viewport_size.x - content_right
+		speaker_name.offset_bottom = name_top + float(name_font_size + 12)
+		speaker_name.add_theme_font_size_override("font_size", name_font_size)
+		speaker_name.add_theme_color_override("font_color", Color(0.92, 0.96, 1.0, 1.0))
+		speaker_name.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.9))
+		speaker_name.add_theme_constant_override("shadow_offset_x", 2)
+		speaker_name.add_theme_constant_override("shadow_offset_y", 2)
+		speaker_name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+
+	if dialog_text:
+		dialog_text.set_anchors_preset(Control.PRESET_TOP_LEFT, false)
+		dialog_text.offset_left = content_left
+		dialog_text.offset_top = text_top
+		dialog_text.offset_right = viewport_size.x - content_right
+		dialog_text.offset_bottom = dialog_height - text_bottom
+		dialog_text.add_theme_font_size_override("font_size", text_font_size)
+		dialog_text.add_theme_color_override("font_color", Color(0.96, 0.98, 1.0, 1.0))
+		dialog_text.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.95))
+		dialog_text.add_theme_constant_override("shadow_offset_x", 2)
+		dialog_text.add_theme_constant_override("shadow_offset_y", 2)
+		dialog_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		dialog_text.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+
+func toggle_dialog_debug_overlay() -> void:
+	dialog_debug_visible = not dialog_debug_visible
+	ensure_dialog_debug_overlay()
+	if dialog_debug_layer:
+		dialog_debug_layer.visible = dialog_debug_visible
+	update_dialog_debug_overlay(dialog_debug_speaker_id, CharacterVisualManager.get_dialog_standee_layout(dialog_debug_speaker_id))
+
+func toggle_dialog_debug_window_size() -> void:
+	dialog_debug_small_preview = not dialog_debug_small_preview
+	update_dialog_debug_preview_frame()
+	configure_dialog_text_style()
+	if dialog_debug_speaker_id != "":
+		configure_dialog_standee(dialog_debug_speaker_id)
+
+func get_dialog_debug_layout_size() -> Vector2:
+	if dialog_debug_visible and dialog_debug_small_preview:
+		return Vector2(DIALOG_DEBUG_SMALL_WINDOW_SIZE)
+	return get_viewport_rect().size
+
+func ensure_dialog_debug_overlay() -> void:
+	if dialog_debug_layer:
+		return
+
+	dialog_debug_layer = CanvasLayer.new()
+	dialog_debug_layer.name = "DialogDebugLayer"
+	dialog_debug_layer.layer = 100
+	add_child(dialog_debug_layer)
+
+	dialog_debug_frame = ColorRect.new()
+	dialog_debug_frame.name = "SmallPreviewFrame"
+	dialog_debug_frame.color = Color(0.2, 0.75, 1.0, 0.16)
+	dialog_debug_frame.visible = false
+	dialog_debug_layer.add_child(dialog_debug_frame)
+
+	var panel := PanelContainer.new()
+	panel.name = "DialogDebugPanel"
+	panel.anchor_left = 0.0
+	panel.anchor_top = 0.0
+	panel.anchor_right = 0.0
+	panel.anchor_bottom = 0.0
+	panel.offset_left = 12.0
+	panel.offset_top = 12.0
+	panel.offset_right = 430.0
+	panel.offset_bottom = 210.0
+	dialog_debug_layer.add_child(panel)
+
+	dialog_debug_label = Label.new()
+	dialog_debug_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	dialog_debug_label.add_theme_font_size_override("font_size", 13)
+	dialog_debug_label.add_theme_color_override("font_color", Color(0.86, 0.96, 1.0, 1.0))
+	panel.add_child(dialog_debug_label)
+	dialog_debug_layer.visible = dialog_debug_visible
+	update_dialog_debug_preview_frame()
+
+func update_dialog_debug_preview_frame() -> void:
+	if not dialog_debug_frame:
+		return
+	dialog_debug_frame.visible = dialog_debug_visible and dialog_debug_small_preview
+	if not dialog_debug_frame.visible:
+		return
+	var preview_size := Vector2(DIALOG_DEBUG_SMALL_WINDOW_SIZE)
+	dialog_debug_frame.set_anchors_preset(Control.PRESET_TOP_LEFT, false)
+	dialog_debug_frame.offset_left = 0.0
+	dialog_debug_frame.offset_top = 0.0
+	dialog_debug_frame.offset_right = preview_size.x
+	dialog_debug_frame.offset_bottom = preview_size.y
+
+func update_dialog_debug_overlay(speaker_id: String, layout: Dictionary) -> void:
+	if not dialog_debug_visible:
+		return
+	ensure_dialog_debug_overlay()
+	if not dialog_debug_label:
+		return
+
+	var texture: Texture2D = null
+	var texture_path := ""
+	var texture_size := Vector2i.ZERO
+	var avatar_rect := Rect2()
+	var avatar_parent := ""
+	var avatar_z := 0
+	var avatar_child_index := -1
+	var avatar_visible := false
+	if speaker_avatar:
+		texture = speaker_avatar.texture
+		avatar_rect = speaker_avatar.get_global_rect()
+		avatar_z = speaker_avatar.z_index
+		avatar_child_index = speaker_avatar.get_index()
+		avatar_visible = speaker_avatar.visible
+		if speaker_avatar.get_parent():
+			avatar_parent = speaker_avatar.get_parent().name
+	if texture:
+		texture_path = texture.resource_path
+		texture_size = Vector2i(texture.get_width(), texture.get_height())
+
+	var preview_label := "window"
+	if dialog_debug_small_preview:
+		preview_label = "640x360"
+	var debug_lines := PackedStringArray([
+		"Dialog Standee Debug (F3)  Tab=%s" % preview_label,
+		"speaker=%s expression=%s active=%s" % [speaker_id, dialog_debug_expression, str(dialog_active)],
+		"texture=%s" % texture_path,
+		"texture_size=%s visible=%s" % [str(texture_size), str(avatar_visible)],
+		"rect pos=%s size=%s" % [str(avatar_rect.position), str(avatar_rect.size)],
+		"parent=%s z_index=%d child_index=%d" % [avatar_parent, avatar_z, avatar_child_index],
+		"layout position=%s x=%.1f x_ratio=%.3f x_anchor=%.2f" % [
+			str(layout.get("position", "")),
+			float(layout.get("x", 0.0)),
+			float(layout.get("x_ratio", -1.0)),
+			float(layout.get("x_anchor", -1.0)),
+		],
+		"layout x_offset=%.1f x_offset_ratio=%.3f bottom=%.1f bottom_ratio=%.3f" % [
+			float(layout.get("x_offset", 0.0)),
+			float(layout.get("x_offset_ratio", 0.0)),
+			float(layout.get("bottom", 0.0)),
+			float(layout.get("bottom_ratio", 999.0)),
+		],
+		"layout height_ratio=%.2f scale=%.2f" % [
+			float(layout.get("height_ratio", 0.0)),
+			float(layout.get("scale", 0.0)),
+		],
+	])
+	dialog_debug_label.text = "\n".join(debug_lines)
 
 func type_text(text: String, run_id: int) -> void:
 	for i in range(text.length()):

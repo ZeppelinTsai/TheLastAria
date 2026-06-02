@@ -32,6 +32,12 @@ func get_dialog_standee_layout(character_id: String) -> Dictionary:
 	return {
 		"x": float(layout.get("x", 92.0)),
 		"bottom": float(layout.get("bottom", 46.0)),
+		"position": str(layout.get("position", "")),
+		"x_ratio": float(layout.get("x_ratio", -1.0)),
+		"x_anchor": float(layout.get("x_anchor", -1.0)),
+		"x_offset": float(layout.get("x_offset", 0.0)),
+		"x_offset_ratio": float(layout.get("x_offset_ratio", 0.0)),
+		"bottom_ratio": float(layout.get("bottom_ratio", 999.0)),
 		"height_ratio": float(layout.get("height_ratio", 0.94)),
 		"scale": float(layout.get("scale", 1.0))
 	}
