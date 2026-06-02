@@ -19,6 +19,8 @@ const DIALOG_NAME_MIN_FONT_SIZE = 22
 const DIALOG_NAME_MAX_FONT_SIZE = 30
 const DIALOG_DEBUG_SMALL_WINDOW_SIZE = Vector2i(640, 360)
 
+
+
 @export var dialogue_path: String = ""
 
 @onready var dialog_box: Control = get_node_or_null("UI/DialogBox")
@@ -78,6 +80,18 @@ var choice_panel: PanelContainer
 var choice_list: VBoxContainer
 var choice_buttons: Array[Button] = []
 var dialog_choice_active := false
+
+
+# Lumi follow system
+const LUMI_FOLLOW_OFFSET = Vector2(-42, -34)
+const LUMI_FOLLOW_SPEED = 165.0
+const LUMI_FOLLOW_STOP_DISTANCE = 18.0
+const LUMI_FOLLOW_DRIFT_DISTANCE = 7.0
+const LUMI_FOLLOW_DRIFT_SPEED = 2.2
+
+var lumi: CharacterBody2D = null
+var lumi_follow_enabled := false
+var lumi_follow_time := 0.0
 
 func _ready() -> void:
 	_validate_world_nodes()
@@ -1333,11 +1347,172 @@ func get_player_can_move() -> bool:
 		return true
 	return bool(player.get("can_move"))
 
+
+func init_lumi_follow() -> void:
+	lumi = get_node_or_null("Lumi")
+	if not lumi:
+		return
+	_ensure_lumi_spriteframes()
+	play_lumi_idle()
+	lumi_follow_enabled = true
+
+func update_lumi_follow(delta: float) -> void:
+	if not lumi_follow_enabled or not lumi or not player:
+		return
+	lumi_follow_time += delta
+	var drift = Vector2(
+		sin(lumi_follow_time * LUMI_FOLLOW_DRIFT_SPEED),
+		cos(lumi_follow_time * LUMI_FOLLOW_DRIFT_SPEED * 0.8)
+	) * LUMI_FOLLOW_DRIFT_DISTANCE
+	var target = player.global_position + LUMI_FOLLOW_OFFSET + drift
+	var distance = lumi.global_position.distance_to(target)
+	if distance <= LUMI_FOLLOW_STOP_DISTANCE:
+		lumi.velocity = Vector2.ZERO
+	else:
+		lumi.velocity = lumi.global_position.direction_to(target) * LUMI_FOLLOW_SPEED
+	lumi.move_and_slide()
+	_update_lumi_animation(lumi.velocity, delta)
+
+func play_lumi_idle() -> void:
+	if not lumi:
+		return
+	for lumi_sprite in lumi.find_children("*", "AnimatedSprite2D", true, false):
+		if not lumi_sprite or not lumi_sprite.sprite_frames:
+			continue
+		var idle_animation = lumi_sprite.animation
+		if not lumi_sprite.sprite_frames.has_animation(idle_animation):
+			if lumi_sprite.sprite_frames.has_animation("idle_down"):
+				idle_animation = "idle_down"
+			elif lumi_sprite.sprite_frames.has_animation("default"):
+				idle_animation = "default"
+			else:
+				continue
+		lumi_sprite.play(idle_animation)
+
+func _update_lumi_animation(movement: Vector2, delta: float) -> void:
+	if not lumi or movement == Vector2.ZERO:
+		play_lumi_idle()
+		return
+
+	var speed := movement.length() / maxf(delta, 0.0001)
+	var moving_threshold := 8.0
+	if speed < moving_threshold:
+		play_lumi_idle()
+		return
+
+	var dx := movement.x
+	var dy := movement.y
+	var anim := "walk_down"
+	if abs(dx) > abs(dy):
+		if dx > 0:
+			anim = "walk_right"
+		else:
+			anim = "walk_left"
+	else:
+		if dy < 0:
+			anim = "walk_up"
+		else:
+			anim = "walk_down"
+
+	for lumi_sprite in lumi.find_children("*", "AnimatedSprite2D", true, false):
+		if not lumi_sprite or not lumi_sprite.sprite_frames:
+			continue
+		if lumi_sprite.sprite_frames.has_animation(anim):
+			lumi_sprite.play(anim)
+		else:
+			play_lumi_idle()
+
+func _ensure_lumi_spriteframes() -> void:
+	if not lumi:
+		return
+	var sprite_node := lumi.get_node_or_null("AnimatedSprite2D")
+	if not sprite_node:
+		return
+	var sf: SpriteFrames = sprite_node.sprite_frames
+	var need_build := false
+	if not sf or not (sf is SpriteFrames):
+		need_build = true
+	else:
+		for name in ["walk_up", "walk_down", "walk_left", "walk_right", "idle_down"]:
+			if not sf.has_animation(name):
+				need_build = true
+				break
+
+	if not need_build:
+		return
+
+	var new_sf := SpriteFrames.new()
+	var up := []
+	for i in [2, 3, 4]:
+		var path = "res://img/sprite/lumi/default/Layer %d.png" % i
+		var t := load(path) as Texture2D
+		if t:
+			up.append(t)
+
+	var down := []
+	for i in [5, 6, 7]:
+		var path = "res://img/sprite/lumi/default/Layer %d.png" % i
+		var t := load(path) as Texture2D
+		if t:
+			down.append(t)
+
+	var right := []
+	for i in [8, 9, 10]:
+		var path = "res://img/sprite/lumi/default/Layer %d.png" % i
+		var t := load(path) as Texture2D
+		if t:
+			right.append(t)
+
+	var left := []
+	for i in [11, 12, 13]:
+		var path = "res://img/sprite/lumi/default/Layer %d.png" % i
+		var t := load(path) as Texture2D
+		if t:
+			left.append(t)
+
+	if down.size() > 0:
+		new_sf.add_animation("idle_down")
+		for t in down:
+			new_sf.add_frame("idle_down", t)
+		new_sf.set_animation_speed("idle_down", 5.0)
+		new_sf.set_animation_loop("idle_down", true)
+
+	if down.size() > 0:
+		new_sf.add_animation("walk_down")
+		for t in down:
+			new_sf.add_frame("walk_down", t)
+		new_sf.set_animation_speed("walk_down", 8.0)
+		new_sf.set_animation_loop("walk_down", true)
+
+	if up.size() > 0:
+		new_sf.add_animation("walk_up")
+		for t in up:
+			new_sf.add_frame("walk_up", t)
+		new_sf.set_animation_speed("walk_up", 8.0)
+		new_sf.set_animation_loop("walk_up", true)
+
+	if right.size() > 0:
+		new_sf.add_animation("walk_right")
+		for t in right:
+			new_sf.add_frame("walk_right", t)
+		new_sf.set_animation_speed("walk_right", 8.0)
+		new_sf.set_animation_loop("walk_right", true)
+
+	if left.size() > 0:
+		new_sf.add_animation("walk_left")
+		for t in left:
+			new_sf.add_frame("walk_left", t)
+		new_sf.set_animation_speed("walk_left", 8.0)
+		new_sf.set_animation_loop("walk_left", true)
+
+	sprite_node.sprite_frames = new_sf
+	sprite_node.animation = "idle_down" if new_sf.has_animation("idle_down") else sprite_node.animation
+
 func on_world_ready() -> void:
 	pass
 
 func on_dialog_finished(_dialogue_id: String) -> void:
 	pass
 
-func on_world_physics_process(_delta: float) -> void:
-	pass
+func on_world_physics_process(delta: float) -> void:
+	update_lumi_follow(delta)
