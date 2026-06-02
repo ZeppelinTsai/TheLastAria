@@ -1,6 +1,12 @@
 {
 	"Lyra": {
 		"display_name": "Lyra",
+		"dialog_standee": {
+			"x": 86,
+			"bottom": -72,
+			"height_ratio": 1.08,
+			"scale": 1.0
+		},
 		"portraits": {
 			"default": "res://img/lyra.png"
 		},
@@ -10,6 +16,12 @@
 	},
 	"Lumi": {
 		"display_name": "Lumi",
+		"dialog_standee": {
+			"x": 700,
+			"bottom": -64,
+			"height_ratio": 0.86,
+			"scale": 1.0
+		},
 		"portraits": {
 			"default": "res://img/lumi.png"
 		},

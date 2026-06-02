@@ -26,11 +26,28 @@ func get_display_name(character_id: String) -> String:
 	var character_data: Dictionary = characters.get(character_id, {})
 	return str(character_data.get("display_name", character_id))
 
+func get_dialog_standee_layout(character_id: String) -> Dictionary:
+	var character_data: Dictionary = characters.get(character_id, {})
+	var layout: Dictionary = character_data.get("dialog_standee", {})
+	return {
+		"x": float(layout.get("x", 92.0)),
+		"bottom": float(layout.get("bottom", 46.0)),
+		"height_ratio": float(layout.get("height_ratio", 0.94)),
+		"scale": float(layout.get("scale", 1.0))
+	}
+
 func get_portrait(character_id: String, expression := DEFAULT_EXPRESSION) -> Texture2D:
 	return get_visual_texture(character_id, "portraits", expression)
 
 func get_bust(character_id: String, expression := DEFAULT_EXPRESSION) -> Texture2D:
 	return get_visual_texture(character_id, "busts", expression)
+
+func get_dialog_standee(character_id: String, expression := DEFAULT_EXPRESSION) -> Texture2D:
+	var bust := get_bust(character_id, expression)
+	if bust:
+		return bust
+
+	return get_portrait(character_id, expression)
 
 func get_visual_texture(character_id: String, visual_group: String, expression := DEFAULT_EXPRESSION) -> Texture2D:
 	var path = get_visual_path(character_id, visual_group, expression)

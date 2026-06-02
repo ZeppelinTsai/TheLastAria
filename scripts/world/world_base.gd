@@ -8,6 +8,7 @@ const NEXT_INDICATOR_DIM_ALPHA = 0.45
 const SLOT_DOUBLE_PRESS_MS = 450
 const TYPE_DELAY = 0.05
 const POINTER_ADVANCE_DEBOUNCE_MS = 180
+const DIALOG_STANDEE_DEFAULT_ASPECT = 2.0 / 3.0
 
 @export var dialogue_path: String = ""
 
@@ -196,15 +197,48 @@ func show_dialog(index: int) -> void:
 	if dialog_text:
 		dialog_text.text = ""
 	if speaker_avatar:
-		var portrait = CharacterVisualManager.get_portrait(speaker_id, expression)
-		speaker_avatar.texture = portrait
-		speaker_avatar.visible = portrait != null
+		var standee = CharacterVisualManager.get_dialog_standee(speaker_id, expression)
+		speaker_avatar.texture = standee
+		speaker_avatar.visible = standee != null
+		configure_dialog_standee(speaker_id)
 
 	is_typing = true
 	typing_run_id += 1
 	var run_id := typing_run_id
 	hide_next_indicator()
 	type_text(full_text, run_id)
+
+func configure_dialog_standee(speaker_id: String) -> void:
+	if not speaker_avatar or not dialog_box:
+		return
+
+	var layout := CharacterVisualManager.get_dialog_standee_layout(speaker_id)
+	var viewport_size := get_viewport_rect().size
+	var dialog_height: float = dialog_box.size.y
+	if dialog_height <= 0.0:
+		dialog_height = 262.0
+	var texture: Texture2D = speaker_avatar.texture
+	var aspect: float = DIALOG_STANDEE_DEFAULT_ASPECT
+	if texture and texture.get_height() > 0:
+		aspect = float(texture.get_width()) / float(texture.get_height())
+
+	var target_height: float = viewport_size.y * float(layout["height_ratio"]) * float(layout["scale"])
+	var target_width: float = target_height * aspect
+	var left: float = float(layout["x"])
+	var bottom: float = dialog_height - float(layout["bottom"])
+
+	speaker_avatar.set_anchors_preset(Control.PRESET_BOTTOM_LEFT, false)
+	speaker_avatar.offset_left = left
+	speaker_avatar.offset_top = bottom - target_height
+	speaker_avatar.offset_right = left + target_width
+	speaker_avatar.offset_bottom = bottom
+	speaker_avatar.grow_horizontal = Control.GROW_DIRECTION_END
+	speaker_avatar.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	speaker_avatar.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	speaker_avatar.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
+	speaker_avatar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	speaker_avatar.z_index = 20
+	dialog_box.move_child(speaker_avatar, dialog_box.get_child_count() - 1)
 
 func type_text(text: String, run_id: int) -> void:
 	for i in range(text.length()):
@@ -243,6 +277,8 @@ func end_dialog() -> void:
 	dialog_active = false
 	if dialog_box:
 		dialog_box.visible = false
+	if speaker_avatar:
+		speaker_avatar.visible = false
 	hide_next_indicator()
 	active_dialogue_id = ""
 	active_dialogs = []

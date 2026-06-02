@@ -39,6 +39,7 @@ const LUMI_FOLLOW_DRIFT_DISTANCE = 7.0
 const LUMI_FOLLOW_DRIFT_SPEED = 2.2
 const PROLOGUE_DIALOGUE_PATH = "res://data/dialogues/prologue.json"
 const POINTER_ADVANCE_DEBOUNCE_MS = 180
+const DIALOG_STANDEE_DEFAULT_ASPECT = 2.0 / 3.0
 var dialogue_sets = {}
 var active_dialogue_id = ""
 var current_index = 0
@@ -134,13 +135,39 @@ func _input(event):
 		if not dialog_active:
 			if event.is_action_pressed("ui_accept") and not event.is_echo() and can_talk_to_lumi:
 				start_dialog("lumi_intro")
-		elif is_typing:
-			typing_run_id += 1
-			is_typing = false
-			dialog_text.text = full_text
-			show_next_indicator()
-		else:
-			next_dialog()
+			return
+
+		get_viewport().set_input_as_handled()
+		_advance_active_dialog()
+
+func _is_dialog_advance_event(event: InputEvent) -> bool:
+	if event.is_action_pressed("ui_accept") and not event.is_echo():
+		return true
+
+	if event is InputEventMouseButton:
+		var mouse_event := event as InputEventMouseButton
+		if not mouse_event.pressed or mouse_event.button_index != MOUSE_BUTTON_LEFT:
+			return false
+
+		var now := Time.get_ticks_msec()
+		if now - last_pointer_advance_msec < POINTER_ADVANCE_DEBOUNCE_MS:
+			return false
+
+		last_pointer_advance_msec = now
+		return true
+
+	return false
+
+func _advance_active_dialog() -> void:
+	if is_typing:
+		typing_run_id += 1
+		is_typing = false
+		dialog_text.text = full_text
+		if type_sound:
+			type_sound.stop()
+		show_next_indicator()
+	else:
+		next_dialog()
 
 func load_dialogue_sets():
 	var file = FileAccess.open(PROLOGUE_DIALOGUE_PATH, FileAccess.READ)
@@ -187,9 +214,10 @@ func show_dialog(index):
 	speaker_name.text = CharacterVisualManager.get_display_name(speaker_id)
 	full_text = d["text"]
 	dialog_text.text = ""
-	var portrait = CharacterVisualManager.get_portrait(speaker_id, expression)
-	speaker_avatar.texture = portrait
-	speaker_avatar.visible = portrait != null
+	var standee = CharacterVisualManager.get_dialog_standee(speaker_id, expression)
+	speaker_avatar.texture = standee
+	speaker_avatar.visible = standee != null
+	configure_dialog_standee(speaker_id)
 	is_typing = true
 	typing_run_id += 1
 	var run_id = typing_run_id
@@ -241,6 +269,7 @@ func end_dialog():
 		SaveManager.autosave(true)
 		dialog_active = false
 		dialog_box.visible = false
+		speaker_avatar.visible = false
 		hide_next_indicator()
 		active_dialogue_id = ""
 		show_orion_choice()
@@ -253,6 +282,7 @@ func end_dialog():
 
 	dialog_active = false
 	dialog_box.visible = false
+	speaker_avatar.visible = false
 	hide_next_indicator()
 	active_dialogue_id = ""
 
@@ -438,6 +468,38 @@ func hide_next_indicator():
 	next_indicator.visible = false
 	next_indicator_arrow.position = next_indicator_arrow_base_position
 	next_indicator_arrow.modulate.a = 1.0
+
+func configure_dialog_standee(speaker_id: String) -> void:
+	if not speaker_avatar or not dialog_box:
+		return
+
+	var layout := CharacterVisualManager.get_dialog_standee_layout(speaker_id)
+	var viewport_size := get_viewport_rect().size
+	var dialog_height: float = dialog_box.size.y
+	if dialog_height <= 0.0:
+		dialog_height = 262.0
+	var texture: Texture2D = speaker_avatar.texture
+	var aspect: float = DIALOG_STANDEE_DEFAULT_ASPECT
+	if texture and texture.get_height() > 0:
+		aspect = float(texture.get_width()) / float(texture.get_height())
+
+	var target_height: float = viewport_size.y * float(layout["height_ratio"]) * float(layout["scale"])
+	var target_width: float = target_height * aspect
+	var left: float = float(layout["x"])
+	var bottom: float = dialog_height - float(layout["bottom"])
+
+	speaker_avatar.set_anchors_preset(Control.PRESET_BOTTOM_LEFT, false)
+	speaker_avatar.offset_left = left
+	speaker_avatar.offset_top = bottom - target_height
+	speaker_avatar.offset_right = left + target_width
+	speaker_avatar.offset_bottom = bottom
+	speaker_avatar.grow_horizontal = Control.GROW_DIRECTION_END
+	speaker_avatar.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	speaker_avatar.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	speaker_avatar.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
+	speaker_avatar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	speaker_avatar.z_index = 20
+	dialog_box.move_child(speaker_avatar, dialog_box.get_child_count() - 1)
 
 func play_lumi_idle():
 	for lumi_sprite in lumi.find_children("*", "AnimatedSprite2D", true, false):
