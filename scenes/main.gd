@@ -875,7 +875,7 @@ func _ensure_lumi_spriteframes() -> void:
 	var sprite_node := lumi.get_node_or_null("AnimatedSprite2D")
 	if not sprite_node:
 		return
-	var sf := sprite_node.sprite_frames
+	var sf: SpriteFrames = sprite_node.sprite_frames
 	var need_build := false
 	if not sf or not (sf is SpriteFrames):
 		need_build = true
