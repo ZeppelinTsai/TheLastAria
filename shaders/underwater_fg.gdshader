@@ -24,9 +24,10 @@ void fragment() {
         float by = 1.0 - fract(rand(seed + 1.0) + t * speed);
         float wobble = sin(t * 2.0 + i * 1.7) * 0.008;
         vec2 bpos = vec2(bx + wobble, by);
-        float dist = length(uv - bpos);
+        vec2 aspect = vec2(SCREEN_PIXEL_SIZE.y / SCREEN_PIXEL_SIZE.x, 1.0);
+        float dist = length((uv - bpos) * aspect);
         float size = bubble_size * (0.5 + rand(seed + 2.0) * 0.5);
-        float bubble = smoothstep(size, size * 0.3, dist);
+        float bubble = 1.0 - smoothstep(size * 0.3, size, dist);
         result += bubble_color * bubble;
     }
 
