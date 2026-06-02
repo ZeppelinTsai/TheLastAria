@@ -216,6 +216,10 @@ and debug controls are documented in:
 
 docs/dialog_standee.md
 
+Image asset folder conventions are documented in:
+
+docs/asset_organization.md
+
 ---
 
 # Event Design

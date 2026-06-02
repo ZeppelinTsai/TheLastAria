@@ -33,10 +33,10 @@ Example:
     "scale": 1.0
   },
   "portraits": {
-    "default": "res://img/lyra.png"
+    "default": "res://img/tachie/lyra/lyra_default.png"
   },
   "busts": {
-    "default": "res://img/lyra.png"
+    "default": "res://img/tachie/lyra/lyra_default.png"
   }
 }
 ```
@@ -210,3 +210,156 @@ The debug overlay shows:
 - layout parameters
 
 Use the small-screen preview before finalizing `position`, `x_offset_ratio`, `bottom_ratio`, and `height_ratio`.
+## 圖片引用與表情差分
+
+角色立繪圖片統一在 `data/characters.json` 裡設定。對話 JSON 不直接寫圖片路徑，而是寫角色與表情名稱，讓同一個角色可以共用預設位置、比例和差分管理。
+
+### characters.json 圖片設定
+
+每個角色可以有兩組圖片表：
+
+```json
+{
+  "Lyra": {
+    "display_name": "Lyra",
+    "dialog_standee": {
+      "position": "center",
+      "bottom_ratio": -1.0,
+      "height_ratio": 2.0,
+      "scale": 1.0
+    },
+    "busts": {
+      "default": "res://img/tachie/lyra/lyra_default.png",
+      "smile": "res://img/tachie/lyra/lyra_smile.png",
+      "sad": "res://img/tachie/lyra/lyra_sad.png"
+    },
+    "portraits": {
+      "default": "res://img/tachie/lyra/lyra_default.png"
+    }
+  }
+}
+```
+
+- `busts`: 對話立繪優先使用這組。適合放 1024x1536 這類全身/半身圖。
+- `portraits`: 備用圖片組。若 `busts` 找不到指定表情，會 fallback 到這組。
+- `default`: 必填建議。當指定的表情不存在時會退回 `default`。
+- 表情 key 可以自由命名，例如 `smile`, `angry`, `surprised`, `cry`, `serious`。
+
+目前讀圖順序是：
+
+1. `busts[expression]`
+2. `busts.default`
+3. `portraits[expression]`
+4. `portraits.default`
+
+### 單人對話換表情
+
+對話行使用 `expression` 指定差分：
+
+```json
+{
+  "speaker": "Lyra",
+  "expression": "smile",
+  "text": "……"
+}
+```
+
+如果 `Lyra` 的 `busts.smile` 存在，就會顯示那張圖；不存在時會自動退回 `default`。
+
+### 單行覆蓋立繪位置
+
+單人對話可以用 `standee` 暫時覆蓋角色預設位置：
+
+```json
+{
+  "speaker": "Lyra",
+  "expression": "sad",
+  "text": "……",
+  "standee": {
+    "position": "left",
+    "x_offset_ratio": 0.04,
+    "bottom_ratio": -0.85,
+    "height_ratio": 1.9
+  }
+}
+```
+
+這只影響該行，不會改 `characters.json` 的角色預設。
+
+### 多人同時入鏡
+
+使用 `standees` 可以讓多個角色同時顯示。正在說話的角色會自動使用較高的 `z_index`。
+
+```json
+{
+  "speaker": "Lyra",
+  "expression": "serious",
+  "text": "我們得出去看看。",
+  "standees": [
+    {
+      "character": "Lyra",
+      "expression": "serious",
+      "position": "left",
+      "x_offset_ratio": 0.03
+    },
+    {
+      "character": "Lumi",
+      "expression": "surprised",
+      "position": "right",
+      "x_offset_ratio": -0.04
+    }
+  ]
+}
+```
+
+`standees` 裡每個項目都可以直接寫 layout 參數，也可以用 `layout` 包起來：
+
+```json
+{
+  "character": "Lumi",
+  "expression": "smile",
+  "layout": {
+    "position": "right",
+    "bottom_ratio": 0.2,
+    "height_ratio": 0.86
+  }
+}
+```
+
+### 演出用 z 軸調整
+
+預設說話者會在非說話者前面。如果某一行需要特別壓前或壓後，可以用 `z_offset`：
+
+```json
+{
+  "character": "Lyra",
+  "expression": "angry",
+  "position": "center",
+  "z_offset": 2
+}
+```
+
+`z_offset` 是加在系統預設 z 值上的微調。一般不用寫，只有特殊演出需要。
+
+### 建議命名
+
+差分圖建議用角色名加表情：
+
+```text
+res://img/tachie/lyra/lyra_default.png
+res://img/tachie/lyra/lyra_smile.png
+res://img/tachie/lyra/lyra_sad.png
+res://img/tachie/lyra/lyra_surprised.png
+res://img/tachie/lumi/lumi_default.png
+res://img/tachie/lumi/lumi_angry.png
+```
+
+對話 JSON 只引用表情 key，不引用檔名：
+
+```json
+{
+  "speaker": "Lumi",
+  "expression": "angry",
+  "text": "你又在看那本啊？"
+}
+```
