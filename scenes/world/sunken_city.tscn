@@ -17,6 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://bkb0gdqxvhvqx" path="res://img/sprite/lyra/lyra_tail/Layer 20.png" id="15_heaad"]
 [ext_resource type="Shader" uid="uid://ch0l0i4cbehji" path="res://shaders/underwater_fg.gdshader" id="16_underwat"]
 [ext_resource type="Shader" uid="uid://mgag3tij6kl5" path="res://shaders/underwater_light_rays.gdshader" id="17_lightrays"]
+[ext_resource type="Shader" path="res://shaders/underwater_refraction.gdshader" id="18_refract"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_intro"]
 size = Vector2(525, 124)
@@ -101,6 +102,13 @@ shader_parameter/debug_marker_enabled = false
 shader_parameter/debug_marker_position = Vector2(0.5, 0.18)
 shader_parameter/debug_marker_radius = 0.08
 shader_parameter/ray_color = Color(0.9, 0.98, 1, 0.38)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_refraction"]
+shader = ExtResource("18_refract")
+shader_parameter/strength = 0.001
+shader_parameter/speed = 0.25
+shader_parameter/wave_scale_x = 14.0
+shader_parameter/wave_scale_y = 18.0
 
 [sub_resource type="ParticlesMaterial" id="18"]
 direction = Vector2(0, -1)
@@ -192,6 +200,14 @@ sprite_frames = SubResource("SpriteFrames_0ld40")
 animation = &"walk_up"
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=1064311324]
+
+[node name="WaterDistortion" type="ColorRect" parent="UI" unique_id=2100000003]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+z_index = 830
+material = SubResource("ShaderMaterial_refraction")
+mouse_filter = 2
 
 [node name="UnderwaterFG" type="ColorRect" parent="UI" unique_id=2100000000]
 anchors_preset = 15
