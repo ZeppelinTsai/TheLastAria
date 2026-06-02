@@ -27,7 +27,7 @@ func _on_body_entered(body: Node2D) -> void:
 
 	_try_trigger(body)
 
-func _try_trigger(body: Node2D) -> void:
+func _try_trigger(_body: Node2D) -> void:
 	if not _can_trigger:
 		return
 

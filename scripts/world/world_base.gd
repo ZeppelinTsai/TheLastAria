@@ -360,14 +360,14 @@ func configure_dialog_standee_node(standee_node: TextureRect, layout: Dictionary
 
 	var target_height: float = viewport_size.y * float(layout["height_ratio"]) * float(layout["scale"])
 	var target_width: float = target_height * aspect
-	var position := str(layout["position"])
+	var layout_position := str(layout["position"])
 	var x_ratio: float = float(layout["x_ratio"])
 	var x_anchor: float = float(layout["x_anchor"])
 	var bottom_ratio: float = float(layout["bottom_ratio"])
 	var left: float = float(layout["x"])
 	var bottom_offset: float = float(layout["bottom"])
-	if position != "":
-		match position:
+	if layout_position != "":
+		match layout_position:
 			"left":
 				x_ratio = 0.0
 				x_anchor = 0.0
@@ -378,7 +378,7 @@ func configure_dialog_standee_node(standee_node: TextureRect, layout: Dictionary
 				x_ratio = 1.0
 				x_anchor = 1.0
 			_:
-				push_warning("Unknown dialog standee position: %s" % position)
+				push_warning("Unknown dialog standee position: %s" % layout_position)
 	if x_ratio >= 0.0:
 		if x_anchor < 0.0:
 			x_anchor = 0.0
