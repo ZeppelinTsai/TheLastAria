@@ -332,6 +332,54 @@ Scenes should reference:
 
 Never hardcode dialogue into scene scripts.
 
+### Localization Key Pipeline
+
+UI and future dialogue localization use:
+
+```text
+autoload/LocalizationManager.gd
+data/localization/ui_text.json
+data/localization/dialogues/*.json
+data/localization/scripts/*.json
+```
+
+For future dialogue, prefer stable text keys instead of raw translated text in runtime scripts.
+
+Preferred dialogue entry:
+
+```json
+{
+    "speaker": "lyra",
+    "text_key": "prologue.lyra.001.text",
+    "text": "Fallback source text"
+}
+```
+
+`text` may remain as a fallback while content is being migrated.
+
+To extract localization key scaffolds from changed dialogue/script files manually:
+
+```powershell
+python tools/extract_localization_keys.py --files data/dialogues/prologue.json
+```
+
+To install the local post-commit hook:
+
+```powershell
+powershell -ExecutionPolicy Bypass .\tools\install_localization_hook.ps1
+```
+
+After installation, each commit scans files changed in that commit. If changed files include `data/dialogues/*.json` or story-facing `.gd` text assignments, generated key files are written under:
+
+```text
+data/localization/dialogues/
+data/localization/scripts/
+```
+
+The post-commit hook updates files after the commit. Review and commit generated localization files in a follow-up commit when needed.
+
+The extractor preserves existing non-empty translations and fills only missing keys. It stores original extracted source text in `zh_TW` by default and leaves English/Japanese/other language values empty for translators.
+
 Dialogue standee placement, multi-character staging, per-line overrides, and debug controls are documented in:
 
 ```text
@@ -472,6 +520,52 @@ Do not add a backend or database.
 The Last Aria is currently a pure static Web playable demo.
 
 ---
+
+## Architecture Change Policy
+
+When introducing any structural or rendering changes, update AGENT.md.
+
+Structural changes include:
+
+- New shaders
+- New rendering passes
+- New atmosphere systems
+- New scene layers
+- New singleton/autoload
+- New validation scripts
+- New map pipeline rules
+- New particle systems
+- Changes to save/load flow
+- Changes to scene hierarchy
+- Changes to asset naming conventions
+
+Parameter-only tuning does NOT require AGENT updates unless it changes design intent.
+
+Examples:
+
+NO update required:
+
+- Light intensity 1.2 → 1.4
+- Bubble count 20 → 40
+- Camera smoothing 3 → 4
+
+Update required:
+
+- Add LightRays shader
+- Add WaterDistortion pass
+- Introduce Front/Mid/Back map layering
+- Add Scene Validation pipeline
+- Introduce Map JSON ownership
+
+Required documentation:
+
+1. Purpose
+2. Affected files
+3. Migration impact
+4. Validation command
+5. Rollback method
+
+Never report completion if architecture changed but AGENT.md was not updated.
 
 ## Development Priority
 

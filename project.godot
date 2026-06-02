@@ -22,6 +22,7 @@ MusicManager="*res://autoload/MusicManager.gd"
 CharacterVisualManager="*res://autoload/CharacterVisualManager.gd"
 GameState="*uid://ftpdcfddxxep"
 SceneTransition="*uid://ocbbo2bq52ih"
+LocalizationManager="*res://autoload/LocalizationManager.gd"
 
 [display]
 

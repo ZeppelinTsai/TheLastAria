@@ -43,6 +43,11 @@ var scene_shake_tween: Tween
 
 var pause_menu: Control
 var pause_status_label: Label
+var pause_options_modal: Control
+var pause_options_status_label: Label
+var pause_localized_controls := {}
+var pause_language_select: OptionButton
+var pause_language_locale_ids: Array[String] = []
 var pause_slot_modal: Control
 var pause_slot_title_label: Label
 var pause_slot_status_label: Label
@@ -76,6 +81,7 @@ func _ready() -> void:
 	hide_next_indicator()
 	load_dialogue_sets()
 	setup_pause_menu()
+	LocalizationManager.locale_changed.connect(_on_locale_changed)
 	if player:
 		SaveManager.register_player(player)
 	on_world_ready()
@@ -103,6 +109,9 @@ func _input(event: InputEvent) -> void:
 
 	if event.is_action_pressed("ui_cancel") and not event.is_echo():
 		if dialog_active:
+			return
+		if pause_options_modal and pause_options_modal.visible:
+			close_pause_options()
 			return
 		if pause_slot_modal and pause_slot_modal.visible:
 			close_pause_slot_modal()
@@ -690,19 +699,112 @@ func setup_pause_menu() -> void:
 	pause_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	pause_status_label.custom_minimum_size = Vector2(240, 30)
 	menu.add_child(pause_status_label)
-	var resume_button = create_pause_button("Resume")
+	var resume_button = create_pause_button(localize("menu.resume"))
+	register_pause_localized_control(resume_button, "menu.resume")
 	resume_button.pressed.connect(close_pause_menu)
 	menu.add_child(resume_button)
-	var save_button = create_pause_button("Save")
+	var save_button = create_pause_button(localize("menu.save"))
+	register_pause_localized_control(save_button, "menu.save")
 	save_button.pressed.connect(save_from_pause_menu)
 	menu.add_child(save_button)
-	var load_button = create_pause_button("Load")
+	var load_button = create_pause_button(localize("menu.load"))
+	register_pause_localized_control(load_button, "menu.load")
 	load_button.pressed.connect(load_from_pause_menu)
 	menu.add_child(load_button)
-	var title_button = create_pause_button("Title")
+	var options_button = create_pause_button(localize("menu.options"))
+	register_pause_localized_control(options_button, "menu.options")
+	options_button.pressed.connect(open_pause_options)
+	menu.add_child(options_button)
+	var title_button = create_pause_button(localize("menu.title"))
+	register_pause_localized_control(title_button, "menu.title")
 	title_button.pressed.connect(return_to_title)
 	menu.add_child(title_button)
+	build_pause_options_modal(layer)
 	build_pause_slot_modal(layer)
+
+func build_pause_options_modal(layer: CanvasLayer) -> void:
+	pause_options_modal = Control.new()
+	pause_options_modal.name = "PauseOptionsModal"
+	pause_options_modal.visible = false
+	pause_options_modal.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layer.add_child(pause_options_modal)
+
+	var shade = ColorRect.new()
+	shade.color = Color(0.0, 0.0, 0.0, 0.62)
+	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	pause_options_modal.add_child(shade)
+
+	var panel = PanelContainer.new()
+	panel.custom_minimum_size = Vector2(460, 430)
+	panel.anchor_left = 0.5
+	panel.anchor_top = 0.5
+	panel.anchor_right = 0.5
+	panel.anchor_bottom = 0.5
+	panel.offset_left = -230
+	panel.offset_top = -215
+	panel.offset_right = 230
+	panel.offset_bottom = 215
+	pause_options_modal.add_child(panel)
+
+	var content = VBoxContainer.new()
+	content.add_theme_constant_override("separation", 10)
+	panel.add_child(content)
+
+	var title = Label.new()
+	title.text = localize("options.title")
+	register_pause_localized_control(title, "options.title")
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 24)
+	title.custom_minimum_size = Vector2(360, 38)
+	content.add_child(title)
+
+	var resolution_label = Label.new()
+	resolution_label.text = localize("options.resolution")
+	register_pause_localized_control(resolution_label, "options.resolution")
+	content.add_child(resolution_label)
+
+	var resolution_select = OptionButton.new()
+	resolution_select.custom_minimum_size = Vector2(360, 38)
+	resolution_select.add_item("1920 x 1080")
+	resolution_select.add_item("1600 x 900")
+	resolution_select.add_item("1280 x 720")
+	resolution_select.item_selected.connect(_on_pause_options_changed)
+	content.add_child(resolution_select)
+
+	var language_label = Label.new()
+	language_label.text = localize("options.language")
+	register_pause_localized_control(language_label, "options.language")
+	content.add_child(language_label)
+
+	pause_language_select = OptionButton.new()
+	pause_language_select.custom_minimum_size = Vector2(360, 38)
+	populate_pause_language_select()
+	pause_language_select.item_selected.connect(_on_pause_language_selected)
+	content.add_child(pause_language_select)
+
+	var controls_label = Label.new()
+	controls_label.text = localize("options.controls")
+	register_pause_localized_control(controls_label, "options.controls")
+	content.add_child(controls_label)
+
+	var controls_button = create_pause_button(localize("options.controls_mapping"))
+	register_pause_localized_control(controls_button, "options.controls_mapping")
+	controls_button.custom_minimum_size = Vector2(360, 42)
+	controls_button.pressed.connect(_on_pause_options_changed.bind(0))
+	content.add_child(controls_button)
+
+	pause_options_status_label = Label.new()
+	pause_options_status_label.text = localize("options.ui_only")
+	pause_options_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	pause_options_status_label.custom_minimum_size = Vector2(360, 30)
+	pause_options_status_label.modulate = Color(0.78, 0.9, 1.0, 1.0)
+	content.add_child(pause_options_status_label)
+
+	var back_button = create_pause_button(localize("menu.back"))
+	register_pause_localized_control(back_button, "menu.back")
+	back_button.custom_minimum_size = Vector2(360, 42)
+	back_button.pressed.connect(close_pause_options)
+	content.add_child(back_button)
 
 func build_pause_slot_modal(layer: CanvasLayer) -> void:
 	pause_slot_modal = Control.new()
@@ -755,7 +857,8 @@ func build_pause_slot_modal(layer: CanvasLayer) -> void:
 	pause_slot_action_button.custom_minimum_size = Vector2(360, 38)
 	pause_slot_action_button.pressed.connect(confirm_pause_slot_action)
 	content.add_child(pause_slot_action_button)
-	var back_button = create_pause_button("Back")
+	var back_button = create_pause_button(localize("menu.back"))
+	register_pause_localized_control(back_button, "menu.back")
 	back_button.custom_minimum_size = Vector2(360, 38)
 	back_button.pressed.connect(close_pause_slot_modal)
 	content.add_child(back_button)
@@ -765,6 +868,35 @@ func create_pause_button(text: String) -> Button:
 	button.text = text
 	button.custom_minimum_size = Vector2(220, 38)
 	return button
+
+func register_pause_localized_control(control: Control, key: String) -> void:
+	pause_localized_controls[control] = key
+
+func localize(key: String) -> String:
+	return LocalizationManager.tr_text(key)
+
+func refresh_pause_localized_text() -> void:
+	for control in pause_localized_controls.keys():
+		if not is_instance_valid(control):
+			continue
+		control.text = localize(str(pause_localized_controls[control]))
+	refresh_pause_language_select_selection()
+	refresh_pause_slots()
+
+func populate_pause_language_select() -> void:
+	pause_language_select.clear()
+	pause_language_locale_ids.clear()
+	for locale_id in LocalizationManager.get_supported_locales():
+		pause_language_locale_ids.append(locale_id)
+		pause_language_select.add_item(LocalizationManager.get_locale_name(locale_id))
+	refresh_pause_language_select_selection()
+
+func refresh_pause_language_select_selection() -> void:
+	if not pause_language_select:
+		return
+	var locale_index := pause_language_locale_ids.find(LocalizationManager.locale)
+	if locale_index >= 0:
+		pause_language_select.select(locale_index)
 
 func toggle_pause_menu() -> void:
 	if pause_menu and pause_menu.visible:
@@ -781,10 +913,35 @@ func open_pause_menu() -> void:
 		pause_menu.visible = true
 
 func close_pause_menu() -> void:
+	close_pause_options()
 	close_pause_slot_modal()
 	if pause_menu:
 		pause_menu.visible = false
 	set_player_can_move(was_player_movable_before_menu)
+
+func open_pause_options() -> void:
+	close_pause_slot_modal()
+	if pause_options_status_label:
+		pause_options_status_label.text = localize("options.ui_only")
+	if pause_options_modal:
+		pause_options_modal.visible = true
+
+func close_pause_options() -> void:
+	if pause_options_modal:
+		pause_options_modal.visible = false
+
+func _on_pause_options_changed(_value = 0) -> void:
+	if pause_options_status_label:
+		pause_options_status_label.text = localize("options.changed")
+
+func _on_pause_language_selected(index: int) -> void:
+	if index < 0 or index >= pause_language_locale_ids.size():
+		return
+	LocalizationManager.set_locale(pause_language_locale_ids[index])
+	_on_pause_options_changed(index)
+
+func _on_locale_changed(_locale: String) -> void:
+	refresh_pause_localized_text()
 
 func save_from_pause_menu() -> void:
 	open_pause_slot_modal(PauseSlotMode.SAVE)
@@ -792,7 +949,7 @@ func save_from_pause_menu() -> void:
 func load_from_pause_menu() -> void:
 	if not has_any_pause_save():
 		if pause_status_label:
-			pause_status_label.text = "No save data"
+			pause_status_label.text = localize("status.no_save_data")
 		return
 	open_pause_slot_modal(PauseSlotMode.LOAD)
 
@@ -802,12 +959,12 @@ func open_pause_slot_modal(mode: int) -> void:
 	pause_last_slot_press_slot = -1
 	if pause_slot_mode == PauseSlotMode.SAVE:
 		pause_selected_slot = SaveManager.active_slot
-		pause_slot_title_label.text = "Save"
-		pause_slot_action_button.text = "Save"
+		pause_slot_title_label.text = localize("slot.save")
+		pause_slot_action_button.text = localize("slot.save")
 	else:
 		pause_selected_slot = SaveManager.get_latest_save_slot(SaveManager.active_slot)
-		pause_slot_title_label.text = "Load"
-		pause_slot_action_button.text = "Load"
+		pause_slot_title_label.text = localize("slot.load")
+		pause_slot_action_button.text = localize("slot.load")
 	pause_slot_modal.visible = true
 	refresh_pause_slots()
 	pause_slot_buttons[pause_selected_slot - 1].grab_focus()
@@ -842,20 +999,20 @@ func refresh_pause_slots() -> void:
 		button.text = format_pause_slot_summary(summary)
 	var selected_summary = SaveManager.get_save_summary(pause_selected_slot)
 	if pause_slot_mode == PauseSlotMode.LOAD:
-		pause_slot_action_button.text = "Load"
+		pause_slot_action_button.text = localize("slot.load")
 		pause_slot_action_button.disabled = not bool(selected_summary["exists"])
 		pause_slot_status_label.text = ""
 	else:
 		pause_slot_action_button.disabled = false
 		if selected_summary["exists"]:
 			if pause_overwrite_confirm_slot == pause_selected_slot:
-				pause_slot_action_button.text = "Confirm Overwrite"
-				pause_slot_status_label.text = "Press again to overwrite Slot %d." % pause_selected_slot
+				pause_slot_action_button.text = localize("slot.confirm_overwrite")
+				pause_slot_status_label.text = LocalizationManager.format_text("slot.overwrite_prompt", [pause_selected_slot])
 			else:
-				pause_slot_action_button.text = "Save"
-				pause_slot_status_label.text = "This will overwrite existing save data."
+				pause_slot_action_button.text = localize("slot.save")
+				pause_slot_status_label.text = localize("slot.overwrite_warning")
 		else:
-			pause_slot_action_button.text = "Save"
+			pause_slot_action_button.text = localize("slot.save")
 			pause_slot_status_label.text = ""
 
 func confirm_pause_slot_action() -> void:
@@ -880,15 +1037,15 @@ func _save_pause_slot() -> void:
 		SaveManager.set_player_position(player.global_position)
 	if SaveManager.save_game(pause_selected_slot):
 		if pause_status_label:
-			pause_status_label.text = "Saved Slot %d" % pause_selected_slot
+			pause_status_label.text = LocalizationManager.format_text("status.saved_slot", [pause_selected_slot])
 		close_pause_slot_modal()
 	elif pause_slot_status_label:
-		pause_slot_status_label.text = "Save failed"
+		pause_slot_status_label.text = localize("status.save_failed")
 
 func load_pause_slot() -> void:
 	if not SaveManager.load_game(pause_selected_slot):
 		if pause_slot_status_label:
-			pause_slot_status_label.text = "No save data"
+			pause_slot_status_label.text = localize("status.no_save_data")
 		refresh_pause_slots()
 		return
 	var current_scene = get_tree().current_scene
@@ -901,7 +1058,7 @@ func load_pause_slot() -> void:
 		return
 	SaveManager.apply_player_position()
 	if pause_status_label:
-		pause_status_label.text = "Loaded Slot %d" % pause_selected_slot
+		pause_status_label.text = LocalizationManager.format_text("status.loaded_slot", [pause_selected_slot])
 	close_pause_slot_modal()
 	close_pause_menu()
 
@@ -914,12 +1071,12 @@ func has_any_pause_save() -> bool:
 func format_pause_slot_summary(summary: Dictionary) -> String:
 	var slot = int(summary["slot"])
 	if not bool(summary["exists"]):
-		return "Slot %d - Empty" % slot
+		return LocalizationManager.format_text("slot.empty", [slot])
 	var location = str(summary.get("location", ""))
 	if location == "":
-		location = "Unknown"
+		location = localize("slot.unknown")
 	var saved_at = int(summary.get("saved_at_unix", 0))
-	var time_text = "No time"
+	var time_text = localize("slot.no_time")
 	if saved_at > 0:
 		var time_data = Time.get_datetime_dict_from_unix_time(saved_at)
 		time_text = "%04d-%02d-%02d %02d:%02d" % [
@@ -929,7 +1086,7 @@ func format_pause_slot_summary(summary: Dictionary) -> String:
 			int(time_data["hour"]),
 			int(time_data["minute"]),
 		]
-	return "Slot %d - %s  %s" % [slot, location, time_text]
+	return LocalizationManager.format_text("slot.summary", [slot, location, time_text])
 
 func return_to_title() -> void:
 	SaveManager.autosave(true)
