@@ -9,6 +9,8 @@ const SLOT_DOUBLE_PRESS_MS = 450
 const TYPE_DELAY = 0.05
 const POINTER_ADVANCE_DEBOUNCE_MS = 180
 const DIALOG_STANDEE_DEFAULT_ASPECT = 2.0 / 3.0
+const EFFECTS_LAYER_Z_INDEX := 900
+const DIALOG_Z_INDEX_ABOVE_EFFECTS := EFFECTS_LAYER_Z_INDEX + 200
 const DIALOG_TEXT_MIN_FONT_SIZE = 28
 const DIALOG_TEXT_MAX_FONT_SIZE = 38
 const DIALOG_NAME_MIN_FONT_SIZE = 22
@@ -66,6 +68,8 @@ func _ready() -> void:
 	_validate_world_nodes()
 	if dialog_box:
 		dialog_box.visible = false
+		# Ensure dialog is above fullscreen effects
+		dialog_box.z_index = DIALOG_Z_INDEX_ABOVE_EFFECTS
 	configure_dialog_text_style()
 	if next_indicator_arrow:
 		next_indicator_arrow_base_position = next_indicator_arrow.position

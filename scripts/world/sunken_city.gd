@@ -16,6 +16,9 @@ var swim_depth_background_base_position := Vector2.ZERO
 var swim_depth_background_base_scale := Vector2.ONE
 var swim_depth_player_sprite: Node2D
 var swim_depth_player_sprite_base_scale := Vector2.ONE
+var swim_depth_breathe_t := 0.0
+var swim_depth_breathe_speed := 0.22
+var swim_depth_breathe_amplitude := 10.0
 
 func on_world_ready() -> void:
 	map_data = MapDataLoader.load_map_data(map_data_path)
@@ -30,7 +33,9 @@ func on_world_ready() -> void:
 		uw.material.set_shader_parameter("time_scale", 1.0)
 
 func on_world_physics_process(delta: float) -> void:
+	swim_depth_breathe_t += delta
 	update_swim_depth_effect(delta)
+	update_underwater_fx()
 
 func _apply_map_data(data: Dictionary) -> void:
 	if data.is_empty():
@@ -69,25 +74,36 @@ func update_swim_depth_effect(delta: float) -> void:
 	if not swim_depth_enabled or not player:
 		return
 
-	var depth_amount := get_swim_depth_amount()
-	var lerp_weight := clampf(swim_depth_lerp_speed * delta, 0.0, 1.0)
+	var depth_amount: float = get_swim_depth_amount()
+	var lerp_weight: float = clamp(swim_depth_lerp_speed * delta, 0.0, 1.0)
 
 	if swim_depth_background:
-		var target_position := swim_depth_background_base_position + swim_depth_background_offset * depth_amount
-		var target_scale := swim_depth_background_base_scale.lerp(swim_depth_background_base_scale * swim_depth_background_scale, depth_amount)
+		var breathe_offset: float = sin(swim_depth_breathe_t * swim_depth_breathe_speed) * swim_depth_breathe_amplitude
+		var target_position: Vector2 = swim_depth_background_base_position + swim_depth_background_offset * depth_amount + Vector2(0, breathe_offset)
+		var target_scale: Vector2 = swim_depth_background_base_scale.lerp(swim_depth_background_base_scale * swim_depth_background_scale, depth_amount)
 		swim_depth_background.position = swim_depth_background.position.lerp(target_position, lerp_weight)
 		swim_depth_background.scale = swim_depth_background.scale.lerp(target_scale, lerp_weight)
 
 	if swim_depth_player_sprite:
-		var target_player_scale := swim_depth_player_sprite_base_scale * lerpf(1.0, swim_depth_player_far_scale, depth_amount)
+		var target_player_scale: Vector2 = swim_depth_player_sprite_base_scale * lerp(1.0, swim_depth_player_far_scale, depth_amount)
 		swim_depth_player_sprite.scale = swim_depth_player_sprite.scale.lerp(target_player_scale, lerp_weight)
-	
+
 	if player:
-		var target_speed = lerpf(150.0, 200.0, depth_amount)
+		var target_speed: float = lerp(150.0, 200.0, depth_amount)
 		player.speed = target_speed
+
+func update_underwater_fx() -> void:
+	var uw: Node = get_node_or_null("UI/UnderwaterFG")
+	if uw and uw.material and player:
+		uw.material.set_shader_parameter("time_scale", 0.8 + abs(player.velocity.y) * 0.001)
+
+	var lr: Node = get_node_or_null("UI/LightRays")
+	if lr and lr.material and player:
+		var depth_val: float = clamp(-player.global_position.y / 3000.0, 0.0, 1.0)
+		lr.material.set_shader_parameter("depth", depth_val)
 
 func get_swim_depth_amount() -> float:
 	var y_span := swim_depth_far_y - swim_depth_near_y
 	if is_zero_approx(y_span):
 		return 0.0
-	return clampf((player.global_position.y - swim_depth_near_y) / y_span, 0.0, 1.0)
+	return clamp((player.global_position.y - swim_depth_near_y) / y_span, 0.0, 1.0)

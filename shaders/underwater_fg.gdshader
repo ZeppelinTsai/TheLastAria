@@ -1,10 +1,10 @@
 shader_type canvas_item;
 
 uniform float time_scale : hint_range(0.1, 3.0) = 1.0;
-uniform float bubble_count : hint_range(5.0, 50.0) = 20.0;
-uniform float bubble_size : hint_range(0.001, 0.02) = 0.006;
-uniform vec4 bubble_color : source_color = vec4(0.6, 0.85, 1.0, 0.15);
-uniform vec4 caustic_color : source_color = vec4(0.4, 0.7, 1.0, 0.04);
+uniform float bubble_count : hint_range(5.0, 50.0) = 40.0;
+uniform float bubble_size : hint_range(0.001, 0.02) = 0.01;
+uniform vec4 bubble_color : source_color = vec4(0.6, 0.85, 1.0, 0.28);
+uniform vec4 caustic_color : source_color = vec4(0.4, 0.7, 1.0, 0.10);
 
 float rand(vec2 co) {
     return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);

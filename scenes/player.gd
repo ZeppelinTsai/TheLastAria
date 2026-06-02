@@ -14,6 +14,7 @@ var target_position: Vector2
 @onready var anim = $AnimatedSprite2D
 @onready var foot_point: Node2D = get_node_or_null("FootPoint")
 @onready var collision_shape: CollisionShape2D = get_node_or_null("CollisionShape2D")
+@onready var bubble_particles: GPUParticles2D = $BubbleParticles
 
 func _ready() -> void:
 	call_deferred("pull_inside_walkable_area")
@@ -45,6 +46,9 @@ func _physics_process(delta):
 
 	velocity = direction * speed
 	move_and_slide()
+
+	if bubble_particles:
+		bubble_particles.emitting = velocity.y < 0.0
 
 	if walkable_area:
 		if not is_walkable_body_inside_area():

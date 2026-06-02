@@ -23,7 +23,7 @@ When uncertain, prioritize story and presentation over mechanics.
 
 ---
 
-# Technical Stack
+## Technical Stack
 
 Engine:
 
@@ -41,9 +41,9 @@ Target Platforms:
 
 ---
 
-# Core Design Principles
+## Core Design Principles
 
-## 1. Story First
+### 1. Story First
 
 Always preserve:
 
@@ -54,35 +54,23 @@ Always preserve:
 
 Do not introduce systems that distract from narrative pacing.
 
----
-
-## 2. Simplicity Over Complexity
+### 2. Simplicity Over Complexity
 
 Prefer:
 
-Simple event systems
-
-instead of
-
-Complex gameplay frameworks
-
-Example:
-
-GOOD
-
-- Area2D trigger
+- Area2D triggers
 - Dialogue
-- Scene transition
+- Scene transitions
+- Small focused scripts
 
-BAD
+Avoid:
 
-- Massive quest system
+- Massive quest systems
 - RPG stat trees
 - Overengineered architecture
+- Large hidden frameworks
 
----
-
-## 3. AI-Friendly Development
+## AI-Friendly Development
 
 Project is designed for AI-assisted development.
 
@@ -92,20 +80,136 @@ Prefer:
 - Modular scenes
 - Clear node names
 - Export variables
+- Explicit data flow
+- Simple validation commands
 
 Avoid:
 
 - Huge 2000-line scripts
 - Hidden dependencies
 - Hardcoded scene paths
+- Complex implicit node assumptions
 
 ---
 
-# Scene Architecture
+## Type Safety Rules
+
+These rules reduce GDScript parse errors and improve AI-generated code reliability.
+
+### GDScript
+
+Avoid:
+
+```gdscript
+var speed := 1.0
+var pos := Vector2.ZERO
+var mat := material
+```
+
+Prefer:
+
+```gdscript
+var speed: float = 1.0
+var pos: Vector2 = Vector2.ZERO
+var mat: ShaderMaterial = material
+```
+
+Rules:
+
+- Explicit types are preferred.
+- Avoid `:=` in exported variables, scene state, shader parameters, or values crossing node boundaries.
+- Allow `:=` only for local immutable values where type is obvious.
+- Never rely on Variant inference for scene logic.
+- Functions should specify return types whenever possible.
+- Avoid multiline assignment immediately after `=`.
+- Prefer intermediate variables over deeply nested expressions.
+- Prefer `clamp` / `lerp` over version-sensitive alternatives unless the project explicitly supports them.
+- Do not report completion until Godot validation passes.
+
+GOOD:
+
+```gdscript
+var depth: float = clamp(value, 0.0, 1.0)
+
+mat.set_shader_parameter(
+    "depth",
+    depth
+)
+```
+
+BAD:
+
+```gdscript
+var depth := clampf(
+    value,
+    0,
+    1
+)
+
+mat.set_shader_parameter(
+    "depth",
+    clampf(
+        value,
+        0,
+        1
+    )
+)
+```
+
+### Python
+
+Avoid:
+
+```python
+x = []
+data = {}
+speed = None
+```
+
+Prefer:
+
+```python
+x: list[str] = []
+data: dict[str, str] = {}
+speed: float | None = None
+```
+
+Rules:
+
+- Prefer pydantic/dataclass over nested dict.
+- Prefer explicit return type.
+- Prefer pathlib.Path.
+- Avoid implicit mutation.
+- Use UTF-8 explicitly when reading files.
+
+GOOD:
+
+```python
+from pathlib import Path
+
+def load_text(path: Path) -> str:
+    return path.read_text(
+        encoding="utf-8"
+    )
+```
+
+BAD:
+
+```python
+f = open(path)
+
+text = f.read()
+```
+
+---
+
+## Scene Architecture
 
 World scenes should inherit from:
 
+```text
 world_base.gd
+```
 
 World scenes should only contain:
 
@@ -117,16 +221,22 @@ World scenes should only contain:
 
 Shared systems belong in:
 
+```text
 world_base.gd
+```
+
+Do not hardcode large story content into `.gd` files.
 
 ---
 
-# Walkable Area System
+## Walkable Area System
 
 Project uses:
 
+```text
 Area2D
 └ CollisionPolygon2D
+```
 
 representing walkable space.
 
@@ -136,14 +246,16 @@ DO NOT replace walkable-area navigation with tile navigation.
 
 Future navigation should be based on:
 
+```text
 NavigationRegion2D
 NavigationAgent2D
+```
 
-if pathfinding becomes necessary.
+only if pathfinding becomes necessary.
 
 ---
 
-# Map Creation Pipeline
+## Map Creation Pipeline
 
 Each map should contain:
 
@@ -155,7 +267,9 @@ Each map should contain:
 
 Each new map must also create:
 
+```text
 data/maps/<map_id>.json
+```
 
 Map JSON is the preferred source for:
 
@@ -165,35 +279,40 @@ Map JSON is the preferred source for:
 - Background paths
 - Walkable polygon coordinates
 
-Godot scenes should be treated as the current player/runtime layer: they display and execute map data, while JSON remains the real content source. Do not hardcode large story content into .gd files.
+Godot scenes are the current player/runtime layer: they display and execute map data, while JSON remains the real content source.
 
-## 建立新地圖標準流程
+### Standard New Map Workflow
 
 Use the map template generator from the project root:
 
+```powershell
 python tools/create_map_template.py --map-id <map_id> --map-name "<map name>" --background "res://path/to/background.png"
+```
 
 The generator creates:
 
-- data/maps/<map_id>.json
-- data/dialogues/<map_id>.json
-- scenes/world/<map_id>.tscn
-- scripts/world/<map_id>.gd
+- `data/maps/<map_id>.json`
+- `data/dialogues/<map_id>.json`
+- `scenes/world/<map_id>.tscn`
+- `scripts/world/<map_id>.gd`
 
-Never overwrite existing map files. After generation, fill in walkable_polygons and events in data/maps/<map_id>.json first, then tune the Godot scene only as the player/runtime layer.
+Never overwrite existing map files.
 
-AI-generated maps should follow:
+After generation:
 
-Background only
+1. Fill in `walkable_polygons` and events in `data/maps/<map_id>.json`.
+2. Tune the Godot scene only as the player/runtime layer.
 
-- Layer separation
+AI-generated maps should support layer separation.
 
 Examples:
 
+```text
 skyisland_main.png
 skyisland_clouds.png
 skyisland_fog.png
 skyisland_particles.png
+```
 
 Animation should be implemented in Godot.
 
@@ -201,49 +320,56 @@ Avoid video backgrounds whenever possible.
 
 ---
 
-# Dialogue System
+## Dialogue System
 
 Dialogue content must remain in JSON files.
 
 Scenes should reference:
 
-@export var dialogue_path
+```gdscript
+@export var dialogue_path: String
+```
 
 Never hardcode dialogue into scene scripts.
 
-Dialogue standee placement, multi-character staging, per-line overrides,
-and debug controls are documented in:
+Dialogue standee placement, multi-character staging, per-line overrides, and debug controls are documented in:
 
+```text
 docs/dialog_standee.md
+```
 
 Image asset folder conventions are documented in:
 
+```text
 docs/asset_organization.md
+```
 
 ---
 
-# Event Design
+## Event Design
 
 Events should use:
 
-Area2D
-
-Triggers.
+```text
+Area2D triggers
+```
 
 Avoid complex event managers unless necessary.
 
 Preferred structure:
 
+```text
 EventRoot
-├ MemoryTrigger
-├ LumiTrigger
-├ BossTrigger
+├── MemoryTrigger
+├── LumiTrigger
+└── BossTrigger
+```
 
 ---
 
-# Save System
+## Save System
 
-Always use existing SaveManager.
+Always use existing `SaveManager`.
 
 Do not create alternative save systems.
 
@@ -251,9 +377,9 @@ Do not break compatibility with existing save data.
 
 ---
 
-# Audio
+## Audio
 
-Use MusicManager.
+Use `MusicManager`.
 
 Avoid scene-specific audio implementations.
 
@@ -261,56 +387,93 @@ Music should be context driven.
 
 Example:
 
+```gdscript
 MusicManager.play_context("skyisland")
+```
 
 ---
 
+## Validation Workflow
+
+```text
 # Validation Workflow
+├── AI Validation Rules
+├── Godot Validation
+└── Web Export
+```
 
-After modifying code:
+### AI Validation Rules
 
-1. Save files
-2. Run the platform-appropriate Godot validation command:
+Before reporting completion:
+
+1. Save files.
+2. Run validation.
+3. Fix all syntax errors.
+4. Re-run validation.
+5. Confirm validation passes.
+
+Required command on Windows:
+
+```powershell
+powershell -ExecutionPolicy Bypass .\tools\validate.ps1
+```
+
+Validation should include:
+
+- Godot headless check
+- GDScript parse
+- Scene loading
+- Shader compilation
+- Python syntax checks when Python tools are modified
+
+If validation fails:
+
+- DO NOT continue implementation.
+- DO NOT report completion.
+- Fix errors first.
+- Re-run validation until it passes.
+
+### Godot Validation
+
+After modifying Godot scripts, scenes, shaders, or project code, always run the platform-appropriate validation script:
 
 Windows:
 
+```powershell
 check_godot.bat
+```
 
 Linux/macOS:
 
+```bash
 bash check_godot.sh
+```
 
-3. Fix all errors before continuing
-
-Do not consider a task complete if Godot headless validation fails.
-
-After modifying Godot scripts, scenes, or project code, always run the platform-appropriate validation script:
-
-Windows:
-
-check_godot.bat
-
-Linux/macOS:
-
-bash check_godot.sh
+### Web Export
 
 After modifying export settings or CI, always run the platform-appropriate Web export script:
 
 Windows:
 
+```powershell
 export_web.bat
+```
 
 Linux/macOS:
 
+```bash
 bash export_web.sh
+```
 
 Do not manually commit Web build output unless the workflow explicitly requires it.
 
-Do not add a backend or database. The Last Aria is currently a pure static Web playable demo.
+Do not add a backend or database.
+
+The Last Aria is currently a pure static Web playable demo.
 
 ---
 
-# Development Priority
+## Development Priority
 
 Priority order:
 
@@ -324,16 +487,17 @@ Never sacrifice narrative quality to add unnecessary mechanics.
 
 ---
 
-# Current Goal
+## Current Goal
 
 Build a playable vertical slice:
 
+```text
 Prelude
 → Beach Island
 → Lighthouse
 → First Orion Interaction
+```
 
 before expanding the rest of the game.
 
-If there is a conflict between adding a new system and finishing a playable scene,
-always choose the playable scene.
+If there is a conflict between adding a new system and finishing a playable scene, always choose the playable scene.
