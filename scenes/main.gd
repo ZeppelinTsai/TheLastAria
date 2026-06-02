@@ -240,7 +240,7 @@ func next_dialog():
 func show_dialog(index):
 	var d = active_dialogs[index]
 	var speaker_id = str(d.get("speaker", ""))
-	var expression = str(d.get("expression", "default"))
+	var expression = get_dialog_expression(d, "default")
 	dialog_debug_speaker_id = speaker_id
 	dialog_debug_expression = expression
 	update_prelude_scene(str(d.get("scene", "")))
@@ -537,7 +537,7 @@ func show_dialog_standees(entry: Dictionary, speaker_id: String, expression: Str
 		var item_character := str(item.get("character", item.get("speaker", "")))
 		if item_character == "":
 			continue
-		var item_expression := str(item.get("expression", expression))
+		var item_expression := get_dialog_expression(item, expression)
 		var overrides := {}
 		if item.has("layout") and typeof(item["layout"]) == TYPE_DICTIONARY:
 			overrides = item["layout"]
@@ -572,6 +572,15 @@ func hide_dialog_standees() -> void:
 	for node in dialog_standee_nodes.values():
 		if node:
 			node.visible = false
+
+func get_dialog_expression(source: Dictionary, fallback := "default") -> String:
+	var expression := str(source.get("expression", "")).strip_edges()
+	if expression != "":
+		return expression
+	var tachie := str(source.get("tachie", "")).strip_edges()
+	if tachie != "":
+		return tachie
+	return fallback
 
 func configure_dialog_standee_node(standee_node: TextureRect, layout: Dictionary, is_speaking: bool) -> void:
 	if not standee_node or not dialog_box:

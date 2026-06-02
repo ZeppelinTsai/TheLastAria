@@ -46,8 +46,11 @@ var pause_status_label: Label
 var pause_options_modal: Control
 var pause_options_status_label: Label
 var pause_localized_controls := {}
+var pause_resolution_select: OptionButton
 var pause_language_select: OptionButton
 var pause_language_locale_ids: Array[String] = []
+var pause_control_scheme_select: OptionButton
+var pause_control_scheme_ids: Array[String] = []
 var pause_slot_modal: Control
 var pause_slot_title_label: Label
 var pause_slot_status_label: Label
@@ -82,6 +85,7 @@ func _ready() -> void:
 	load_dialogue_sets()
 	setup_pause_menu()
 	LocalizationManager.locale_changed.connect(_on_locale_changed)
+	SettingsManager.settings_changed.connect(_on_settings_changed)
 	if player:
 		SaveManager.register_player(player)
 	on_world_ready()
@@ -263,7 +267,7 @@ func show_dialog(index: int) -> void:
 		return
 
 	var speaker_id = str(entry.get("speaker", ""))
-	var expression = str(entry.get("expression", "default"))
+	var expression = get_dialog_expression(entry, "default")
 	dialog_debug_speaker_id = speaker_id
 	dialog_debug_expression = expression
 	if str(entry.get("effect", "")) == "shake":
@@ -318,7 +322,7 @@ func show_dialog_standees(entry: Dictionary, speaker_id: String, expression: Str
 		var item_character := str(item.get("character", item.get("speaker", "")))
 		if item_character == "":
 			continue
-		var item_expression := str(item.get("expression", expression))
+		var item_expression := get_dialog_expression(item, expression)
 		var overrides := {}
 		if item.has("layout") and typeof(item["layout"]) == TYPE_DICTIONARY:
 			overrides = item["layout"]
@@ -326,9 +330,9 @@ func show_dialog_standees(entry: Dictionary, speaker_id: String, expression: Str
 			overrides = item.duplicate(true)
 		var node := get_dialog_standee_node(item_character)
 		var texture := CharacterVisualManager.get_dialog_standee(item_character, item_expression)
-		node.texture = texture
-		node.visible = texture != null
 		var layout := CharacterVisualManager.get_dialog_standee_layout(item_character, overrides)
+		node.texture = texture
+		node.visible = texture != null and bool(layout.get("visible", true))
 		configure_dialog_standee_node(node, layout, item_character == speaker_id)
 		if item_character == speaker_id:
 			speaker_avatar = node
@@ -353,6 +357,15 @@ func hide_dialog_standees() -> void:
 	for node in dialog_standee_nodes.values():
 		if node:
 			node.visible = false
+
+func get_dialog_expression(source: Dictionary, fallback := "default") -> String:
+	var expression := str(source.get("expression", "")).strip_edges()
+	if expression != "":
+		return expression
+	var tachie := str(source.get("tachie", "")).strip_edges()
+	if tachie != "":
+		return tachie
+	return fallback
 
 func configure_dialog_standee_node(standee_node: TextureRect, layout: Dictionary, is_speaking: bool) -> void:
 	if not standee_node or not dialog_box:
@@ -763,13 +776,11 @@ func build_pause_options_modal(layer: CanvasLayer) -> void:
 	register_pause_localized_control(resolution_label, "options.resolution")
 	content.add_child(resolution_label)
 
-	var resolution_select = OptionButton.new()
-	resolution_select.custom_minimum_size = Vector2(360, 38)
-	resolution_select.add_item("1920 x 1080")
-	resolution_select.add_item("1600 x 900")
-	resolution_select.add_item("1280 x 720")
-	resolution_select.item_selected.connect(_on_pause_options_changed)
-	content.add_child(resolution_select)
+	pause_resolution_select = OptionButton.new()
+	pause_resolution_select.custom_minimum_size = Vector2(360, 38)
+	populate_pause_resolution_select()
+	pause_resolution_select.item_selected.connect(_on_pause_resolution_selected)
+	content.add_child(pause_resolution_select)
 
 	var language_label = Label.new()
 	language_label.text = localize("options.language")
@@ -787,18 +798,24 @@ func build_pause_options_modal(layer: CanvasLayer) -> void:
 	register_pause_localized_control(controls_label, "options.controls")
 	content.add_child(controls_label)
 
-	var controls_button = create_pause_button(localize("options.controls_mapping"))
-	register_pause_localized_control(controls_button, "options.controls_mapping")
-	controls_button.custom_minimum_size = Vector2(360, 42)
-	controls_button.pressed.connect(_on_pause_options_changed.bind(0))
-	content.add_child(controls_button)
+	pause_control_scheme_select = OptionButton.new()
+	pause_control_scheme_select.custom_minimum_size = Vector2(360, 38)
+	populate_pause_control_scheme_select()
+	pause_control_scheme_select.item_selected.connect(_on_pause_control_scheme_selected)
+	content.add_child(pause_control_scheme_select)
 
 	pause_options_status_label = Label.new()
-	pause_options_status_label.text = localize("options.ui_only")
+	pause_options_status_label.text = localize("options.saved")
 	pause_options_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	pause_options_status_label.custom_minimum_size = Vector2(360, 30)
 	pause_options_status_label.modulate = Color(0.78, 0.9, 1.0, 1.0)
 	content.add_child(pause_options_status_label)
+
+	var reset_button = create_pause_button(localize("options.reset_defaults"))
+	register_pause_localized_control(reset_button, "options.reset_defaults")
+	reset_button.custom_minimum_size = Vector2(360, 42)
+	reset_button.pressed.connect(reset_pause_options_to_defaults)
+	content.add_child(reset_button)
 
 	var back_button = create_pause_button(localize("menu.back"))
 	register_pause_localized_control(back_button, "menu.back")
@@ -880,8 +897,21 @@ func refresh_pause_localized_text() -> void:
 		if not is_instance_valid(control):
 			continue
 		control.text = localize(str(pause_localized_controls[control]))
+	populate_pause_control_scheme_select()
+	refresh_pause_resolution_select_selection()
 	refresh_pause_language_select_selection()
 	refresh_pause_slots()
+
+func populate_pause_resolution_select() -> void:
+	pause_resolution_select.clear()
+	for index in range(SettingsManager.RESOLUTIONS.size()):
+		pause_resolution_select.add_item(SettingsManager.get_resolution_label(index))
+	refresh_pause_resolution_select_selection()
+
+func refresh_pause_resolution_select_selection() -> void:
+	if not pause_resolution_select:
+		return
+	pause_resolution_select.select(SettingsManager.get_resolution_index())
 
 func populate_pause_language_select() -> void:
 	pause_language_select.clear()
@@ -897,6 +927,23 @@ func refresh_pause_language_select_selection() -> void:
 	var locale_index := pause_language_locale_ids.find(LocalizationManager.locale)
 	if locale_index >= 0:
 		pause_language_select.select(locale_index)
+
+func populate_pause_control_scheme_select() -> void:
+	if not pause_control_scheme_select:
+		return
+	pause_control_scheme_select.clear()
+	pause_control_scheme_ids.clear()
+	for control_scheme in SettingsManager.CONTROL_SCHEMES:
+		pause_control_scheme_ids.append(control_scheme)
+		pause_control_scheme_select.add_item(localize(SettingsManager.get_control_scheme_label_key(control_scheme)))
+	refresh_pause_control_scheme_select_selection()
+
+func refresh_pause_control_scheme_select_selection() -> void:
+	if not pause_control_scheme_select:
+		return
+	var control_scheme_index := pause_control_scheme_ids.find(SettingsManager.get_control_scheme())
+	if control_scheme_index >= 0:
+		pause_control_scheme_select.select(control_scheme_index)
 
 func toggle_pause_menu() -> void:
 	if pause_menu and pause_menu.visible:
@@ -922,7 +969,8 @@ func close_pause_menu() -> void:
 func open_pause_options() -> void:
 	close_pause_slot_modal()
 	if pause_options_status_label:
-		pause_options_status_label.text = localize("options.ui_only")
+		pause_options_status_label.text = localize("options.saved")
+	refresh_pause_options_selections()
 	if pause_options_modal:
 		pause_options_modal.visible = true
 
@@ -930,18 +978,42 @@ func close_pause_options() -> void:
 	if pause_options_modal:
 		pause_options_modal.visible = false
 
-func _on_pause_options_changed(_value = 0) -> void:
+func refresh_pause_options_selections() -> void:
+	refresh_pause_resolution_select_selection()
+	refresh_pause_language_select_selection()
+	refresh_pause_control_scheme_select_selection()
+
+func show_pause_options_saved_status() -> void:
 	if pause_options_status_label:
-		pause_options_status_label.text = localize("options.changed")
+		pause_options_status_label.text = localize("options.saved")
+
+func _on_pause_resolution_selected(index: int) -> void:
+	SettingsManager.set_resolution_index(index)
+	show_pause_options_saved_status()
+
+func _on_pause_control_scheme_selected(index: int) -> void:
+	if index < 0 or index >= pause_control_scheme_ids.size():
+		return
+	SettingsManager.set_control_scheme(pause_control_scheme_ids[index])
+	show_pause_options_saved_status()
 
 func _on_pause_language_selected(index: int) -> void:
 	if index < 0 or index >= pause_language_locale_ids.size():
 		return
-	LocalizationManager.set_locale(pause_language_locale_ids[index])
-	_on_pause_options_changed(index)
+	SettingsManager.set_locale(pause_language_locale_ids[index])
+	show_pause_options_saved_status()
 
 func _on_locale_changed(_locale: String) -> void:
 	refresh_pause_localized_text()
+
+func _on_settings_changed(_settings: Dictionary) -> void:
+	refresh_pause_options_selections()
+
+func reset_pause_options_to_defaults() -> void:
+	SettingsManager.reset_to_defaults()
+	refresh_pause_options_selections()
+	if pause_options_status_label:
+		pause_options_status_label.text = localize("options.reset_done")
 
 func save_from_pause_menu() -> void:
 	open_pause_slot_modal(PauseSlotMode.SAVE)

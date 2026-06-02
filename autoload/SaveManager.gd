@@ -13,6 +13,7 @@ var default_save_data := {
 	"player_position": {"x": 0.0, "y": 0.0},
 	"flags": {},
 	"story": {},
+	"settings": {},
 	"saved_at_unix": 0,
 	"location": "亞特蘭提斯",
 }
@@ -134,6 +135,8 @@ func save_game(slot := -1) -> bool:
 		set_active_slot(slot)
 
 	save_data["scene"] = get_current_scene_path()
+	if has_node("/root/SettingsManager"):
+		save_data["settings"] = SettingsManager.get_settings_snapshot()
 	save_data["saved_at_unix"] = Time.get_unix_time_from_system()
 
 	var file = FileAccess.open(get_save_path(active_slot), FileAccess.WRITE)
@@ -169,8 +172,16 @@ func load_game(slot := -1) -> bool:
 
 	save_data = default_save_data.duplicate(true)
 	save_data.merge(parsed, true)
+	apply_loaded_settings()
 	dirty = false
 	return true
+
+func apply_loaded_settings() -> void:
+	if not has_node("/root/SettingsManager"):
+		return
+	var loaded_settings = save_data.get("settings", {})
+	if typeof(loaded_settings) == TYPE_DICTIONARY and not loaded_settings.is_empty():
+		SettingsManager.apply_settings_from_snapshot(loaded_settings, true)
 
 func delete_save_file(slot := -1) -> void:
 	var save_path = get_save_path(slot)

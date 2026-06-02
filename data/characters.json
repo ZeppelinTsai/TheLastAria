@@ -12,10 +12,12 @@
       "scale": 1.0
     },
     "portraits": {
-      "default": "res://img/lyra.png"
+      "default": "res://img/tachie/lyra/lyra_default.png",
+      "smile": "res://img/tachie/lyra/lyra_smile.png"
     },
     "busts": {
-      "default": "res://img/lyra.png"
+      "default": "res://img/tachie/lyra/lyra_default.png",
+      "smile": "res://img/tachie/lyra/lyra_smile.png"
     }
   },
   "Lumi": {

@@ -12,8 +12,11 @@ var status_label: Label
 var options_modal: Control
 var options_status_label: Label
 var localized_controls := {}
+var resolution_select: OptionButton
 var language_select: OptionButton
 var language_locale_ids: Array[String] = []
+var control_scheme_select: OptionButton
+var control_scheme_ids: Array[String] = []
 var slot_modal_layer: CanvasLayer
 var slot_modal: Control
 var slot_title_label: Label
@@ -32,6 +35,7 @@ func _ready() -> void:
 	build_options_modal()
 	build_slot_modal()
 	LocalizationManager.locale_changed.connect(_on_locale_changed)
+	SettingsManager.settings_changed.connect(_on_settings_changed)
 	show_main_actions()
 
 func build_menu() -> void:
@@ -142,12 +146,10 @@ func build_options_modal() -> void:
 	register_localized_control(resolution_label, "options.resolution")
 	content.add_child(resolution_label)
 
-	var resolution_select = OptionButton.new()
+	resolution_select = OptionButton.new()
 	resolution_select.custom_minimum_size = Vector2(360, 38)
-	resolution_select.add_item("1920 x 1080")
-	resolution_select.add_item("1600 x 900")
-	resolution_select.add_item("1280 x 720")
-	resolution_select.item_selected.connect(_on_options_changed)
+	populate_resolution_select()
+	resolution_select.item_selected.connect(_on_resolution_selected)
 	content.add_child(resolution_select)
 
 	var language_label = Label.new()
@@ -166,18 +168,24 @@ func build_options_modal() -> void:
 	register_localized_control(controls_label, "options.controls")
 	content.add_child(controls_label)
 
-	var controls_button = create_menu_button(localize("options.controls_mapping"))
-	register_localized_control(controls_button, "options.controls_mapping")
-	controls_button.custom_minimum_size = Vector2(360, 42)
-	controls_button.pressed.connect(_on_options_changed.bind(0))
-	content.add_child(controls_button)
+	control_scheme_select = OptionButton.new()
+	control_scheme_select.custom_minimum_size = Vector2(360, 38)
+	populate_control_scheme_select()
+	control_scheme_select.item_selected.connect(_on_control_scheme_selected)
+	content.add_child(control_scheme_select)
 
 	options_status_label = Label.new()
-	options_status_label.text = localize("options.ui_only")
+	options_status_label.text = localize("options.saved")
 	options_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	options_status_label.custom_minimum_size = Vector2(360, 30)
 	options_status_label.modulate = Color(0.78, 0.9, 1.0, 1.0)
 	content.add_child(options_status_label)
+
+	var reset_button = create_menu_button(localize("options.reset_defaults"))
+	register_localized_control(reset_button, "options.reset_defaults")
+	reset_button.custom_minimum_size = Vector2(360, 42)
+	reset_button.pressed.connect(reset_options_to_defaults)
+	content.add_child(reset_button)
 
 	var back_button = create_menu_button(localize("menu.back"))
 	register_localized_control(back_button, "menu.back")
@@ -273,8 +281,21 @@ func refresh_localized_text() -> void:
 		if not is_instance_valid(control):
 			continue
 		control.text = localize(str(localized_controls[control]))
+	populate_control_scheme_select()
+	refresh_resolution_select_selection()
 	refresh_language_select_selection()
 	refresh_slots()
+
+func populate_resolution_select() -> void:
+	resolution_select.clear()
+	for index in range(SettingsManager.RESOLUTIONS.size()):
+		resolution_select.add_item(SettingsManager.get_resolution_label(index))
+	refresh_resolution_select_selection()
+
+func refresh_resolution_select_selection() -> void:
+	if not resolution_select:
+		return
+	resolution_select.select(SettingsManager.get_resolution_index())
 
 func populate_language_select() -> void:
 	language_select.clear()
@@ -291,6 +312,23 @@ func refresh_language_select_selection() -> void:
 	if locale_index >= 0:
 		language_select.select(locale_index)
 
+func populate_control_scheme_select() -> void:
+	if not control_scheme_select:
+		return
+	control_scheme_select.clear()
+	control_scheme_ids.clear()
+	for control_scheme in SettingsManager.CONTROL_SCHEMES:
+		control_scheme_ids.append(control_scheme)
+		control_scheme_select.add_item(localize(SettingsManager.get_control_scheme_label_key(control_scheme)))
+	refresh_control_scheme_select_selection()
+
+func refresh_control_scheme_select_selection() -> void:
+	if not control_scheme_select:
+		return
+	var control_scheme_index := control_scheme_ids.find(SettingsManager.get_control_scheme())
+	if control_scheme_index >= 0:
+		control_scheme_select.select(control_scheme_index)
+
 func show_main_actions() -> void:
 	slot_mode = SlotMode.NONE
 	close_slot_modal()
@@ -304,23 +342,47 @@ func close_slot_modal() -> void:
 
 func open_options_modal() -> void:
 	close_slot_modal()
-	options_status_label.text = localize("options.ui_only")
+	options_status_label.text = localize("options.saved")
+	refresh_options_selections()
 	options_modal.visible = true
 
 func close_options_modal() -> void:
 	options_modal.visible = false
 
-func _on_options_changed(_value = 0) -> void:
-	options_status_label.text = localize("options.changed")
+func refresh_options_selections() -> void:
+	refresh_resolution_select_selection()
+	refresh_language_select_selection()
+	refresh_control_scheme_select_selection()
+
+func show_options_saved_status() -> void:
+	options_status_label.text = localize("options.saved")
+
+func _on_resolution_selected(index: int) -> void:
+	SettingsManager.set_resolution_index(index)
+	show_options_saved_status()
+
+func _on_control_scheme_selected(index: int) -> void:
+	if index < 0 or index >= control_scheme_ids.size():
+		return
+	SettingsManager.set_control_scheme(control_scheme_ids[index])
+	show_options_saved_status()
 
 func _on_language_selected(index: int) -> void:
 	if index < 0 or index >= language_locale_ids.size():
 		return
-	LocalizationManager.set_locale(language_locale_ids[index])
-	_on_options_changed(index)
+	SettingsManager.set_locale(language_locale_ids[index])
+	show_options_saved_status()
 
 func _on_locale_changed(_locale: String) -> void:
 	refresh_localized_text()
+
+func _on_settings_changed(_settings: Dictionary) -> void:
+	refresh_options_selections()
+
+func reset_options_to_defaults() -> void:
+	SettingsManager.reset_to_defaults()
+	refresh_options_selections()
+	options_status_label.text = localize("options.reset_done")
 
 func open_new_game_slots() -> void:
 	slot_mode = SlotMode.NEW_GAME

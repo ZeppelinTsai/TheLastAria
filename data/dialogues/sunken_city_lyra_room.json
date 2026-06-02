@@ -1,175 +1,298 @@
 {
-	"opening_after_storybook": [
-		{
-			"speaker": "Lumi",
-			"text": "你又在看那本書啊？",
-			"scene": "atlantis",
-			"text_key": "sunken_city_lyra_room.opening_after_storybook.001.lumi.text"
-		},
-		{
-			"speaker": "StageDir",
-			"text": "Lyra 將書頁輕輕闔上。",
-			"scene": "atlantis",
-			"text_key": "sunken_city_lyra_room.opening_after_storybook.002.stagedir.text"
-		},
-		{
-			"speaker": "Lumi",
-			"text": "明明最後都變成泡泡了，為什麼還算 Happy Ending？",
-			"scene": "atlantis",
-			"text_key": "sunken_city_lyra_room.opening_after_storybook.003.lumi.text"
-		},
-		{
-			"speaker": "StageDir",
-			"text": "Lyra 沒有回答，只是微微笑了一下。",
-			"scene": "atlantis",
-			"text_key": "sunken_city_lyra_room.opening_after_storybook.004.stagedir.text"
-		},
-		{
-			"speaker": "Lumi",
-			"text": "你笑什麼啦。",
-			"scene": "atlantis",
-			"text_key": "sunken_city_lyra_room.opening_after_storybook.005.lumi.text"
-		},
-		{
-			"speaker": "Lumi",
-			"text": "好吧，反正你每次看完都這個表情。",
-			"scene": "atlantis",
-			"text_key": "sunken_city_lyra_room.opening_after_storybook.006.lumi.text"
-		},
-		{
-			"speaker": "Lumi",
-			"text": "咦？",
-			"scene": "quake",
-			"effect": "shake",
-			"text_key": "sunken_city_lyra_room.opening_after_storybook.007.lumi.text"
-		},
-		{
-			"speaker": "Lumi",
-			"text": "地震？快，我們得出去看看！",
-			"scene": "quake",
-			"effect": "shake",
-			"text_key": "sunken_city_lyra_room.opening_after_storybook.008.lumi.text"
-		}
-	],
-	"movement_tutorial_after_storybook": [
-		{
-			"speaker": "System",
-			"text": "操作說明：使用 WASD 或方向鍵移動，也可以用滑鼠左鍵點擊地面移動。",
-			"text_key": "sunken_city_lyra_room.movement_tutorial_after_storybook.001.system.text"
-		},
-		{
-			"speaker": "System",
-			"text": "靠近可互動的地方會觸發對話。對話中可以按 Enter 或點擊滑鼠左鍵繼續。",
-			"text_key": "sunken_city_lyra_room.movement_tutorial_after_storybook.002.system.text"
-		}
-	],
-	"storybook_after_reading": [
-		{
-			"speaker": "Lumi",
-			"text": "你又在看那本啊？",
-			"text_key": "sunken_city_lyra_room.storybook_after_reading.001.lumi.text"
-		},
-		{
-			"speaker": "Lumi",
-			"text": "明明最後變成泡泡了，為什麼還算 Happy Ending？",
-			"text_key": "sunken_city_lyra_room.storybook_after_reading.002.lumi.text"
-		},
-		{
-			"speaker": "Lyra",
-			"text": "……",
-			"text_key": "sunken_city_lyra_room.storybook_after_reading.003.lyra.text"
-		},
-		{
-			"speaker": "Lumi",
-			"text": "你笑什麼啦。",
-			"text_key": "sunken_city_lyra_room.storybook_after_reading.004.lumi.text"
-		}
-	],
-	"storybook_after_reading_again": [
-		{
-			"speaker": "Lumi",
-			"text": "你已經把那頁看到會背了吧。",
-			"text_key": "sunken_city_lyra_room.storybook_after_reading_again.001.lumi.text"
-		},
-		{
-			"speaker": "Lyra",
-			"text": "……",
-			"text_key": "sunken_city_lyra_room.storybook_after_reading_again.002.lyra.text"
-		},
-		{
-			"speaker": "Lumi",
-			"text": "好啦，我知道你喜歡。",
-			"text_key": "sunken_city_lyra_room.storybook_after_reading_again.003.lumi.text"
-		}
-	],
-	"storybook_after_reading_quiet": [
-		{
-			"speaker": "Lumi",
-			"text": "這本書明明很舊，但你每次看都很安靜。",
-			"text_key": "sunken_city_lyra_room.storybook_after_reading_quiet.001.lumi.text"
-		}
-	],
-	"window": [
-		{
-			"speaker": "Lumi",
-			"text": "外面的水光今天很安靜。",
-			"text_key": "sunken_city_lyra_room.window.001.lumi.text"
-		}
-	],
-	"window_lights": [
-		{
-			"speaker": "Lumi",
-			"text": "遠處的燈好像比平常暗一點。",
-			"text_key": "sunken_city_lyra_room.window_lights.001.lumi.text"
-		}
-	],
-	"window_surface": [
-		{
-			"speaker": "Lumi",
-			"text": "你又在想海面上面的事嗎？",
-			"text_key": "sunken_city_lyra_room.window_surface.001.lumi.text"
-		}
-	],
-	"bookshelf": [
-		{
-			"speaker": "Lumi",
-			"text": "這裡全都是你反覆看過的書。",
-			"text_key": "sunken_city_lyra_room.bookshelf.001.lumi.text"
-		}
-	],
-	"bookshelf_notes": [
-		{
-			"speaker": "Lumi",
-			"text": "書頁裡夾著你的筆記。字還是一樣小。",
-			"text_key": "sunken_city_lyra_room.bookshelf_notes.001.lumi.text"
-		}
-	],
-	"bookshelf_old_story": [
-		{
-			"speaker": "Lumi",
-			"text": "童話書、歷史書、還有一堆看起來很難的書。",
-			"text_key": "sunken_city_lyra_room.bookshelf_old_story.001.lumi.text"
-		}
-	],
-	"bed": [
-		{
-			"speaker": "Lumi",
-			"text": "現在不是睡回籠覺的時候吧？",
-			"text_key": "sunken_city_lyra_room.bed.001.lumi.text"
-		}
-	],
-	"bed_blanket": [
-		{
-			"speaker": "Lumi",
-			"text": "被子折得很整齊。真難得。",
-			"text_key": "sunken_city_lyra_room.bed_blanket.001.lumi.text"
-		}
-	],
-	"bed_morning": [
-		{
-			"speaker": "Lumi",
-			"text": "再躺回去的話，我會把你叫起來喔。",
-			"text_key": "sunken_city_lyra_room.bed_morning.001.lumi.text"
-		}
-	]
+  "opening_after_storybook": [
+    {
+      "speaker": "Lumi",
+      "text": "你又在看那本書啊？",
+      "scene": "atlantis",
+      "text_key": "sunken_city_lyra_room.opening_after_storybook.001.lumi.text",
+      "expression": "default",
+      "standees": [
+        {
+          "character": "Lyra",
+          "position": "left",
+          "expression": "default"
+        },
+        {
+          "character": "Lumi",
+          "position": "right",
+          "expression": "default"
+        }
+      ]
+    },
+    {
+      "speaker": "StageDir",
+      "text": "Lyra 將書頁輕輕闔上。",
+      "scene": "atlantis",
+      "text_key": "sunken_city_lyra_room.opening_after_storybook.002.stagedir.text",
+      "expression": "default",
+      "standees": [
+        {
+          "character": "Lyra",
+          "position": "left",
+          "expression": "default"
+        },
+        {
+          "character": "Lumi",
+          "position": "right",
+          "expression": "default"
+        }
+      ]
+    },
+    {
+      "speaker": "Lumi",
+      "text": "明明最後都變成泡泡了，為什麼還算 Happy Ending？",
+      "scene": "atlantis",
+      "text_key": "sunken_city_lyra_room.opening_after_storybook.003.lumi.text",
+      "expression": "default",
+      "standees": [
+        {
+          "character": "Lyra",
+          "position": "left",
+          "expression": "default"
+        },
+        {
+          "character": "Lumi",
+          "position": "right",
+          "expression": "default"
+        }
+      ]
+    },
+    {
+      "speaker": "StageDir",
+      "text": "Lyra 沒有回答，只是微微笑了一下。",
+      "scene": "atlantis",
+      "text_key": "sunken_city_lyra_room.opening_after_storybook.004.stagedir.text",
+      "expression": "default",
+      "standees": [
+        {
+          "character": "Lyra",
+          "position": "left",
+          "expression": "smile"
+        },
+        {
+          "character": "Lumi",
+          "position": "right",
+          "expression": "default"
+        }
+      ]
+    },
+    {
+      "speaker": "Lumi",
+      "text": "你笑什麼啦。",
+      "scene": "atlantis",
+      "text_key": "sunken_city_lyra_room.opening_after_storybook.005.lumi.text",
+      "expression": "default",
+      "standees": [
+        {
+          "character": "Lyra",
+          "position": "left",
+          "expression": "smile"
+        },
+        {
+          "character": "Lumi",
+          "position": "right",
+          "expression": "default"
+        }
+      ]
+    },
+    {
+      "speaker": "Lumi",
+      "text": "好吧，反正你每次看完都這個表情。",
+      "scene": "atlantis",
+      "text_key": "sunken_city_lyra_room.opening_after_storybook.006.lumi.text",
+      "expression": "default",
+      "standees": [
+        {
+          "character": "Lyra",
+          "position": "left",
+          "expression": "smile"
+        },
+        {
+          "character": "Lumi",
+          "position": "right",
+          "expression": "default"
+        }
+      ]
+    },
+    {
+      "speaker": "Lumi",
+      "text": "咦？",
+      "scene": "quake",
+      "effect": "shake",
+      "text_key": "sunken_city_lyra_room.opening_after_storybook.007.lumi.text",
+      "expression": "default",
+      "standees": [
+        {
+          "character": "Lyra",
+          "position": "left",
+          "expression": "default"
+        },
+        {
+          "character": "Lumi",
+          "position": "right",
+          "expression": "default"
+        }
+      ]
+    },
+    {
+      "speaker": "Lumi",
+      "text": "地震？快，我們得出去看看！",
+      "scene": "quake",
+      "effect": "shake",
+      "text_key": "sunken_city_lyra_room.opening_after_storybook.008.lumi.text",
+      "expression": "default",
+      "standees": [
+        {
+          "character": "Lyra",
+          "position": "left",
+          "expression": "default"
+        },
+        {
+          "character": "Lumi",
+          "position": "right",
+          "expression": "default"
+        }
+      ]
+    }
+  ],
+  "movement_tutorial_after_storybook": [
+    {
+      "speaker": "System",
+      "text": "操作說明：使用 WASD 或方向鍵移動，也可以用滑鼠左鍵點擊地面移動。",
+      "text_key": "sunken_city_lyra_room.movement_tutorial_after_storybook.001.system.text",
+      "expression": "default"
+    },
+    {
+      "speaker": "System",
+      "text": "靠近可互動的地方會觸發對話。對話中可以按 Enter 或點擊滑鼠左鍵繼續。",
+      "text_key": "sunken_city_lyra_room.movement_tutorial_after_storybook.002.system.text",
+      "expression": "default"
+    }
+  ],
+  "storybook_after_reading": [
+    {
+      "speaker": "Lumi",
+      "text": "你又在看那本啊？",
+      "text_key": "sunken_city_lyra_room.storybook_after_reading.001.lumi.text",
+      "expression": "default"
+    },
+    {
+      "speaker": "Lumi",
+      "text": "明明最後變成泡泡了，為什麼還算 Happy Ending？",
+      "text_key": "sunken_city_lyra_room.storybook_after_reading.002.lumi.text",
+      "expression": "default"
+    },
+    {
+      "speaker": "Lyra",
+      "text": "……",
+      "text_key": "sunken_city_lyra_room.storybook_after_reading.003.lyra.text",
+      "expression": "smile"
+    },
+    {
+      "speaker": "Lumi",
+      "text": "你笑什麼啦。",
+      "text_key": "sunken_city_lyra_room.storybook_after_reading.004.lumi.text",
+      "expression": "default"
+    }
+  ],
+  "storybook_after_reading_again": [
+    {
+      "speaker": "Lumi",
+      "text": "你已經把那頁看到會背了吧。",
+      "text_key": "sunken_city_lyra_room.storybook_after_reading_again.001.lumi.text",
+      "expression": "default"
+    },
+    {
+      "speaker": "Lyra",
+      "text": "……",
+      "text_key": "sunken_city_lyra_room.storybook_after_reading_again.002.lyra.text",
+      "expression": "default"
+    },
+    {
+      "speaker": "Lumi",
+      "text": "好啦，我知道你喜歡。",
+      "text_key": "sunken_city_lyra_room.storybook_after_reading_again.003.lumi.text",
+      "expression": "default"
+    }
+  ],
+  "storybook_after_reading_quiet": [
+    {
+      "speaker": "Lumi",
+      "text": "這本書明明很舊，但你每次看都很安靜。",
+      "text_key": "sunken_city_lyra_room.storybook_after_reading_quiet.001.lumi.text",
+      "expression": "default"
+    }
+  ],
+  "window": [
+    {
+      "speaker": "Lumi",
+      "text": "外面的水光今天很安靜。",
+      "text_key": "sunken_city_lyra_room.window.001.lumi.text",
+      "expression": "default"
+    }
+  ],
+  "window_lights": [
+    {
+      "speaker": "Lumi",
+      "text": "遠處的燈好像比平常暗一點。",
+      "text_key": "sunken_city_lyra_room.window_lights.001.lumi.text",
+      "expression": "default"
+    }
+  ],
+  "window_surface": [
+    {
+      "speaker": "Lumi",
+      "text": "你又在想海面上面的事嗎？",
+      "text_key": "sunken_city_lyra_room.window_surface.001.lumi.text",
+      "expression": "default"
+    }
+  ],
+  "bookshelf": [
+    {
+      "speaker": "Lumi",
+      "text": "這裡全都是你反覆看過的書。",
+      "text_key": "sunken_city_lyra_room.bookshelf.001.lumi.text",
+      "expression": "default"
+    }
+  ],
+  "bookshelf_notes": [
+    {
+      "speaker": "Lumi",
+      "text": "書頁裡夾著你的筆記。字還是一樣小。",
+      "text_key": "sunken_city_lyra_room.bookshelf_notes.001.lumi.text",
+      "expression": "default"
+    }
+  ],
+  "bookshelf_old_story": [
+    {
+      "speaker": "Lumi",
+      "text": "童話書、歷史書、還有一堆看起來很難的書。",
+      "text_key": "sunken_city_lyra_room.bookshelf_old_story.001.lumi.text",
+      "expression": "default"
+    }
+  ],
+  "bed": [
+    {
+      "speaker": "Lumi",
+      "text": "現在不是睡回籠覺的時候吧？",
+      "text_key": "sunken_city_lyra_room.bed.001.lumi.text",
+      "expression": "default"
+    }
+  ],
+  "bed_blanket": [
+    {
+      "speaker": "Lumi",
+      "text": "被子折得很整齊。真難得。",
+      "text_key": "sunken_city_lyra_room.bed_blanket.001.lumi.text",
+      "expression": "default"
+    }
+  ],
+  "bed_morning": [
+    {
+      "speaker": "Lumi",
+      "text": "再躺回去的話，我會把你叫起來喔。",
+      "text_key": "sunken_city_lyra_room.bed_morning.001.lumi.text",
+      "expression": "default"
+    }
+  ]
 }

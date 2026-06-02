@@ -53,6 +53,27 @@ def make_key(dialogue_id: str, index: int, speaker: str) -> str:
     return f"sunken_city_lyra_room.{dialogue_id}.{index:03d}.{speaker.lower()}.text"
 
 
+def normalize_entry(entry: dict, dialogue_id: str) -> None:
+    if "expression" not in entry and "tachie" in entry:
+        entry["expression"] = entry["tachie"]
+    entry.setdefault("expression", "default")
+    if dialogue_id == "opening_after_storybook":
+        existing_standees = entry.get("standees", [])
+        expression_by_character: dict[str, str] = {}
+        if isinstance(existing_standees, list):
+            for standee in existing_standees:
+                if not isinstance(standee, dict):
+                    continue
+                character = str(standee.get("character", standee.get("speaker", ""))).strip()
+                expression = str(standee.get("expression", standee.get("tachie", ""))).strip()
+                if character and expression:
+                    expression_by_character[character] = expression
+        entry["standees"] = [
+            {"character": "Lyra", "position": "left", "expression": expression_by_character.get("Lyra", "default")},
+            {"character": "Lumi", "position": "right", "expression": expression_by_character.get("Lumi", "default")},
+        ]
+
+
 def main() -> int:
     dialogue_data = json.loads(DIALOGUE_PATH.read_text(encoding="utf-8"))
     localization = json.loads(LOCALIZATION_PATH.read_text(encoding="utf-8"))
@@ -69,6 +90,7 @@ def main() -> int:
             speaker = str(entry.get("speaker", "text")).strip() or "text"
             key = make_key(dialogue_id, index, speaker)
             entry["text_key"] = key
+            normalize_entry(entry, dialogue_id)
             source_text = str(entry.get("text", ""))
             if source_text and not localization["zh_TW"].get(key):
                 localization["zh_TW"][key] = source_text

@@ -23,6 +23,7 @@ CharacterVisualManager="*res://autoload/CharacterVisualManager.gd"
 GameState="*uid://ftpdcfddxxep"
 SceneTransition="*uid://ocbbo2bq52ih"
 LocalizationManager="*res://autoload/LocalizationManager.gd"
+SettingsManager="*res://autoload/SettingsManager.gd"
 
 [display]
 
