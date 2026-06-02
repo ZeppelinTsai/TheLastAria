@@ -890,20 +890,35 @@ func _ensure_lumi_spriteframes() -> void:
 		return
 
 	var new_sf := SpriteFrames.new()
-	func load_frames(range_arr):
-		var texs := []
-		for i in range_arr:
-			var path = "res://img/sprite/lumi/default/Layer %d.png" % i
-			var t = load(path)
-			if t:
-				texs.append(t)
-		return texs
 
 	# mapping based on asset naming: 2-4 up, 5-7 down, 8-10 right, 11-13 left
-	var up = load_frames([2,3,4])
-	var down = load_frames([5,6,7])
-	var right = load_frames([8,9,10])
-	var left = load_frames([11,12,13])
+	var up := []
+	for i in [2, 3, 4]:
+		var path = "res://img/sprite/lumi/default/Layer %d.png" % i
+		var t = load(path)
+		if t:
+			up.append(t)
+
+	var down := []
+	for i in [5, 6, 7]:
+		var path = "res://img/sprite/lumi/default/Layer %d.png" % i
+		var t = load(path)
+		if t:
+			down.append(t)
+
+	var right := []
+	for i in [8, 9, 10]:
+		var path = "res://img/sprite/lumi/default/Layer %d.png" % i
+		var t = load(path)
+		if t:
+			right.append(t)
+
+	var left := []
+	for i in [11, 12, 13]:
+		var path = "res://img/sprite/lumi/default/Layer %d.png" % i
+		var t = load(path)
+		if t:
+			left.append(t)
 
 	if down.size() > 0:
 		new_sf.add_animation("idle_down")
