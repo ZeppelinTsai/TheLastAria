@@ -386,6 +386,12 @@ Dialogue standee placement, multi-character staging, per-line overrides, and deb
 docs/dialog_standee.md
 ```
 
+Localization flow and `text_key` runtime rules are documented in:
+
+```text
+docs/localization.md
+```
+
 Image asset folder conventions are documented in:
 
 ```text

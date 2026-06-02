@@ -1,114 +1,620 @@
 {
 	"prelude_opening": [
-		{"speaker": "StageDir", "text": "黑畫面。", "scene": "black"},
-		{"speaker": "StageDir", "text": "遠方傳來海浪聲。", "scene": "black"},
-		{"speaker": "StageDir", "text": "很久很久以前的留聲機雜音。", "scene": "black"},
-		{"speaker": "StageDir", "text": "有人輕輕翻開一本書。", "scene": "book"},
-		{"speaker": "StageDir", "text": "畫面出現一本古老童話書。封面沒有文字，只有一個坐在月亮上的人魚剪影。", "scene": "book"},
-		{"speaker": "StageDir", "text": "書頁翻開。水彩風動畫開始。", "scene": "fairytale"},
-		{"speaker": "Narration", "text": "很久以前——", "scene": "fairytale"},
-		{"speaker": "Narration", "text": "有一位無法成為人類的人魚公主。", "scene": "fairytale"},
-		{"speaker": "StageDir", "text": "畫面中的小人魚仰望海面。遠方有船。", "scene": "fairytale"},
-		{"speaker": "Narration", "text": "她愛上了一個人類。", "scene": "fairytale"},
-		{"speaker": "StageDir", "text": "暴風雨。船沉沒。人魚將少年拖上岸。", "scene": "storm"},
-		{"speaker": "Narration", "text": "於是，她向魔女交換了雙腳。", "scene": "storm"},
-		{"speaker": "StageDir", "text": "畫面中的魚尾裂開。鮮血化成泡泡。", "scene": "storm"},
-		{"speaker": "Narration", "text": "代價是——她再也無法說話。", "scene": "storm"},
-		{"speaker": "StageDir", "text": "人魚想呼喊，卻發不出聲音。", "scene": "storm"},
-		{"speaker": "Narration", "text": "最後，那個人類並沒有愛上她。", "scene": "dawn"},
-		{"speaker": "StageDir", "text": "黎明。人魚站在海面。", "scene": "dawn"},
-		{"speaker": "Narration", "text": "於是——", "scene": "dawn"},
-		{"speaker": "StageDir", "text": "她慢慢化成泡沫。", "scene": "dawn"},
-		{"speaker": "Narration", "text": "她變成了海上的泡泡。", "scene": "dawn"},
-		{"speaker": "StageDir", "text": "翻頁聲。畫面從童話插畫慢慢變成立體場景。", "scene": "book"},
-		{"speaker": "StageDir", "text": "亞特蘭提斯。發光的海底都市。巨大透明管線流動著藍色光液。魚群從空中漂過。", "scene": "atlantis"},
-		{"speaker": "StageDir", "text": "Lyra 合上童話書。Lumi 飄在旁邊。", "scene": "atlantis"},
-		{"speaker": "Lumi", "text": "又在看那本啊？", "scene": "atlantis"},
-		{"speaker": "StageDir", "text": "Lyra 點頭。", "scene": "atlantis"},
-		{"speaker": "Lumi", "text": "你都不會看膩嗎？", "scene": "atlantis"},
-		{"speaker": "StageDir", "text": "Lyra 抱著書，看向遠方海面。", "scene": "atlantis"},
-		{"speaker": "Lumi", "text": "我還是不懂。", "scene": "atlantis"},
-		{"speaker": "Lumi", "text": "明明最後變成泡泡了，為什麼還算 Happy Ending？", "scene": "atlantis"},
-		{"speaker": "StageDir", "text": "Lyra 想了想，然後輕輕笑了一下。她沒有回答。", "scene": "atlantis"},
-		{"speaker": "StageDir", "text": "突然——", "scene": "atlantis"},
-		{"speaker": "SFX", "text": "低沉轟鳴。", "scene": "quake", "effect": "shake"},
-		{"speaker": "StageDir", "text": "整個海底都市劇烈震動。玻璃管線開始晃動。", "scene": "quake", "effect": "shake"},
-		{"speaker": "Lumi", "text": "地震？！", "scene": "quake", "effect": "shake"},
-		{"speaker": "Lumi", "text": "快去外面看看——！", "scene": "quake", "effect": "shake"},
-		{"speaker": "StageDir", "text": "遠方海面裂開巨大光芒。某種燃燒中的東西墜落深海。", "scene": "impact"}
+		{
+			"speaker": "StageDir",
+			"text": "黑畫面。",
+			"scene": "black",
+			"text_key": "prologue.prelude_opening.001.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "遠方傳來海浪聲。",
+			"scene": "black",
+			"text_key": "prologue.prelude_opening.002.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "很久很久以前的留聲機雜音。",
+			"scene": "black",
+			"text_key": "prologue.prelude_opening.003.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "有人輕輕翻開一本書。",
+			"scene": "book",
+			"text_key": "prologue.prelude_opening.004.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "畫面出現一本古老童話書。封面沒有文字，只有一個坐在月亮上的人魚剪影。",
+			"scene": "book",
+			"text_key": "prologue.prelude_opening.005.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "書頁翻開。水彩風動畫開始。",
+			"scene": "fairytale",
+			"text_key": "prologue.prelude_opening.006.stagedir.text"
+		},
+		{
+			"speaker": "Narration",
+			"text": "很久以前——",
+			"scene": "fairytale",
+			"text_key": "prologue.prelude_opening.007.narration.text"
+		},
+		{
+			"speaker": "Narration",
+			"text": "有一位無法成為人類的人魚公主。",
+			"scene": "fairytale",
+			"text_key": "prologue.prelude_opening.008.narration.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "畫面中的小人魚仰望海面。遠方有船。",
+			"scene": "fairytale",
+			"text_key": "prologue.prelude_opening.009.stagedir.text"
+		},
+		{
+			"speaker": "Narration",
+			"text": "她愛上了一個人類。",
+			"scene": "fairytale",
+			"text_key": "prologue.prelude_opening.010.narration.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "暴風雨。船沉沒。人魚將少年拖上岸。",
+			"scene": "storm",
+			"text_key": "prologue.prelude_opening.011.stagedir.text"
+		},
+		{
+			"speaker": "Narration",
+			"text": "於是，她向魔女交換了雙腳。",
+			"scene": "storm",
+			"text_key": "prologue.prelude_opening.012.narration.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "畫面中的魚尾裂開。鮮血化成泡泡。",
+			"scene": "storm",
+			"text_key": "prologue.prelude_opening.013.stagedir.text"
+		},
+		{
+			"speaker": "Narration",
+			"text": "代價是——她再也無法說話。",
+			"scene": "storm",
+			"text_key": "prologue.prelude_opening.014.narration.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "人魚想呼喊，卻發不出聲音。",
+			"scene": "storm",
+			"text_key": "prologue.prelude_opening.015.stagedir.text"
+		},
+		{
+			"speaker": "Narration",
+			"text": "最後，那個人類並沒有愛上她。",
+			"scene": "dawn",
+			"text_key": "prologue.prelude_opening.016.narration.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "黎明。人魚站在海面。",
+			"scene": "dawn",
+			"text_key": "prologue.prelude_opening.017.stagedir.text"
+		},
+		{
+			"speaker": "Narration",
+			"text": "於是——",
+			"scene": "dawn",
+			"text_key": "prologue.prelude_opening.018.narration.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "她慢慢化成泡沫。",
+			"scene": "dawn",
+			"text_key": "prologue.prelude_opening.019.stagedir.text"
+		},
+		{
+			"speaker": "Narration",
+			"text": "她變成了海上的泡泡。",
+			"scene": "dawn",
+			"text_key": "prologue.prelude_opening.020.narration.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "翻頁聲。畫面從童話插畫慢慢變成立體場景。",
+			"scene": "book",
+			"text_key": "prologue.prelude_opening.021.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "亞特蘭提斯。發光的海底都市。巨大透明管線流動著藍色光液。魚群從空中漂過。",
+			"scene": "atlantis",
+			"text_key": "prologue.prelude_opening.022.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "Lyra 合上童話書。Lumi 飄在旁邊。",
+			"scene": "atlantis",
+			"text_key": "prologue.prelude_opening.023.stagedir.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "又在看那本啊？",
+			"scene": "atlantis",
+			"text_key": "prologue.prelude_opening.024.lumi.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "Lyra 點頭。",
+			"scene": "atlantis",
+			"text_key": "prologue.prelude_opening.025.stagedir.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "你都不會看膩嗎？",
+			"scene": "atlantis",
+			"text_key": "prologue.prelude_opening.026.lumi.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "Lyra 抱著書，看向遠方海面。",
+			"scene": "atlantis",
+			"text_key": "prologue.prelude_opening.027.stagedir.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "我還是不懂。",
+			"scene": "atlantis",
+			"text_key": "prologue.prelude_opening.028.lumi.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "明明最後變成泡泡了，為什麼還算 Happy Ending？",
+			"scene": "atlantis",
+			"text_key": "prologue.prelude_opening.029.lumi.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "Lyra 想了想，然後輕輕笑了一下。她沒有回答。",
+			"scene": "atlantis",
+			"text_key": "prologue.prelude_opening.030.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "突然——",
+			"scene": "atlantis",
+			"text_key": "prologue.prelude_opening.031.stagedir.text"
+		},
+		{
+			"speaker": "SFX",
+			"text": "低沉轟鳴。",
+			"scene": "quake",
+			"effect": "shake",
+			"text_key": "prologue.prelude_opening.032.sfx.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "整個海底都市劇烈震動。玻璃管線開始晃動。",
+			"scene": "quake",
+			"effect": "shake",
+			"text_key": "prologue.prelude_opening.033.stagedir.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "地震？！",
+			"scene": "quake",
+			"effect": "shake",
+			"text_key": "prologue.prelude_opening.034.lumi.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "快去外面看看——！",
+			"scene": "quake",
+			"effect": "shake",
+			"text_key": "prologue.prelude_opening.035.lumi.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "遠方海面裂開巨大光芒。某種燃燒中的東西墜落深海。",
+			"scene": "impact",
+			"text_key": "prologue.prelude_opening.036.stagedir.text"
+		}
 	],
 	"tutorial": [
-		{"speaker": "System", "text": "移動：方向鍵。"},
-		{"speaker": "System", "text": "調查或對話：Enter。"},
-		{"speaker": "System", "text": "選單：Esc。"},
-		{"speaker": "System", "text": "跟 Lumi 說話，然後往震動傳來的方向前進。"}
+		{
+			"speaker": "System",
+			"text": "移動：方向鍵。",
+			"text_key": "prologue.tutorial.001.system.text"
+		},
+		{
+			"speaker": "System",
+			"text": "調查或對話：Enter。",
+			"text_key": "prologue.tutorial.002.system.text"
+		},
+		{
+			"speaker": "System",
+			"text": "選單：Esc。",
+			"text_key": "prologue.tutorial.003.system.text"
+		},
+		{
+			"speaker": "System",
+			"text": "跟 Lumi 說話，然後往震動傳來的方向前進。",
+			"text_key": "prologue.tutorial.004.system.text"
+		}
 	],
 	"lumi_intro": [
-		{"speaker": "Lumi", "text": "Lyra，剛剛那道光你也看到了吧？"},
-		{"speaker": "Lumi", "text": "我有很不好的預感。"},
-		{"speaker": "Lumi", "text": "墜落點應該在右上方的遺跡附近。"},
-		{"speaker": "Lumi", "text": "走吧，我會跟著你。"}
+		{
+			"speaker": "Lumi",
+			"text": "Lyra，剛剛那道光你也看到了吧？",
+			"text_key": "prologue.lumi_intro.001.lumi.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "我有很不好的預感。",
+			"text_key": "prologue.lumi_intro.002.lumi.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "墜落點應該在右上方的遺跡附近。",
+			"text_key": "prologue.lumi_intro.003.lumi.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "走吧，我會跟著你。",
+			"text_key": "prologue.lumi_intro.004.lumi.text"
+		}
 	],
 	"orion_first_seen": [
-		{"speaker": "StageDir", "text": "火花。破裂的金屬。死寂。", "scene": "wreck"},
-		{"speaker": "Lumi", "text": "這是……什麼東西？", "scene": "wreck"},
-		{"speaker": "StageDir", "text": "Lyra 靠近。她發現一個人，穿著破損太空服，漂浮著。", "scene": "wreck"},
-		{"speaker": "StageDir", "text": "Lyra 小心碰他。", "scene": "wreck"},
-		{"speaker": "SFX", "text": "微弱心跳。", "scene": "wreck"},
-		{"speaker": "Lumi", "text": "還活著？！", "scene": "wreck"},
-		{"speaker": "StageDir", "text": "男人突然抓住 Lyra 的手。", "scene": "wreck"},
-		{"speaker": "Orion", "text": "……不要……打開門……", "scene": "wreck"},
-		{"speaker": "StageDir", "text": "他又失去意識。", "scene": "wreck"},
-		{"speaker": "Lumi", "text": "怎麼辦……？", "scene": "wreck"},
-		{"speaker": "StageDir", "text": "Lyra 看著他。她已經做出選擇了。", "scene": "wreck"}
+		{
+			"speaker": "StageDir",
+			"text": "火花。破裂的金屬。死寂。",
+			"scene": "wreck",
+			"text_key": "prologue.orion_first_seen.001.stagedir.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "這是……什麼東西？",
+			"scene": "wreck",
+			"text_key": "prologue.orion_first_seen.002.lumi.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "Lyra 靠近。她發現一個人，穿著破損太空服，漂浮著。",
+			"scene": "wreck",
+			"text_key": "prologue.orion_first_seen.003.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "Lyra 小心碰他。",
+			"scene": "wreck",
+			"text_key": "prologue.orion_first_seen.004.stagedir.text"
+		},
+		{
+			"speaker": "SFX",
+			"text": "微弱心跳。",
+			"scene": "wreck",
+			"text_key": "prologue.orion_first_seen.005.sfx.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "還活著？！",
+			"scene": "wreck",
+			"text_key": "prologue.orion_first_seen.006.lumi.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "男人突然抓住 Lyra 的手。",
+			"scene": "wreck",
+			"text_key": "prologue.orion_first_seen.007.stagedir.text"
+		},
+		{
+			"speaker": "Orion",
+			"text": "……不要……打開門……",
+			"scene": "wreck",
+			"text_key": "prologue.orion_first_seen.008.orion.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "他又失去意識。",
+			"scene": "wreck",
+			"text_key": "prologue.orion_first_seen.009.stagedir.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "怎麼辦……？",
+			"scene": "wreck",
+			"text_key": "prologue.orion_first_seen.010.lumi.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "Lyra 看著他。她已經做出選擇了。",
+			"scene": "wreck",
+			"text_key": "prologue.orion_first_seen.011.stagedir.text"
+		}
 	],
 	"orion_rescue": [
-		{"speaker": "StageDir", "text": "Lyra 拖住 Orion，朝海面前進。", "scene": "escort"},
-		{"speaker": "StageDir", "text": "移動速度變慢。背景音樂只剩呼吸聲、水流聲、遠方金屬聲。", "scene": "escort"},
-		{"speaker": "Orion", "text": "……水……？", "scene": "escort"},
-		{"speaker": "Orion", "text": "……好冷……", "scene": "escort"},
-		{"speaker": "StageDir", "text": "海面。暴雨後的黃昏。Lyra 將 Orion 拖上岸。", "scene": "island"},
-		{"speaker": "StageDir", "text": "這是她第一次真正看見天空。她怔住。", "scene": "island"},
-		{"speaker": "Lumi", "text": "Lyra……？", "scene": "island"},
-		{"speaker": "Lumi", "text": "糟了！！他的生命反應開始下降！", "scene": "island"},
-		{"speaker": "StageDir", "text": "Lyra 回頭看著島。第一次猶豫。然後轉身游回海底。", "scene": "atlantis"},
-		{"speaker": "StageDir", "text": "深海最深處。巨大觀測室。巫師背對著她們。", "scene": "observatory"},
-		{"speaker": "StageDir", "text": "水晶球裡，映著小島畫面。她早就知道了。", "scene": "observatory"},
-		{"speaker": "Witch", "text": "妳把人類帶回來了。", "scene": "observatory"},
-		{"speaker": "Lumi", "text": "妳知道那是什麼？！", "scene": "observatory"},
-		{"speaker": "Witch", "text": "知道。", "scene": "observatory"},
-		{"speaker": "Lumi", "text": "那快救他啊！", "scene": "observatory"},
-		{"speaker": "Witch", "text": "他快死了。", "scene": "observatory"},
-		{"speaker": "StageDir", "text": "Lyra 一震。", "scene": "observatory"},
-		{"speaker": "Witch", "text": "那個身體已經撐不了多久。", "scene": "observatory"},
-		{"speaker": "Witch", "text": "即使如此，妳還是要救他嗎？", "scene": "observatory"},
-		{"speaker": "StageDir", "text": "Lyra 沒有猶豫。點頭。", "scene": "observatory"},
-		{"speaker": "StageDir", "text": "巫師拿出藍色藥瓶。", "scene": "observatory"},
-		{"speaker": "Witch", "text": "這是緊急型態解放藥。喝下後，妳會得到陸地行走能力。", "scene": "observatory"},
-		{"speaker": "Witch", "text": "代價是——妳會永遠失去聲音。", "scene": "observatory"},
-		{"speaker": "Lumi", "text": "……欸？", "scene": "observatory"},
-		{"speaker": "Witch", "text": "而且，再也無法回到這座城市。", "scene": "observatory"},
-		{"speaker": "Lumi", "text": "等等……沒有別的方法嗎？", "scene": "observatory"},
-		{"speaker": "Witch", "text": "沒有。", "scene": "observatory"},
-		{"speaker": "Witch", "text": "有些相遇，本來就不該發生。", "scene": "observatory"},
-		{"speaker": "StageDir", "text": "Lyra 握緊藥瓶。", "scene": "observatory"},
-		{"speaker": "StageDir", "text": "巨大傳送門展開。珊瑚急救倉浮現。", "scene": "portal"},
-		{"speaker": "Witch", "text": "把他放進去。它會暫時維持他的生命。", "scene": "portal"},
-		{"speaker": "Lumi", "text": "暫時……？", "scene": "portal"},
-		{"speaker": "StageDir", "text": "巫師沒有回答。", "scene": "portal"},
-		{"speaker": "StageDir", "text": "Lyra 進入傳送陣前，回頭看向海底都市。", "scene": "farewell"},
-		{"speaker": "StageDir", "text": "居民們還不知道發生了什麼。燈光依舊美麗。", "scene": "farewell"},
-		{"speaker": "Witch", "text": "Lyra。", "scene": "farewell"},
-		{"speaker": "StageDir", "text": "她停下。", "scene": "farewell"},
-		{"speaker": "Witch", "text": "去聽完那首歌吧。", "scene": "farewell"},
-		{"speaker": "StageDir", "text": "傳送光消失。暴雨中的小島。Lyra 立刻喝下藥。", "scene": "island"},
-		{"speaker": "StageDir", "text": "魚尾開始裂開。骨骼重組。她痛苦掙扎。", "scene": "storm"},
-		{"speaker": "StageDir", "text": "她想喊叫，但發不出聲音。", "scene": "storm"},
-		{"speaker": "StageDir", "text": "暴雨。Lyra 倒在岸邊。珊瑚急救倉微微發亮。", "scene": "storm"},
-		{"speaker": "Orion", "text": "……妳還活著……？", "scene": "storm"},
-		{"speaker": "StageDir", "text": "Lyra 失去意識。", "scene": "black"},
-		{"speaker": "StageDir", "text": "清晨。海浪聲。Lyra 慢慢醒來。", "scene": "dawn"},
-		{"speaker": "StageDir", "text": "她第一次用雙腳站起來。搖晃。跌倒。再站起來。", "scene": "dawn"},
-		{"speaker": "StageDir", "text": "遠方，廢棄燈塔佇立在海邊。", "scene": "lighthouse"}
+		{
+			"speaker": "StageDir",
+			"text": "Lyra 拖住 Orion，朝海面前進。",
+			"scene": "escort",
+			"text_key": "prologue.orion_rescue.001.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "移動速度變慢。背景音樂只剩呼吸聲、水流聲、遠方金屬聲。",
+			"scene": "escort",
+			"text_key": "prologue.orion_rescue.002.stagedir.text"
+		},
+		{
+			"speaker": "Orion",
+			"text": "……水……？",
+			"scene": "escort",
+			"text_key": "prologue.orion_rescue.003.orion.text"
+		},
+		{
+			"speaker": "Orion",
+			"text": "……好冷……",
+			"scene": "escort",
+			"text_key": "prologue.orion_rescue.004.orion.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "海面。暴雨後的黃昏。Lyra 將 Orion 拖上岸。",
+			"scene": "island",
+			"text_key": "prologue.orion_rescue.005.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "這是她第一次真正看見天空。她怔住。",
+			"scene": "island",
+			"text_key": "prologue.orion_rescue.006.stagedir.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "Lyra……？",
+			"scene": "island",
+			"text_key": "prologue.orion_rescue.007.lumi.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "糟了！！他的生命反應開始下降！",
+			"scene": "island",
+			"text_key": "prologue.orion_rescue.008.lumi.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "Lyra 回頭看著島。第一次猶豫。然後轉身游回海底。",
+			"scene": "atlantis",
+			"text_key": "prologue.orion_rescue.009.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "深海最深處。巨大觀測室。巫師背對著她們。",
+			"scene": "observatory",
+			"text_key": "prologue.orion_rescue.010.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "水晶球裡，映著小島畫面。她早就知道了。",
+			"scene": "observatory",
+			"text_key": "prologue.orion_rescue.011.stagedir.text"
+		},
+		{
+			"speaker": "Witch",
+			"text": "妳把人類帶回來了。",
+			"scene": "observatory",
+			"text_key": "prologue.orion_rescue.012.witch.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "妳知道那是什麼？！",
+			"scene": "observatory",
+			"text_key": "prologue.orion_rescue.013.lumi.text"
+		},
+		{
+			"speaker": "Witch",
+			"text": "知道。",
+			"scene": "observatory",
+			"text_key": "prologue.orion_rescue.014.witch.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "那快救他啊！",
+			"scene": "observatory",
+			"text_key": "prologue.orion_rescue.015.lumi.text"
+		},
+		{
+			"speaker": "Witch",
+			"text": "他快死了。",
+			"scene": "observatory",
+			"text_key": "prologue.orion_rescue.016.witch.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "Lyra 一震。",
+			"scene": "observatory",
+			"text_key": "prologue.orion_rescue.017.stagedir.text"
+		},
+		{
+			"speaker": "Witch",
+			"text": "那個身體已經撐不了多久。",
+			"scene": "observatory",
+			"text_key": "prologue.orion_rescue.018.witch.text"
+		},
+		{
+			"speaker": "Witch",
+			"text": "即使如此，妳還是要救他嗎？",
+			"scene": "observatory",
+			"text_key": "prologue.orion_rescue.019.witch.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "Lyra 沒有猶豫。點頭。",
+			"scene": "observatory",
+			"text_key": "prologue.orion_rescue.020.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "巫師拿出藍色藥瓶。",
+			"scene": "observatory",
+			"text_key": "prologue.orion_rescue.021.stagedir.text"
+		},
+		{
+			"speaker": "Witch",
+			"text": "這是緊急型態解放藥。喝下後，妳會得到陸地行走能力。",
+			"scene": "observatory",
+			"text_key": "prologue.orion_rescue.022.witch.text"
+		},
+		{
+			"speaker": "Witch",
+			"text": "代價是——妳會永遠失去聲音。",
+			"scene": "observatory",
+			"text_key": "prologue.orion_rescue.023.witch.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "……欸？",
+			"scene": "observatory",
+			"text_key": "prologue.orion_rescue.024.lumi.text"
+		},
+		{
+			"speaker": "Witch",
+			"text": "而且，再也無法回到這座城市。",
+			"scene": "observatory",
+			"text_key": "prologue.orion_rescue.025.witch.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "等等……沒有別的方法嗎？",
+			"scene": "observatory",
+			"text_key": "prologue.orion_rescue.026.lumi.text"
+		},
+		{
+			"speaker": "Witch",
+			"text": "沒有。",
+			"scene": "observatory",
+			"text_key": "prologue.orion_rescue.027.witch.text"
+		},
+		{
+			"speaker": "Witch",
+			"text": "有些相遇，本來就不該發生。",
+			"scene": "observatory",
+			"text_key": "prologue.orion_rescue.028.witch.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "Lyra 握緊藥瓶。",
+			"scene": "observatory",
+			"text_key": "prologue.orion_rescue.029.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "巨大傳送門展開。珊瑚急救倉浮現。",
+			"scene": "portal",
+			"text_key": "prologue.orion_rescue.030.stagedir.text"
+		},
+		{
+			"speaker": "Witch",
+			"text": "把他放進去。它會暫時維持他的生命。",
+			"scene": "portal",
+			"text_key": "prologue.orion_rescue.031.witch.text"
+		},
+		{
+			"speaker": "Lumi",
+			"text": "暫時……？",
+			"scene": "portal",
+			"text_key": "prologue.orion_rescue.032.lumi.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "巫師沒有回答。",
+			"scene": "portal",
+			"text_key": "prologue.orion_rescue.033.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "Lyra 進入傳送陣前，回頭看向海底都市。",
+			"scene": "farewell",
+			"text_key": "prologue.orion_rescue.034.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "居民們還不知道發生了什麼。燈光依舊美麗。",
+			"scene": "farewell",
+			"text_key": "prologue.orion_rescue.035.stagedir.text"
+		},
+		{
+			"speaker": "Witch",
+			"text": "Lyra。",
+			"scene": "farewell",
+			"text_key": "prologue.orion_rescue.036.witch.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "她停下。",
+			"scene": "farewell",
+			"text_key": "prologue.orion_rescue.037.stagedir.text"
+		},
+		{
+			"speaker": "Witch",
+			"text": "去聽完那首歌吧。",
+			"scene": "farewell",
+			"text_key": "prologue.orion_rescue.038.witch.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "傳送光消失。暴雨中的小島。Lyra 立刻喝下藥。",
+			"scene": "island",
+			"text_key": "prologue.orion_rescue.039.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "魚尾開始裂開。骨骼重組。她痛苦掙扎。",
+			"scene": "storm",
+			"text_key": "prologue.orion_rescue.040.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "她想喊叫，但發不出聲音。",
+			"scene": "storm",
+			"text_key": "prologue.orion_rescue.041.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "暴雨。Lyra 倒在岸邊。珊瑚急救倉微微發亮。",
+			"scene": "storm",
+			"text_key": "prologue.orion_rescue.042.stagedir.text"
+		},
+		{
+			"speaker": "Orion",
+			"text": "……妳還活著……？",
+			"scene": "storm",
+			"text_key": "prologue.orion_rescue.043.orion.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "Lyra 失去意識。",
+			"scene": "black",
+			"text_key": "prologue.orion_rescue.044.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "清晨。海浪聲。Lyra 慢慢醒來。",
+			"scene": "dawn",
+			"text_key": "prologue.orion_rescue.045.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "她第一次用雙腳站起來。搖晃。跌倒。再站起來。",
+			"scene": "dawn",
+			"text_key": "prologue.orion_rescue.046.stagedir.text"
+		},
+		{
+			"speaker": "StageDir",
+			"text": "遠方，廢棄燈塔佇立在海邊。",
+			"scene": "lighthouse",
+			"text_key": "prologue.orion_rescue.047.stagedir.text"
+		}
 	]
 }

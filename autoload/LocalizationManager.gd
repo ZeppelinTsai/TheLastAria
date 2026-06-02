@@ -110,6 +110,20 @@ func tr_text(key: String) -> String:
 
 	return key
 
+func get_entry_text(entry: Dictionary, fallback_fields: Array[String] = ["text"]) -> String:
+	var text_key := str(entry.get("text_key", "")).strip_edges()
+	if text_key != "":
+		var localized_text := tr_text(text_key)
+		if localized_text != text_key and localized_text.strip_edges() != "":
+			return localized_text
+
+	for field in fallback_fields:
+		var fallback_text := str(entry.get(field, ""))
+		if fallback_text != "":
+			return fallback_text
+
+	return ""
+
 func format_text(key: String, values: Array) -> String:
 	return tr_text(key) % values
 

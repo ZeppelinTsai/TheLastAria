@@ -137,7 +137,7 @@ func _show_page(index: int) -> void:
 	var page := pages[index]
 	var image_path := str(page.get("image_path", page.get("right_image", "")))
 	var speaker := str(page.get("speaker", ""))
-	full_text = str(page.get("text", page.get("left_text", "")))
+	full_text = get_storybook_page_text(page)
 	configure_storybook_text_layout()
 
 	if image_path != "" and ResourceLoader.exists(image_path):
@@ -159,12 +159,16 @@ func _on_viewport_size_changed() -> void:
 func rebuild_storybook_pages() -> void:
 	pages = []
 	for source_page in source_pages:
-		var page_text_value := str(source_page.get("text", source_page.get("left_text", "")))
+		var page_text_value := get_storybook_page_text(source_page)
 		var text_chunks := split_story_text_into_pages(page_text_value)
 		for text_chunk in text_chunks:
 			var page := source_page.duplicate(true)
 			page["text"] = text_chunk
+			page.erase("text_key")
 			pages.append(page)
+
+func get_storybook_page_text(page: Dictionary) -> String:
+	return LocalizationManager.get_entry_text(page, ["text", "left_text"])
 
 func split_story_text_into_pages(text: String) -> Array[String]:
 	if text == "":

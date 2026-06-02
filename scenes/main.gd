@@ -248,7 +248,7 @@ func show_dialog(index):
 		shake_scene()
 	configure_dialog_text_style()
 	speaker_name.text = CharacterVisualManager.get_display_name(speaker_id)
-	full_text = d["text"]
+	full_text = LocalizationManager.get_entry_text(d)
 	dialog_text.text = ""
 	show_dialog_standees(d, speaker_id, expression)
 	is_typing = true

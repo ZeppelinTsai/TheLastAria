@@ -272,7 +272,7 @@ func show_dialog(index: int) -> void:
 	if speaker_name:
 		speaker_name.text = CharacterVisualManager.get_display_name(speaker_id)
 
-	full_text = str(entry.get("text", ""))
+	full_text = LocalizationManager.get_entry_text(entry)
 	if dialog_text:
 		dialog_text.text = ""
 	show_dialog_standees(entry, speaker_id, expression)
