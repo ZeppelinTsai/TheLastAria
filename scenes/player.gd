@@ -30,7 +30,7 @@ func _input(event):
 			auto_move = true
 
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if not can_move:
 		stop_player()
 		return
@@ -48,7 +48,8 @@ func _physics_process(delta):
 	move_and_slide()
 
 	if bubble_particles:
-		bubble_particles.emitting = velocity.y < 0.0
+		# Avoid toggling particles off/on every frame, which resets the emitter.
+		bubble_particles.emitting = velocity.length() > 0.0
 
 	if walkable_area:
 		if not is_walkable_body_inside_area():
