@@ -112,7 +112,6 @@ dialogue_path = "res://data/dialogues/sunken_city_lyra_room.json"
 [node name="Background" type="Sprite2D" parent="." unique_id=38697303]
 texture = ExtResource("2_d8xo5")
 centered = false
-offset = Vector2(0, 0)
 
 [node name="EventRoot" type="Node2D" parent="." unique_id=1349173413]
 

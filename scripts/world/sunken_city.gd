@@ -2,11 +2,11 @@ extends "res://scripts/world/world_base.gd"
 
 @export var map_data_path := "res://data/maps/sunken_city.json"
 @export var swim_depth_enabled := true
-@export var swim_depth_near_y := 420.0
-@export var swim_depth_far_y := -260.0
+@export var swim_depth_near_y := 500.0
+@export var swim_depth_far_y := -500.0
 @export var swim_depth_background_offset := Vector2(0.0, 42.0)
 @export var swim_depth_background_scale := Vector2(1.035, 1.035)
-@export var swim_depth_player_far_scale := 0.86
+@export var swim_depth_player_far_scale := 0.3
 @export var swim_depth_lerp_speed := 4.0
 
 var map_data: Dictionary = {}
@@ -77,6 +77,10 @@ func update_swim_depth_effect(delta: float) -> void:
 	if swim_depth_player_sprite:
 		var target_player_scale := swim_depth_player_sprite_base_scale * lerpf(1.0, swim_depth_player_far_scale, depth_amount)
 		swim_depth_player_sprite.scale = swim_depth_player_sprite.scale.lerp(target_player_scale, lerp_weight)
+	
+	if player:
+		var target_speed = lerpf(150.0, 200.0, depth_amount)
+		player.speed = target_speed
 
 func get_swim_depth_amount() -> float:
 	var y_span := swim_depth_far_y - swim_depth_near_y

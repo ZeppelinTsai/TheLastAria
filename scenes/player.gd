@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-const SPEED = 200.0
+var speed = 200.0
 const ARRIVE_DISTANCE = 6.0
 const WALKABLE_INSET_DISTANCE = 8.0
 
@@ -43,7 +43,7 @@ func _physics_process(delta):
 
 	var before_move = global_position
 
-	velocity = direction * SPEED
+	velocity = direction * speed
 	move_and_slide()
 
 	if walkable_area:
@@ -54,6 +54,7 @@ func _physics_process(delta):
 			pull_inside_walkable_area()
 
 	update_animation(direction)
+
 
 
 func get_keyboard_direction() -> Vector2:

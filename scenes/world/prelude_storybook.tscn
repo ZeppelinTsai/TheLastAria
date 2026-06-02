@@ -1,8 +1,8 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene format=3 uid="uid://d3e6iar4glcfh"]
 
-[ext_resource type="Script" path="res://scripts/world/prelude_storybook.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://cs5hhexloshme" path="res://scripts/world/prelude_storybook.gd" id="1_script"]
 [ext_resource type="AudioStream" uid="uid://dkyvtknblt5m8" path="res://audio/sfx/468927__malakme__medium-text-blip.ogg" id="2_page_sound"]
-[ext_resource type="FontFile" path="res://assets/fonts/NotoSansTC-Medium.ttf" id="3_font"]
+[ext_resource type="FontFile" uid="uid://bab77kjluu6n1" path="res://assets/fonts/NotoSansTC-Medium.ttf" id="3_font"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_text_panel"]
 bg_color = Color(0, 0, 0, 0.46)
@@ -14,12 +14,12 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[node name="PreludeStorybook" type="Node2D"]
+[node name="PreludeStorybook" type="Node2D" unique_id=1377598058]
 script = ExtResource("1_script")
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="UI" type="CanvasLayer" parent="." unique_id=229363098]
 
-[node name="Backdrop" type="ColorRect" parent="UI"]
+[node name="Backdrop" type="ColorRect" parent="UI" unique_id=1643190295]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -27,7 +27,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.02, 0.018, 0.015, 1)
 
-[node name="StoryImage" type="TextureRect" parent="UI"]
+[node name="StoryImage" type="TextureRect" parent="UI" unique_id=151821929]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -36,7 +36,7 @@ grow_vertical = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="TextPanel" type="PanelContainer" parent="UI"]
+[node name="TextPanel" type="PanelContainer" parent="UI" unique_id=1553598926]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -44,48 +44,47 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_text_panel")
 
-[node name="Margin" type="MarginContainer" parent="UI/TextPanel"]
+[node name="Margin" type="MarginContainer" parent="UI/TextPanel" unique_id=194563497]
 layout_mode = 2
 theme_override_constants/margin_left = 96
 theme_override_constants/margin_top = 80
 theme_override_constants/margin_right = 96
 theme_override_constants/margin_bottom = 80
 
-[node name="VBox" type="VBoxContainer" parent="UI/TextPanel/Margin"]
+[node name="VBox" type="VBoxContainer" parent="UI/TextPanel/Margin" unique_id=1484146139]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 theme_override_constants/separation = 8
 
-[node name="SpeakerLabel" type="Label" parent="UI/TextPanel/Margin/VBox"]
+[node name="SpeakerLabel" type="Label" parent="UI/TextPanel/Margin/VBox" unique_id=1281833126]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_fonts/font = ExtResource("3_font")
 theme_override_colors/font_color = Color(1, 1, 1, 0.92)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.85)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("3_font")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxFlat_speaker")
-text = ""
 horizontal_alignment = 1
 
-[node name="PageText" type="Label" parent="UI/TextPanel/Margin/VBox"]
+[node name="PageText" type="Label" parent="UI/TextPanel/Margin/VBox" unique_id=1975094642]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_fonts/font = ExtResource("3_font")
 theme_override_colors/font_color = Color(1, 1, 1, 0.96)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("3_font")
 theme_override_font_sizes/font_size = 30
-text = ""
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="NextIndicator" type="Control" parent="UI"]
+[node name="NextIndicator" type="Control" parent="UI" unique_id=1733219324]
+layout_mode = 3
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
@@ -98,12 +97,12 @@ offset_bottom = -49.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="Arrow" type="Polygon2D" parent="UI/NextIndicator"]
+[node name="Arrow" type="Polygon2D" parent="UI/NextIndicator" unique_id=1206236403]
 position = Vector2(20, 12)
 color = Color(1, 1, 1, 0.96)
 polygon = PackedVector2Array(-8, -4, 8, -4, 0, 6)
 
-[node name="FadeOverlay" type="ColorRect" parent="UI"]
+[node name="FadeOverlay" type="ColorRect" parent="UI" unique_id=1253910803]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -111,8 +110,8 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
-[node name="PageSound" type="AudioStreamPlayer" parent="."]
+[node name="PageSound" type="AudioStreamPlayer" parent="." unique_id=912278272]
 stream = ExtResource("2_page_sound")
 
-[node name="QuakeSound" type="AudioStreamPlayer" parent="."]
+[node name="QuakeSound" type="AudioStreamPlayer" parent="." unique_id=1556240199]
 stream = ExtResource("2_page_sound")
