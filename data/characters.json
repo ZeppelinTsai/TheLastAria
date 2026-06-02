@@ -2,7 +2,7 @@
   "Lyra": {
     "display_name": "Lyra",
     "dialog_standee": {
-      "position": "center",
+      "position": "left",
       "x": 0,
       "bottom": -500,
       "x_ratio": 0.0,
@@ -24,6 +24,7 @@
     "display_name": "Lumi",
     "dialog_standee": {
       "position": "right",
+      "x_offset_ratio": 0.0,
       "x": 700,
       "bottom": 150,
       "x_ratio": 0.547,
@@ -32,10 +33,11 @@
       "scale": 1.0
     },
     "portraits": {
-      "default": "res://img/lumi.png"
+      "default": "res://img/tachie/lumi/lumi_default.png",
+      "smile": "res://img/tachie/lumi/lumi_smile.png"
     },
     "busts": {
-      "default": "res://img/lumi.png"
+      "default": "res://img/tachie/lumi/lumi_default.png"
     }
   },
   "Orion": {
