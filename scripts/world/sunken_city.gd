@@ -25,6 +25,10 @@ func on_world_ready() -> void:
 	setup_swim_depth_effect()
 	MusicManager.play_context(music_context)
 
+	var uw := get_node_or_null("UI/UnderwaterFG")
+	if uw and uw.material:
+		uw.material.set_shader_parameter("time_scale", 1.0)
+
 func on_world_physics_process(delta: float) -> void:
 	update_swim_depth_effect(delta)
 
