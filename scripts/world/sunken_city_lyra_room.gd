@@ -4,8 +4,10 @@ extends "res://scripts/world/world_base.gd"
 
 const POST_STORYBOOK_SEQUENCE_META := "post_storybook_sequence"
 const POST_STORYBOOK_DIALOGUE_ID := "opening_after_storybook"
+const POST_STORYBOOK_TUTORIAL_DIALOGUE_ID := "movement_tutorial_after_storybook"
+const POST_STORYBOOK_TUTORIAL_FLAG := "movement_tutorial_after_storybook_seen"
 const DESK_READING_POSITION := Vector2(25, -220)
-const ROOM_CENTER_POSITION := Vector2(50, 100)
+const ROOM_CENTER_POSITION := Vector2(0, 180)
 const WALK_TO_CENTER_DURATION := 2
 
 var map_data: Dictionary = {}
@@ -79,6 +81,8 @@ func _start_post_storybook_sequence() -> void:
 func on_dialog_finished(dialogue_id: String) -> void:
 	if dialogue_id == POST_STORYBOOK_DIALOGUE_ID:
 		call_deferred("_move_player_to_room_center")
+	elif dialogue_id == POST_STORYBOOK_TUTORIAL_DIALOGUE_ID:
+		SaveManager.set_flag(POST_STORYBOOK_TUTORIAL_FLAG)
 
 func _move_player_to_room_center() -> void:
 	if not player:
@@ -105,4 +109,7 @@ func _move_player_to_room_center() -> void:
 	SaveManager.set_player_position(player.global_position)
 	SaveManager.autosave(true)
 	is_post_storybook_sequence = false
-	set_player_can_move(true)
+	if dialogue_sets.has(POST_STORYBOOK_TUTORIAL_DIALOGUE_ID) and not SaveManager.has_flag(POST_STORYBOOK_TUTORIAL_FLAG):
+		start_dialog(POST_STORYBOOK_TUTORIAL_DIALOGUE_ID)
+	else:
+		set_player_can_move(true)

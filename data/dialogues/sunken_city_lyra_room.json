@@ -2,45 +2,55 @@
   "opening_after_storybook": [
     {
       "speaker": "Lumi",
-      "text": "又在看那本啊？",
+      "text": "\u4f60\u53c8\u5728\u770b\u90a3\u672c\u66f8\u554a\uff1f",
       "scene": "atlantis"
     },
     {
       "speaker": "StageDir",
-      "text": "Lyra 點頭。",
+      "text": "Lyra \u5c07\u66f8\u9801\u8f15\u8f15\u95d4\u4e0a\u3002",
       "scene": "atlantis"
     },
     {
       "speaker": "Lumi",
-      "text": "你都不會看膩嗎？",
+      "text": "\u660e\u660e\u6700\u5f8c\u90fd\u8b8a\u6210\u6ce1\u6ce1\u4e86\uff0c\u70ba\u4ec0\u9ebc\u9084\u7b97 Happy Ending\uff1f",
       "scene": "atlantis"
     },
     {
       "speaker": "StageDir",
-      "text": "Lyra 抱著書，看向遠方海面。",
+      "text": "Lyra \u6c92\u6709\u56de\u7b54\uff0c\u53ea\u662f\u5fae\u5fae\u7b11\u4e86\u4e00\u4e0b\u3002",
       "scene": "atlantis"
     },
     {
       "speaker": "Lumi",
-      "text": "我還是不懂。",
+      "text": "\u4f60\u7b11\u4ec0\u9ebc\u5566\u3002",
       "scene": "atlantis"
     },
     {
       "speaker": "Lumi",
-      "text": "明明最後變成泡泡了，為什麼還算 Happy Ending？",
+      "text": "\u597d\u5427\uff0c\u53cd\u6b63\u4f60\u6bcf\u6b21\u770b\u5b8c\u90fd\u9019\u500b\u8868\u60c5\u3002",
       "scene": "atlantis"
     },
     {
       "speaker": "Lumi",
-      "text": "地震？！",
+      "text": "\u54a6\uff1f",
       "scene": "quake",
       "effect": "shake"
     },
     {
       "speaker": "Lumi",
-      "text": "快去外面看看——！",
+      "text": "\u5730\u9707\uff1f\u5feb\uff0c\u6211\u5011\u5f97\u51fa\u53bb\u770b\u770b\uff01",
       "scene": "quake",
       "effect": "shake"
+    }
+  ],
+  "movement_tutorial_after_storybook": [
+    {
+      "speaker": "System",
+      "text": "\u64cd\u4f5c\u8aaa\u660e\uff1a\u4f7f\u7528 WASD \u6216\u65b9\u5411\u9375\u79fb\u52d5\uff0c\u4e5f\u53ef\u4ee5\u7528\u6ed1\u9f20\u5de6\u9375\u9ede\u64ca\u5730\u9762\u79fb\u52d5\u3002"
+    },
+    {
+      "speaker": "System",
+      "text": "\u9760\u8fd1\u53ef\u4e92\u52d5\u7684\u5730\u65b9\u6703\u89f8\u767c\u5c0d\u8a71\u3002\u5c0d\u8a71\u4e2d\u53ef\u4ee5\u6309 Enter \u6216\u9ede\u64ca\u6ed1\u9f20\u5de6\u9375\u7e7c\u7e8c\u3002"
     }
   ],
   "storybook_after_reading": [

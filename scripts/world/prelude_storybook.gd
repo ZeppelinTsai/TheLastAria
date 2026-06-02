@@ -14,10 +14,17 @@ const NEXT_INDICATOR_FLOAT_DISTANCE := 4.0
 const NEXT_INDICATOR_BREATH_DURATION := 0.55
 const NEXT_INDICATOR_DIM_ALPHA := 0.45
 const NEXT_INDICATOR_TEXT_OFFSET := Vector2(16, 18)
+const STORY_TEXT_MAX_LINES := 5
+const STORY_TEXT_MIN_FONT_SIZE := 30
+const STORY_TEXT_MAX_FONT_SIZE := 46
+const STORY_SPEAKER_MIN_FONT_SIZE := 22
+const STORY_SPEAKER_MAX_FONT_SIZE := 30
 
 @onready var story_image: TextureRect = $UI/StoryImage
 @onready var fade_overlay: ColorRect = $UI/FadeOverlay
 @onready var text_panel: PanelContainer = $UI/TextPanel
+@onready var text_margin: MarginContainer = $UI/TextPanel/Margin
+@onready var text_vbox: VBoxContainer = $UI/TextPanel/Margin/VBox
 @onready var speaker_label: Label = $UI/TextPanel/Margin/VBox/SpeakerLabel
 @onready var page_text: Label = $UI/TextPanel/Margin/VBox/PageText
 @onready var next_indicator: Control = $UI/NextIndicator
@@ -25,6 +32,7 @@ const NEXT_INDICATOR_TEXT_OFFSET := Vector2(16, 18)
 @onready var page_sound: AudioStreamPlayer = $PageSound
 @onready var quake_sound: AudioStreamPlayer = $QuakeSound
 
+var source_pages: Array[Dictionary] = []
 var pages: Array[Dictionary] = []
 var page_index := 0
 var can_advance := false
@@ -44,6 +52,9 @@ func _ready() -> void:
 	_load_pages()
 	root_base_position = position
 	next_indicator_arrow_base_position = next_indicator_arrow.position
+	get_viewport().size_changed.connect(_on_viewport_size_changed)
+	configure_storybook_text_layout()
+	rebuild_storybook_pages()
 	fade_overlay.color = Color(0, 0, 0, 1)
 	text_panel.modulate.a = 0.0
 	hide_next_indicator()
@@ -60,6 +71,7 @@ func _ready() -> void:
 	await _typewrite(full_text)
 
 func _load_pages() -> void:
+	source_pages = []
 	pages = []
 	var file := FileAccess.open(PAGE_DATA_PATH, FileAccess.READ)
 	if not file:
@@ -78,7 +90,7 @@ func _load_pages() -> void:
 
 	for entry in page_data:
 		if typeof(entry) == TYPE_DICTIONARY:
-			pages.append(entry)
+			source_pages.append(entry)
 
 func _input(event: InputEvent) -> void:
 	if is_finishing or is_transitioning:
@@ -126,6 +138,7 @@ func _show_page(index: int) -> void:
 	var image_path := str(page.get("image_path", page.get("right_image", "")))
 	var speaker := str(page.get("speaker", ""))
 	full_text = str(page.get("text", page.get("left_text", "")))
+	configure_storybook_text_layout()
 
 	if image_path != "" and ResourceLoader.exists(image_path):
 		story_image.texture = load(image_path)
@@ -136,6 +149,98 @@ func _show_page(index: int) -> void:
 	speaker_label.text = speaker
 	speaker_label.visible = speaker != ""
 	page_text.text = ""
+
+func _on_viewport_size_changed() -> void:
+	var current_page_index := page_index
+	rebuild_storybook_pages()
+	page_index = mini(current_page_index, max(0, pages.size() - 1))
+	configure_storybook_text_layout()
+
+func rebuild_storybook_pages() -> void:
+	pages = []
+	for source_page in source_pages:
+		var page_text_value := str(source_page.get("text", source_page.get("left_text", "")))
+		var text_chunks := split_story_text_into_pages(page_text_value)
+		for text_chunk in text_chunks:
+			var page := source_page.duplicate(true)
+			page["text"] = text_chunk
+			pages.append(page)
+
+func split_story_text_into_pages(text: String) -> Array[String]:
+	if text == "":
+		return [""]
+
+	var viewport_size := get_viewport_rect().size
+	var side_margin := clampf(viewport_size.x * 0.08, 24.0, 96.0)
+	var text_area_width := maxf(viewport_size.x - side_margin * 2.0, 1.0)
+	var preferred_font_size := int(round(clampf(viewport_size.y * 0.062, STORY_TEXT_MIN_FONT_SIZE, STORY_TEXT_MAX_FONT_SIZE)))
+	var font_size := fit_story_text_font_size(text, text_area_width, preferred_font_size)
+	var font := page_text.get_theme_font("font")
+	if _wrap_text_for_label(text, font, font_size, text_area_width).size() <= STORY_TEXT_MAX_LINES:
+		return [text]
+
+	var chunks: Array[String] = []
+	var current_chunk := ""
+	for i in range(text.length()):
+		var candidate := current_chunk + text[i]
+		if current_chunk != "" and _wrap_text_for_label(candidate, font, font_size, text_area_width).size() > STORY_TEXT_MAX_LINES:
+			chunks.append(current_chunk.strip_edges())
+			current_chunk = text[i]
+		else:
+			current_chunk = candidate
+
+	if current_chunk.strip_edges() != "":
+		chunks.append(current_chunk.strip_edges())
+	if chunks.is_empty():
+		chunks.append(text)
+	return chunks
+
+func configure_storybook_text_layout() -> void:
+	if not text_panel or not text_margin or not text_vbox or not page_text or not speaker_label:
+		return
+
+	var viewport_size := get_viewport_rect().size
+	var side_margin := clampf(viewport_size.x * 0.08, 24.0, 96.0)
+	var vertical_margin := clampf(viewport_size.y * 0.04, 16.0, 44.0)
+	var text_font_size := int(round(clampf(viewport_size.y * 0.062, STORY_TEXT_MIN_FONT_SIZE, STORY_TEXT_MAX_FONT_SIZE)))
+	var speaker_font_size := int(round(clampf(viewport_size.y * 0.042, STORY_SPEAKER_MIN_FONT_SIZE, STORY_SPEAKER_MAX_FONT_SIZE)))
+	var text_area_width := maxf(viewport_size.x - side_margin * 2.0, 1.0)
+
+	if full_text != "":
+		text_font_size = fit_story_text_font_size(full_text, text_area_width, text_font_size)
+
+	var text_line_height := get_story_text_line_height(text_font_size)
+	text_panel.set_anchors_preset(Control.PRESET_FULL_RECT, false)
+	text_panel.offset_left = 0.0
+	text_panel.offset_top = 0.0
+	text_panel.offset_right = 0.0
+	text_panel.offset_bottom = 0.0
+
+	text_margin.add_theme_constant_override("margin_left", int(round(side_margin)))
+	text_margin.add_theme_constant_override("margin_top", int(round(vertical_margin)))
+	text_margin.add_theme_constant_override("margin_right", int(round(side_margin)))
+	text_margin.add_theme_constant_override("margin_bottom", int(round(vertical_margin)))
+	text_vbox.add_theme_constant_override("separation", int(round(clampf(viewport_size.y * 0.012, 6.0, 12.0))))
+
+	speaker_label.add_theme_font_size_override("font_size", speaker_font_size)
+	page_text.add_theme_font_size_override("font_size", text_font_size)
+	page_text.custom_minimum_size = Vector2(0.0, text_line_height * STORY_TEXT_MAX_LINES)
+	page_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	page_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	page_text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+
+func fit_story_text_font_size(text: String, max_width: float, preferred_font_size: int) -> int:
+	var font := page_text.get_theme_font("font")
+	var font_size := preferred_font_size
+	while font_size > STORY_TEXT_MIN_FONT_SIZE:
+		if _wrap_text_for_label(text, font, font_size, max_width).size() <= STORY_TEXT_MAX_LINES:
+			return font_size
+		font_size -= 1
+	return font_size
+
+func get_story_text_line_height(font_size: int) -> float:
+	var font := page_text.get_theme_font("font")
+	return font.get_height(font_size)
 
 func _typewrite(text: String) -> void:
 	typing_run_id += 1

@@ -616,13 +616,13 @@ func configure_dialog_standee_node(standee_node: TextureRect, layout: Dictionary
 		bottom_offset = viewport_size.y * bottom_ratio
 	var bottom: float = dialog_height - bottom_offset
 
-	standee_node.set_anchors_preset(Control.PRESET_BOTTOM_LEFT, false)
+	standee_node.set_anchors_preset(Control.PRESET_TOP_LEFT, false)
 	standee_node.offset_left = left
 	standee_node.offset_top = bottom - target_height
 	standee_node.offset_right = left + target_width
 	standee_node.offset_bottom = bottom
 	standee_node.grow_horizontal = Control.GROW_DIRECTION_END
-	standee_node.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	standee_node.grow_vertical = Control.GROW_DIRECTION_END
 	standee_node.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	standee_node.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
 	standee_node.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -641,7 +641,7 @@ func configure_dialog_text_style() -> void:
 
 	var text_font_size := int(round(clampf(viewport_size.y * 0.048, DIALOG_TEXT_MIN_FONT_SIZE, DIALOG_TEXT_MAX_FONT_SIZE)))
 	var name_font_size := int(round(clampf(viewport_size.y * 0.037, DIALOG_NAME_MIN_FONT_SIZE, DIALOG_NAME_MAX_FONT_SIZE)))
-	var content_left: float = maxf(300.0, viewport_size.x * 0.30)
+	var content_left: float = clampf(viewport_size.x * 0.055, 28.0, 72.0)
 	var content_right: float = 46.0
 	var name_top: float = maxf(16.0, dialog_height * 0.08)
 	var text_top: float = maxf(62.0, dialog_height * 0.25)
