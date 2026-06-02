@@ -93,6 +93,54 @@
           "position": "right",
           "expression": "default"
         }
+      ],
+      "choices": [
+        {
+          "id": "happy_ending",
+          "text": "因為這是 Happy Ending",
+          "text_key": "sunken_city_lyra_room.opening_after_storybook.005.choice.happy_ending.text",
+          "response": {
+            "speaker": "Lumi",
+            "text": "喔？你現在會說這種話了喔。",
+            "text_key": "sunken_city_lyra_room.opening_after_storybook.005.response.happy_ending.001.lumi.text",
+            "expression": "default",
+            "standees": [
+              {
+                "character": "Lyra",
+                "position": "left",
+                "expression": "smile"
+              },
+              {
+                "character": "Lumi",
+                "position": "right",
+                "expression": "default"
+              }
+            ]
+          }
+        },
+        {
+          "id": "because_lumi",
+          "text": "因為你在旁邊",
+          "text_key": "sunken_city_lyra_room.opening_after_storybook.005.choice.because_lumi.text",
+          "response": {
+            "speaker": "Lumi",
+            "text": "等、等等，這回答也太狡猾了吧。",
+            "text_key": "sunken_city_lyra_room.opening_after_storybook.005.response.because_lumi.001.lumi.text",
+            "expression": "default",
+            "standees": [
+              {
+                "character": "Lyra",
+                "position": "left",
+                "expression": "smile"
+              },
+              {
+                "character": "Lumi",
+                "position": "right",
+                "expression": "default"
+              }
+            ]
+          }
+        }
       ]
     },
     {

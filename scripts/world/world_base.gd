@@ -11,6 +11,8 @@ const POINTER_ADVANCE_DEBOUNCE_MS = 180
 const DIALOG_STANDEE_DEFAULT_ASPECT = 2.0 / 3.0
 const EFFECTS_LAYER_Z_INDEX := 900
 const DIALOG_Z_INDEX_ABOVE_EFFECTS := EFFECTS_LAYER_Z_INDEX + 200
+const PAUSE_MENU_LAYER_Z := 1200
+const DIALOG_CHOICES_LAYER_Z := 2000
 const DIALOG_TEXT_MIN_FONT_SIZE = 28
 const DIALOG_TEXT_MAX_FONT_SIZE = 38
 const DIALOG_NAME_MIN_FONT_SIZE = 22
@@ -71,6 +73,11 @@ var dialog_debug_speaker_id := ""
 var dialog_debug_expression := ""
 var dialog_debug_small_preview := false
 var dialog_standee_nodes := {}
+var choice_layer: CanvasLayer
+var choice_panel: PanelContainer
+var choice_list: VBoxContainer
+var choice_buttons: Array[Button] = []
+var dialog_choice_active := false
 
 func _ready() -> void:
 	_validate_world_nodes()
@@ -83,6 +90,7 @@ func _ready() -> void:
 		next_indicator_arrow_base_position = next_indicator_arrow.position
 	hide_next_indicator()
 	load_dialogue_sets()
+	build_dialog_choice_layer()
 	setup_pause_menu()
 	LocalizationManager.locale_changed.connect(_on_locale_changed)
 	SettingsManager.settings_changed.connect(_on_settings_changed)
@@ -143,6 +151,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			_advance_active_dialog()
 
 func _advance_active_dialog() -> void:
+	if dialog_choice_active:
+		return
 	if is_typing:
 		typing_run_id += 1
 		is_typing = false
@@ -150,7 +160,7 @@ func _advance_active_dialog() -> void:
 			dialog_text.text = full_text
 		if type_sound:
 			type_sound.stop()
-		show_next_indicator()
+		show_dialog_choices_or_next()
 	else:
 		next_dialog()
 
@@ -280,6 +290,7 @@ func show_dialog(index: int) -> void:
 	if dialog_text:
 		dialog_text.text = ""
 	show_dialog_standees(entry, speaker_id, expression)
+	hide_dialog_choices()
 
 	is_typing = true
 	typing_run_id += 1
@@ -357,6 +368,138 @@ func hide_dialog_standees() -> void:
 	for node in dialog_standee_nodes.values():
 		if node:
 			node.visible = false
+
+func build_dialog_choice_layer() -> void:
+	choice_layer = CanvasLayer.new()
+	choice_layer.name = "DialogChoiceLayer"
+	choice_layer.layer = DIALOG_CHOICES_LAYER_Z
+	add_child(choice_layer)
+
+	var root := Control.new()
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	choice_layer.add_child(root)
+
+	choice_panel = PanelContainer.new()
+	choice_panel.custom_minimum_size = Vector2(860, 204)
+	choice_panel.anchor_left = 0.5
+	choice_panel.anchor_top = 1.0
+	choice_panel.anchor_right = 0.5
+	choice_panel.anchor_bottom = 1.0
+	choice_panel.offset_left = -430
+	choice_panel.offset_top = -354
+	choice_panel.offset_right = 430
+	choice_panel.offset_bottom = -150
+	root.add_child(choice_panel)
+
+	choice_list = VBoxContainer.new()
+	choice_list.add_theme_constant_override("separation", 14)
+	choice_panel.add_child(choice_list)
+	choice_layer.visible = false
+
+func show_dialog_choices_or_next() -> void:
+	var entry := get_current_dialog_entry()
+	if entry.has("choices") and typeof(entry["choices"]) == TYPE_ARRAY and not entry["choices"].is_empty():
+		show_dialog_choices(entry["choices"])
+	else:
+		show_next_indicator()
+
+func get_current_dialog_entry() -> Dictionary:
+	if current_index < 0 or current_index >= active_dialogs.size():
+		return {}
+	var entry = active_dialogs[current_index]
+	if typeof(entry) == TYPE_DICTIONARY:
+		return entry
+	return {}
+
+func show_dialog_choices(choices: Array) -> void:
+	hide_next_indicator()
+	clear_dialog_choice_buttons()
+	dialog_choice_active = true
+	choice_layer.visible = true
+
+	for index in range(choices.size()):
+		var choice = choices[index]
+		if typeof(choice) != TYPE_DICTIONARY:
+			continue
+		var button := Button.new()
+		button.text = get_choice_text(choice)
+		button.custom_minimum_size = Vector2(820, 86)
+		button.add_theme_font_size_override("font_size", 34)
+		button.add_theme_color_override("font_color", Color(0.98, 0.98, 0.98, 1.0))
+		button.pressed.connect(_on_dialog_choice_selected.bind(choice))
+		choice_list.add_child(button)
+		choice_buttons.append(button)
+
+	if not choice_buttons.is_empty():
+		choice_buttons[0].grab_focus()
+
+func get_choice_text(choice: Dictionary) -> String:
+	var text_key := str(choice.get("text_key", "")).strip_edges()
+	if text_key != "":
+		var localized_text := LocalizationManager.tr_text(text_key)
+		if localized_text != text_key and localized_text.strip_edges() != "":
+			return localized_text
+	return str(choice.get("text", ""))
+
+func hide_dialog_choices() -> void:
+	dialog_choice_active = false
+	if choice_layer:
+		choice_layer.visible = false
+	clear_dialog_choice_buttons()
+
+func clear_dialog_choice_buttons() -> void:
+	if not choice_list:
+		return
+	for button in choice_buttons:
+		if is_instance_valid(button):
+			button.queue_free()
+	choice_buttons.clear()
+
+func _on_dialog_choice_selected(choice: Dictionary) -> void:
+	hide_dialog_choices()
+	apply_dialog_choice_save(choice)
+	insert_dialog_choice_response(choice)
+
+	if str(choice.get("next_dialogue", "")).strip_edges() != "":
+		start_dialog(str(choice["next_dialogue"]).strip_edges())
+		return
+
+	if choice.has("next_index"):
+		current_index = clampi(int(choice["next_index"]), 0, active_dialogs.size() - 1)
+		show_dialog(current_index)
+		return
+
+	next_dialog()
+
+func apply_dialog_choice_save(choice: Dictionary) -> void:
+	var flag_name := str(choice.get("flag", choice.get("set_flag", ""))).strip_edges()
+	if flag_name != "":
+		SaveManager.set_flag(flag_name, bool(choice.get("flag_value", true)))
+
+	var story_key := str(choice.get("story_key", "")).strip_edges()
+	if story_key != "":
+		SaveManager.set_story_value(story_key, choice.get("story_value", true))
+
+func insert_dialog_choice_response(choice: Dictionary) -> void:
+	var responses := get_dialog_choice_responses(choice)
+	if responses.is_empty():
+		return
+
+	active_dialogs = active_dialogs.duplicate(true)
+	var insert_index := current_index + 1
+	for offset in range(responses.size()):
+		active_dialogs.insert(insert_index + offset, responses[offset])
+
+func get_dialog_choice_responses(choice: Dictionary) -> Array:
+	var responses: Array = []
+	var response_data = choice.get("response", [])
+	if typeof(response_data) == TYPE_DICTIONARY:
+		responses.append(response_data)
+	elif typeof(response_data) == TYPE_ARRAY:
+		for response in response_data:
+			if typeof(response) == TYPE_DICTIONARY:
+				responses.append(response)
+	return responses
 
 func get_dialog_expression(source: Dictionary, fallback := "default") -> String:
 	var expression := str(source.get("expression", "")).strip_edges()
@@ -611,7 +754,7 @@ func type_text(text: String, run_id: int) -> void:
 		dialog_text.text = text
 	if type_sound:
 		type_sound.stop()
-	show_next_indicator()
+	show_dialog_choices_or_next()
 
 func next_dialog() -> void:
 	current_index += 1
@@ -631,6 +774,7 @@ func end_dialog() -> void:
 	if dialog_box:
 		dialog_box.visible = false
 	hide_dialog_standees()
+	hide_dialog_choices()
 	hide_next_indicator()
 	active_dialogue_id = ""
 	active_dialogs = []
@@ -678,6 +822,7 @@ func shake_scene() -> void:
 func setup_pause_menu() -> void:
 	var layer = CanvasLayer.new()
 	layer.name = "PauseMenuLayer"
+	layer.layer = PAUSE_MENU_LAYER_Z
 	add_child(layer)
 	pause_menu = Control.new()
 	pause_menu.name = "PauseMenu"
@@ -689,23 +834,24 @@ func setup_pause_menu() -> void:
 	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
 	pause_menu.add_child(shade)
 	var panel = PanelContainer.new()
-	panel.custom_minimum_size = Vector2(280, 260)
+	panel.custom_minimum_size = Vector2(360, 520)
 	panel.anchor_left = 0.5
 	panel.anchor_top = 0.5
 	panel.anchor_right = 0.5
 	panel.anchor_bottom = 0.5
-	panel.offset_left = -140
-	panel.offset_top = -130
-	panel.offset_right = 140
-	panel.offset_bottom = 130
+	panel.offset_left = -180
+	panel.offset_top = -260
+	panel.offset_right = 180
+	panel.offset_bottom = 260
 	pause_menu.add_child(panel)
 	var menu = VBoxContainer.new()
-	menu.add_theme_constant_override("separation", 8)
+	menu.add_theme_constant_override("separation", 12)
 	panel.add_child(menu)
 	var title = Label.new()
 	title.text = "Menu"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 24)
+	title.add_theme_font_size_override("font_size", 30)
+	title.custom_minimum_size = Vector2(360, 48)
 	menu.add_child(title)
 	pause_status_label = Label.new()
 	pause_status_label.text = ""
@@ -715,22 +861,27 @@ func setup_pause_menu() -> void:
 	var resume_button = create_pause_button(localize("menu.resume"))
 	register_pause_localized_control(resume_button, "menu.resume")
 	resume_button.pressed.connect(close_pause_menu)
+	resume_button.custom_minimum_size = Vector2(400, 56)
 	menu.add_child(resume_button)
 	var save_button = create_pause_button(localize("menu.save"))
 	register_pause_localized_control(save_button, "menu.save")
 	save_button.pressed.connect(save_from_pause_menu)
+	save_button.custom_minimum_size = Vector2(400, 56)
 	menu.add_child(save_button)
 	var load_button = create_pause_button(localize("menu.load"))
 	register_pause_localized_control(load_button, "menu.load")
 	load_button.pressed.connect(load_from_pause_menu)
+	load_button.custom_minimum_size = Vector2(400, 56)
 	menu.add_child(load_button)
 	var options_button = create_pause_button(localize("menu.options"))
 	register_pause_localized_control(options_button, "menu.options")
 	options_button.pressed.connect(open_pause_options)
+	options_button.custom_minimum_size = Vector2(400, 56)
 	menu.add_child(options_button)
 	var title_button = create_pause_button(localize("menu.title"))
 	register_pause_localized_control(title_button, "menu.title")
 	title_button.pressed.connect(return_to_title)
+	title_button.custom_minimum_size = Vector2(400, 56)
 	menu.add_child(title_button)
 	build_pause_options_modal(layer)
 	build_pause_slot_modal(layer)
@@ -748,36 +899,38 @@ func build_pause_options_modal(layer: CanvasLayer) -> void:
 	pause_options_modal.add_child(shade)
 
 	var panel = PanelContainer.new()
-	panel.custom_minimum_size = Vector2(460, 430)
+	panel.custom_minimum_size = Vector2(560, 620)
 	panel.anchor_left = 0.5
 	panel.anchor_top = 0.5
 	panel.anchor_right = 0.5
 	panel.anchor_bottom = 0.5
-	panel.offset_left = -230
-	panel.offset_top = -215
-	panel.offset_right = 230
-	panel.offset_bottom = 215
+	panel.offset_left = -280
+	panel.offset_top = -310
+	panel.offset_right = 280
+	panel.offset_bottom = 310
 	pause_options_modal.add_child(panel)
 
 	var content = VBoxContainer.new()
-	content.add_theme_constant_override("separation", 10)
+	content.add_theme_constant_override("separation", 14)
 	panel.add_child(content)
 
 	var title = Label.new()
 	title.text = localize("options.title")
 	register_pause_localized_control(title, "options.title")
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 24)
-	title.custom_minimum_size = Vector2(360, 38)
+	title.add_theme_font_size_override("font_size", 30)
+	title.custom_minimum_size = Vector2(520, 48)
 	content.add_child(title)
 
 	var resolution_label = Label.new()
 	resolution_label.text = localize("options.resolution")
 	register_pause_localized_control(resolution_label, "options.resolution")
+	resolution_label.add_theme_font_size_override("font_size", 18)
 	content.add_child(resolution_label)
 
 	pause_resolution_select = OptionButton.new()
-	pause_resolution_select.custom_minimum_size = Vector2(360, 38)
+	pause_resolution_select.custom_minimum_size = Vector2(520, 52)
+	pause_resolution_select.add_theme_font_size_override("font_size", 18)
 	populate_pause_resolution_select()
 	pause_resolution_select.item_selected.connect(_on_pause_resolution_selected)
 	content.add_child(pause_resolution_select)
@@ -785,10 +938,12 @@ func build_pause_options_modal(layer: CanvasLayer) -> void:
 	var language_label = Label.new()
 	language_label.text = localize("options.language")
 	register_pause_localized_control(language_label, "options.language")
+	language_label.add_theme_font_size_override("font_size", 18)
 	content.add_child(language_label)
 
 	pause_language_select = OptionButton.new()
-	pause_language_select.custom_minimum_size = Vector2(360, 38)
+	pause_language_select.custom_minimum_size = Vector2(520, 52)
+	pause_language_select.add_theme_font_size_override("font_size", 18)
 	populate_pause_language_select()
 	pause_language_select.item_selected.connect(_on_pause_language_selected)
 	content.add_child(pause_language_select)
@@ -796,10 +951,12 @@ func build_pause_options_modal(layer: CanvasLayer) -> void:
 	var controls_label = Label.new()
 	controls_label.text = localize("options.controls")
 	register_pause_localized_control(controls_label, "options.controls")
+	controls_label.add_theme_font_size_override("font_size", 18)
 	content.add_child(controls_label)
 
 	pause_control_scheme_select = OptionButton.new()
-	pause_control_scheme_select.custom_minimum_size = Vector2(360, 38)
+	pause_control_scheme_select.custom_minimum_size = Vector2(520, 52)
+	pause_control_scheme_select.add_theme_font_size_override("font_size", 18)
 	populate_pause_control_scheme_select()
 	pause_control_scheme_select.item_selected.connect(_on_pause_control_scheme_selected)
 	content.add_child(pause_control_scheme_select)
@@ -807,19 +964,20 @@ func build_pause_options_modal(layer: CanvasLayer) -> void:
 	pause_options_status_label = Label.new()
 	pause_options_status_label.text = localize("options.saved")
 	pause_options_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	pause_options_status_label.custom_minimum_size = Vector2(360, 30)
+	pause_options_status_label.custom_minimum_size = Vector2(520, 36)
+	pause_options_status_label.add_theme_font_size_override("font_size", 16)
 	pause_options_status_label.modulate = Color(0.78, 0.9, 1.0, 1.0)
 	content.add_child(pause_options_status_label)
 
 	var reset_button = create_pause_button(localize("options.reset_defaults"))
 	register_pause_localized_control(reset_button, "options.reset_defaults")
-	reset_button.custom_minimum_size = Vector2(360, 42)
+	reset_button.custom_minimum_size = Vector2(520, 56)
 	reset_button.pressed.connect(reset_pause_options_to_defaults)
 	content.add_child(reset_button)
 
 	var back_button = create_pause_button(localize("menu.back"))
 	register_pause_localized_control(back_button, "menu.back")
-	back_button.custom_minimum_size = Vector2(360, 42)
+	back_button.custom_minimum_size = Vector2(520, 56)
 	back_button.pressed.connect(close_pause_options)
 	content.add_child(back_button)
 
@@ -834,15 +992,15 @@ func build_pause_slot_modal(layer: CanvasLayer) -> void:
 	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
 	pause_slot_modal.add_child(shade)
 	var panel = PanelContainer.new()
-	panel.custom_minimum_size = Vector2(460, 540)
+	panel.custom_minimum_size = Vector2(560, 700)
 	panel.anchor_left = 0.5
 	panel.anchor_top = 0.5
 	panel.anchor_right = 0.5
 	panel.anchor_bottom = 0.5
-	panel.offset_left = -230
-	panel.offset_top = -270
-	panel.offset_right = 230
-	panel.offset_bottom = 270
+	panel.offset_left = -280
+	panel.offset_top = -350
+	panel.offset_right = 280
+	panel.offset_bottom = 350
 	pause_slot_modal.add_child(panel)
 	var content = VBoxContainer.new()
 	content.add_theme_constant_override("separation", 10)
@@ -853,37 +1011,39 @@ func build_pause_slot_modal(layer: CanvasLayer) -> void:
 	pause_slot_title_label.custom_minimum_size = Vector2(360, 38)
 	content.add_child(pause_slot_title_label)
 	var slot_scroll = ScrollContainer.new()
-	slot_scroll.custom_minimum_size = Vector2(360, 310)
+	slot_scroll.custom_minimum_size = Vector2(520, 340)
 	content.add_child(slot_scroll)
 	var slot_list = VBoxContainer.new()
 	slot_list.add_theme_constant_override("separation", 8)
 	slot_scroll.add_child(slot_list)
 	for slot in range(1, SaveManager.SLOT_COUNT + 1):
 		var slot_button = create_pause_button("")
-		slot_button.custom_minimum_size = Vector2(360, 38)
+		slot_button.custom_minimum_size = Vector2(520, 52)
 		slot_button.toggle_mode = true
 		slot_button.pressed.connect(select_pause_slot.bind(slot))
 		pause_slot_buttons.append(slot_button)
 		slot_list.add_child(slot_button)
 	pause_slot_status_label = Label.new()
 	pause_slot_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	pause_slot_status_label.custom_minimum_size = Vector2(360, 30)
+	pause_slot_status_label.custom_minimum_size = Vector2(520, 36)
+	pause_slot_status_label.add_theme_font_size_override("font_size", 16)
 	pause_slot_status_label.modulate = Color(0.78, 0.9, 1.0, 1.0)
 	content.add_child(pause_slot_status_label)
 	pause_slot_action_button = create_pause_button("")
-	pause_slot_action_button.custom_minimum_size = Vector2(360, 38)
+	pause_slot_action_button.custom_minimum_size = Vector2(520, 56)
 	pause_slot_action_button.pressed.connect(confirm_pause_slot_action)
 	content.add_child(pause_slot_action_button)
 	var back_button = create_pause_button(localize("menu.back"))
 	register_pause_localized_control(back_button, "menu.back")
-	back_button.custom_minimum_size = Vector2(360, 38)
+	back_button.custom_minimum_size = Vector2(520, 56)
 	back_button.pressed.connect(close_pause_slot_modal)
 	content.add_child(back_button)
 
 func create_pause_button(text: String) -> Button:
 	var button = Button.new()
 	button.text = text
-	button.custom_minimum_size = Vector2(220, 38)
+	button.custom_minimum_size = Vector2(260, 50)
+	button.add_theme_font_size_override("font_size", 20)
 	return button
 
 func register_pause_localized_control(control: Control, key: String) -> void:

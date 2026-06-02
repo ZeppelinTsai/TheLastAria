@@ -363,3 +363,34 @@ res://img/tachie/lumi/lumi_angry.png
   "text": "你又在看那本啊？"
 }
 ```
+## Dialogue Choices
+
+World dialogue entries can show temporary choices with a `choices` array. Use this for lightweight dialogue branches, or add save fields only when the choice needs to matter later.
+
+```json
+{
+  "speaker": "Lumi",
+  "text": "你笑什麼啦。",
+  "choices": [
+    {
+      "id": "happy_ending",
+      "text": "因為這是 Happy Ending",
+      "text_key": "sunken_city_lyra_room.opening_after_storybook.005.choice.happy_ending.text",
+      "response": {
+        "speaker": "Lumi",
+        "text": "喔？你現在會說這種話了喔。"
+      }
+    }
+  ]
+}
+```
+
+Choice fields:
+
+- `text` / `text_key`: button label.
+- `response`: one response entry, or an array of entries, inserted after the current line.
+- `flag` or `set_flag`: optional SaveManager flag to store.
+- `flag_value`: optional flag value, defaults to `true`.
+- `story_key` and `story_value`: optional story value to store.
+- `next_dialogue`: optional dialogue id to jump to.
+- `next_index`: optional index within the active dialogue to jump to.
