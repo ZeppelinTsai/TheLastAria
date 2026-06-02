@@ -18,7 +18,7 @@
 [ext_resource type="Texture2D" uid="uid://bkb0gdqxvhvqx" path="res://img/sprite/lyra/lyra_tail/Layer 20.png" id="16_kx6u8"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_storybook"]
-radius = 123.97581
+radius = 137.23338
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_window"]
 radius = 116.72617
@@ -122,7 +122,7 @@ dialogue_ids = Array[String](["storybook_after_reading", "storybook_after_readin
 trigger_once = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EventRoot/StorybookTrigger" unique_id=1715764334]
-position = Vector2(187, -291)
+position = Vector2(168, -328)
 shape = SubResource("CircleShape2D_storybook")
 
 [node name="WindowTrigger" type="Area2D" parent="EventRoot" unique_id=1789809370]
@@ -271,5 +271,5 @@ stream = ExtResource("5_vewyr")
 [node name="WalkableArea" type="Area2D" parent="." unique_id=280883501]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="WalkableArea" unique_id=1172369346]
-polygon = PackedVector2Array(-276, -198, 118, -188, 386, -131, 611, 69, 611, 514, -502, 457, -703, 295, -691, -15, -584, -13, -436, 97, -243, -32, -346, -131)
+polygon = PackedVector2Array(-276, -198, 118, -188, 386, -131, 611, 69, 625, 427, -290, 391, -318, 310, -475, 170, -510, 132, -436, 97, -243, -32, -346, -131)
 metadata/_edit_lock_ = true

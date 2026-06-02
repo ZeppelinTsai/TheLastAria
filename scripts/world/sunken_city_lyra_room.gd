@@ -4,9 +4,9 @@ extends "res://scripts/world/world_base.gd"
 
 const POST_STORYBOOK_SEQUENCE_META := "post_storybook_sequence"
 const POST_STORYBOOK_DIALOGUE_ID := "opening_after_storybook"
-const DESK_READING_POSITION := Vector2(-30, -220)
-const ROOM_CENTER_POSITION := Vector2(-30, 120)
-const WALK_TO_CENTER_DURATION := 0.6
+const DESK_READING_POSITION := Vector2(25, -220)
+const ROOM_CENTER_POSITION := Vector2(50, 100)
+const WALK_TO_CENTER_DURATION := 2
 
 var map_data: Dictionary = {}
 var music_context := "overworld"

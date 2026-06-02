@@ -128,17 +128,35 @@ func _input(event):
 	if choice_layer and choice_layer.visible:
 		return
 
-	if event.is_action_pressed("ui_accept") and not event.is_echo():
+	if _is_dialog_advance_event(event):
 		if not dialog_active:
-			if can_talk_to_lumi:
+			if event.is_action_pressed("ui_accept") and not event.is_echo() and can_talk_to_lumi:
 				start_dialog("lumi_intro")
-		elif is_typing:
-			typing_run_id += 1
-			is_typing = false
-			dialog_text.text = full_text
-			show_next_indicator()
-		else:
-			next_dialog()
+			return
+
+		get_viewport().set_input_as_handled()
+		_advance_active_dialog()
+
+func _is_dialog_advance_event(event: InputEvent) -> bool:
+	if event.is_action_pressed("ui_accept") and not event.is_echo():
+		return true
+
+	if event is InputEventMouseButton:
+		var mouse_event := event as InputEventMouseButton
+		return mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_LEFT
+
+	return false
+
+func _advance_active_dialog() -> void:
+	if is_typing:
+		typing_run_id += 1
+		is_typing = false
+		dialog_text.text = full_text
+		if type_sound:
+			type_sound.stop()
+		show_next_indicator()
+	else:
+		next_dialog()
 
 func load_dialogue_sets():
 	var file = FileAccess.open(PROLOGUE_DIALOGUE_PATH, FileAccess.READ)
@@ -217,6 +235,10 @@ func type_text(text: String, run_id: int):
 	show_next_indicator()
 
 func end_dialog():
+	typing_run_id += 1
+	is_typing = false
+	if type_sound:
+		type_sound.stop()
 	if active_dialogue_id == "prelude_opening":
 		SaveManager.set_flag("prelude_opening_complete")
 		SaveManager.set_location("亞特蘭提斯")

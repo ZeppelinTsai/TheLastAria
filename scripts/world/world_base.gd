@@ -83,17 +83,33 @@ func _input(event: InputEvent) -> void:
 	if pause_slot_modal and pause_slot_modal.visible:
 		return
 
+	if _is_dialog_advance_event(event):
+		if dialog_active:
+			get_viewport().set_input_as_handled()
+			_advance_active_dialog()
+		return
+
+func _is_dialog_advance_event(event: InputEvent) -> bool:
 	if event.is_action_pressed("ui_accept") and not event.is_echo():
-		if not dialog_active:
-			return
-		if is_typing:
-			typing_run_id += 1
-			is_typing = false
-			if dialog_text:
-				dialog_text.text = full_text
-			show_next_indicator()
-		else:
-			next_dialog()
+		return true
+
+	if event is InputEventMouseButton:
+		var mouse_event := event as InputEventMouseButton
+		return mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_LEFT
+
+	return false
+
+func _advance_active_dialog() -> void:
+	if is_typing:
+		typing_run_id += 1
+		is_typing = false
+		if dialog_text:
+			dialog_text.text = full_text
+		if type_sound:
+			type_sound.stop()
+		show_next_indicator()
+	else:
+		next_dialog()
 
 func _validate_world_nodes() -> void:
 	if not player:
@@ -233,6 +249,10 @@ func next_dialog() -> void:
 
 func end_dialog() -> void:
 	var finished_dialogue_id = active_dialogue_id
+	typing_run_id += 1
+	is_typing = false
+	if type_sound:
+		type_sound.stop()
 	on_dialog_finished(finished_dialogue_id)
 	dialog_active = false
 	if dialog_box:
