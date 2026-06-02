@@ -56,6 +56,7 @@ var typing_run_id = 0
 var can_talk_to_lumi = false
 var lumi_follow_enabled = false
 var lumi_follow_time = 0.0
+var lumi_prev_position := Vector2.ZERO
 var pause_menu: Control
 var pause_status_label: Label
 var pause_slot_modal: Control
@@ -80,7 +81,10 @@ var dialog_debug_small_preview := false
 var dialog_standee_nodes := {}
 
 func _ready():
-	pass
+	# initialize lumi animation state
+	if lumi:
+		lumi_prev_position = lumi.global_position
+		play_lumi_idle()
 
 func _physics_process(delta):
 	update_lumi_follow(delta)
@@ -108,6 +112,7 @@ func update_lumi_follow(delta):
 	if not lumi_follow_enabled:
 		return
 
+	var prev_pos = lumi.global_position
 	lumi_follow_time += delta
 	var drift = Vector2(
 		sin(lumi_follow_time * LUMI_FOLLOW_DRIFT_SPEED),
@@ -122,6 +127,10 @@ func update_lumi_follow(delta):
 
 	var next_position = current_position.move_toward(target_position, LUMI_FOLLOW_SPEED * delta)
 	lumi.global_position += next_position - current_position
+
+	# update lumi animation based on movement direction
+	var movement = lumi.global_position - prev_pos
+	_update_lumi_animation(movement, delta)
 
 func _input(event):
 	if event is InputEventKey:
@@ -823,6 +832,41 @@ func play_lumi_idle():
 				continue
 
 		lumi_sprite.play(idle_animation)
+
+func _update_lumi_animation(movement: Vector2, delta: float) -> void:
+	if not lumi or movement == Vector2.ZERO:
+		play_lumi_idle()
+		return
+
+	var speed := movement.length() / maxf(delta, 0.0001)
+	var moving_threshold := 8.0
+	if speed < moving_threshold:
+		play_lumi_idle()
+		return
+
+	var dx := movement.x
+	var dy := movement.y
+	var anim := "walk_down"
+	if abs(dx) > abs(dy):
+		if dx > 0:
+			anim = "walk_right"
+		else:
+			anim = "walk_left"
+	else:
+		# in Godot positive y is down
+		if dy < 0:
+			anim = "walk_up"
+		else:
+			anim = "walk_down"
+
+	for lumi_sprite in lumi.find_children("*", "AnimatedSprite2D", true, false):
+		if not lumi_sprite or not lumi_sprite.sprite_frames:
+			continue
+		if lumi_sprite.sprite_frames.has_animation(anim):
+			lumi_sprite.play(anim)
+		else:
+			# fallback to idle or default animation
+			play_lumi_idle()
 
 func setup_pause_menu() -> void:
 	var layer = CanvasLayer.new()
