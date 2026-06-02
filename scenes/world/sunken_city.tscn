@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://chxagjrv0fg3c" path="res://scripts/world/sunken_city.gd" id="1_ragq7"]
 [ext_resource type="Script" uid="uid://3coemwwc2wj8" path="res://scripts/world/EventTrigger.gd" id="2_event"]
+[ext_resource type="Texture2D" uid="uid://k20p2rbg2ap4" path="res://img/bg/ChatGPT Image 2026年6月2日 下午07_47_22.png" id="2_xf1ny"]
 [ext_resource type="Script" uid="uid://wmwqvlml1da7" path="res://scripts/world/SceneExitTrigger.gd" id="3_exit"]
 [ext_resource type="Script" uid="uid://b12dyjrtbc0s5" path="res://scenes/player.gd" id="3_pt7ew"]
 [ext_resource type="AudioStream" uid="uid://dkyvtknblt5m8" path="res://audio/sfx/468927__malakme__medium-text-blip.ogg" id="5_vewyr"]
@@ -136,8 +137,9 @@ script = ExtResource("1_ragq7")
 dialogue_path = "res://data/dialogues/sunken_city.json"
 
 [node name="Background" type="Sprite2D" parent="." unique_id=38697303]
+position = Vector2(-742, -517)
+texture = ExtResource("2_xf1ny")
 centered = false
-metadata/_edit_lock_ = true
 
 [node name="EventRoot" type="Node2D" parent="." unique_id=1349173413]
 
@@ -148,7 +150,7 @@ dialogue_id = "sunken_city_intro"
 flag_name = "sunken_city_intro_seen"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EventRoot/IntroTrigger" unique_id=2015797546]
-position = Vector2(838, -815)
+position = Vector2(656, -787)
 shape = SubResource("RectangleShape2D_intro")
 
 [node name="ExitTrigger" type="Area2D" parent="EventRoot" unique_id=767568797]
@@ -158,6 +160,7 @@ target_scene = "res://scenes/world/lighthouse_island.tscn"
 location_title = "燈塔島"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EventRoot/ExitTrigger" unique_id=1445620776]
+position = Vector2(-1089, -788)
 shape = SubResource("RectangleShape2D_exit")
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=358588103 node_paths=PackedStringArray("walkable_area")]
@@ -203,7 +206,10 @@ material = SubResource("ShaderMaterial_refraction")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
+metadata/_edit_lock_ = true
 
 [node name="UnderwaterFG" type="ColorRect" parent="UI" unique_id=2100000000]
 z_index = 850
@@ -211,7 +217,10 @@ material = SubResource("ShaderMaterial_underwater")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
+metadata/_edit_lock_ = true
 
 [node name="LightRays" type="ColorRect" parent="UI" unique_id=2100000001]
 z_index = 900
