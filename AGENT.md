@@ -252,7 +252,7 @@ text = f.read()
 │   ├── world/                 # 世界場景（每張地圖一個 .tscn）
 │   ├── ui/                    # UI 場景（main_menu.tscn 等）
 │   ├── characters/            # 角色專用場景（bosses 等）
-│   └── main.gd                # ⚠ 例外：現有入口腳本（保留）
+│   └── main.gd                # ⚠ 例外：Legacy prototype controller — not the project entry
 │
 ├── scripts/
 │   ├── world/                 # 世界場景腳本（world_base.gd）
@@ -306,7 +306,7 @@ text = f.read()
 
 - 原則上 `.tscn` 放 `scenes/`
 - 原則上 `.gd` 放 `scripts/`
-- 例外：`scenes/main.gd` 為既有入口，暫時保留
+- 例外：`scenes/main.gd` 為既有舊版範例場景，保留為參考，但非啟動入口
 - 每個場景使用同名腳本對應
 - `world_base.gd` 唯一來源：
   `scripts/world/world_base.gd`
@@ -342,7 +342,125 @@ world_base.gd
 
 Do not hardcode large story content into `.gd` files.
 
+## Legacy Scene Notice
+
+`scenes/main.tscn` and `scenes/main.gd` are legacy prototype files and are NOT the current application entry point.
+
+Note: `scenes/main.tscn` still has `res://scenes/main.gd` assigned as its scene script, but that linkage is local to the prototype scene and does not indicate project startup.
+Current project entry (configured in `project.godot`):
+
+```text
+run/main_scene="res://scenes/ui/main_menu.tscn"
+```
+
+Current playable runtime architecture:
+
+```text
+scenes/ui/main_menu.tscn
+→ scenes/world/*.tscn
+→ scripts/world/*.gd
+→ scripts/world/world_base.gd
+→ data/maps/*.json
+```
+
+Rules:
+
+- Do not add new gameplay logic to `scenes/main.gd`.
+- Do not use `scenes/main.tscn` as the template for new maps.
+- New map logic belongs in `scripts/world/` and per-map world scripts.
+- Shared world behavior belongs in `scripts/world/world_base.gd`.
+- Scene-specific events belong in the map scene or its matching world script.
+- `scenes/main.gd` may be deleted only after confirming no references remain.
+
+One-line summary: **`main.gd` is legacy; `world_base.gd` is the current skeleton.**
+
 ---
+
+## Refactor Plan — Decompose `main.gd` into focused systems
+
+Goal: reduce the God Object in `scenes/main.gd` by extracting independently testable systems and making `main.gd` an orchestrator until migration completes.
+
+High-level steps:
+
+1. Identify core responsibilities in `scenes/main.gd` and map each to a system: `dialogue`, `lumi`, `pause`, `orion/events`, `save`, `ui`.
+2. Create lightweight system interfaces under `scripts/systems/` with `init(owner: Node) -> void` and clear public methods (e.g. `start_dialog`, `toggle_pause`).
+3. Add a `scripts/world/game_scene.gd` orchestrator that owns system instances and delegates calls; keep `scenes/main.tscn` working by setting its script to this orchestrator during migration.
+4. Migrate functionality incrementally: move non-breaking features first (`pause`, `save`, `music`), then `dialogue` and `lumi` follow.
+5. Validate after each small migration using `check_godot.bat` and unit/scene smoke tests.
+6. Remove legacy code and delete `scenes/main.gd` only after full verification and reference checks.
+
+Priority (first 3):
+
+- `pause_system` — isolates pause menu and time handling.
+- `save_system` (use existing `SaveManager`) — wrap save/load hooks into a small adapter.
+- `dialogue_system` — centralize show/type/end dialog behavior.
+
+Suggested file map (scaffold to add):
+
+- `scripts/systems/dialogue_system.gd`
+- `scripts/systems/lumi_system.gd`
+- `scripts/systems/pause_system.gd`
+- `scripts/systems/orion_system.gd`
+- `scripts/world/game_scene.gd` (orchestrator)
+
+Interface examples (minimal):
+
+```gdscript
+# scripts/systems/dialogue_system.gd
+extends Node
+class_name DialogueSystem
+
+func init(owner: Node) -> void:
+  self.owner = owner
+
+func start_dialog(dialogue_data: Dictionary) -> void:
+  pass
+
+func end_dialog() -> void:
+  pass
+```
+
+```gdscript
+# scripts/world/game_scene.gd
+extends Node
+class_name GameSceneController
+
+@onready var dialogue: DialogueSystem = DialogueSystem.new()
+@onready var lumi: LumiSystem = LumiSystem.new()
+
+func _ready() -> void:
+  add_child(dialogue)
+  add_child(lumi)
+  dialogue.init(self)
+  lumi.init(self)
+```
+
+Migration notes:
+
+- Keep commits small and focused (one system per PR/commit).
+- Run `check_godot.bat` after each migration step.
+- Preserve existing `SaveManager`, `MusicManager`, and `CharacterVisualManager` usage—wrap, don't replace.
+- Update `AGENT.md` with progress and mark systems as completed.
+
+## Refactor Status — Focused Systems Migration
+
+Completed:
+
+- `DialogueSystem` — migrated dialogue flow, standees, debug overlay, text styling, choices, typing, and dialog completion callbacks.
+- `PauseSystem` — implemented focused pause menu handling.
+- `SaveSystem` — implemented focused save/load adapter around existing `SaveManager`.
+- `GameSceneController` — created orchestrator scaffold in `scripts/world/game_scene.gd`.
+
+In progress:
+
+- `scenes/main.gd` — currently acts as a delegation layer with fallback compatibility while migration remains safe.
+- `LumiSystem` and `OrionSystem` — scaffolded for staged migration.
+
+Current migration rule:
+
+- Keep `scenes/main.gd` working until the focused systems are validated end to end.
+- Prefer moving one responsibility per commit.
+- Do not delete legacy fallback paths until reference checks and Godot validation pass.
 
 ## Walkable Area System
 
