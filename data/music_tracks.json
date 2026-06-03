@@ -7,6 +7,10 @@
 		"path": "res://audio/bgm/stocktune_tears_on_the_shore_1780234595.mp3",
 		"volume_db": -12.0
 	},
+	"orion_cg": {
+		"path": "res://audio/bgm/stocktune_glimmer_of_hope_light_1780490115.mp3",
+		"volume_db": -12.0
+	},
 	"dungeon": {
 		"path": "res://audio/bgm/stocktune_drifting_amongst_stars_1778353519.mp3",
 		"volume_db": -16.0

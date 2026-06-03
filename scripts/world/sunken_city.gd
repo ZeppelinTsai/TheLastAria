@@ -17,6 +17,7 @@ const SURFACE_HINT_POSITION := Vector2(610, -500)
 const SURFACE_HINT_RADIUS := 68.0
 const SURFACE_HINT_FLAG := "sunken_city_surface_hint_found"
 const ORION_PRELUDE_IMAGE_PATH := "res://img/prelude/9.png"
+const ORION_CG_MUSIC_CONTEXT := "orion_cg"
 const LIGHTHOUSE_SCENE_PATH := "res://scenes/world/lighthouse_island.tscn"
 
 var map_data: Dictionary = {}
@@ -207,6 +208,8 @@ func _trigger_orion_found_event() -> void:
 		_transition_to_lighthouse()
 
 func show_orion_prelude_image() -> void:
+	MusicManager.play_context(ORION_CG_MUSIC_CONTEXT, 0.8)
+
 	if not orion_image_container:
 		var ui_layer := get_node_or_null("UI")
 		if not ui_layer:

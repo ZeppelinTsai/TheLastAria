@@ -228,6 +228,96 @@ text = f.read()
 
 ---
 
+## Project Folder Structure
+
+```text
+.
+├── autoload/                  # Global singletons
+│                              # MusicManager, SaveManager,
+│                              # LocalizationManager,
+│                              # CharacterVisualManager,
+│                              # SceneTransition,
+│                              # SettingsManager 等
+│
+├── data/
+│   ├── maps/                  # 地圖 JSON（背景、對話、音樂、Walkable Polygon）
+│   ├── dialogues/             # 對話 JSON（按地圖命名）
+│   │                          # e.g. sunken_city_lyra_room.json
+│   └── localization/
+│       ├── ui_text.json       # UI 本地化字串
+│       ├── dialogues/         # 自動產生的對話 key
+│       └── scripts/           # 自動產生的腳本 key
+│
+├── scenes/
+│   ├── world/                 # 世界場景（每張地圖一個 .tscn）
+│   ├── ui/                    # UI 場景（main_menu.tscn 等）
+│   ├── characters/            # 角色專用場景（bosses 等）
+│   └── main.gd                # ⚠ 例外：現有入口腳本（保留）
+│
+├── scripts/
+│   ├── world/                 # 世界場景腳本（world_base.gd）
+│   │                          # 每個 .tscn 對應同名 .gd
+│   ├── ui/                    # UI 邏輯
+│   ├── characters/            # 角色邏輯
+│   ├── objects/               # 可互動物件
+│   ├── systems/               # 共用系統（非 autoload）
+│   └── dev/                   # 開發工具腳本（不進 production）
+│
+├── shaders/                   # .gdshader
+│                              # e.g. underwater 系列
+│
+├── theme/                     # Godot Theme
+│                              # default_theme.tres
+│
+├── assets/
+│   └── fonts/                # 字型資源
+│
+├── img/
+│   ├── bg/                    # 背景圖（依地圖 ID 命名）
+│   ├── cg/                    # CG 圖
+│   ├── prelude/               # 開場／過場素材
+│   ├── sprite/                # 遊戲內角色動畫
+│   │   ├── lyra/
+│   │   └── lumi/
+│   │       └── default/
+│   │           # 命名：
+│   │           # Layer 2–4   上
+│   │           # Layer 5–7   下
+│   │           # Layer 8–10  右
+│   │           # Layer 11–13 左
+│   │
+│   ├── tachie/                # 對話立繪
+│   │   ├── lyra/
+│   │   └── lumi/
+│   │
+│   └── ui/                    # UI 圖示與素材
+│
+├── audio/
+│   ├── bgm/                   # 背景音樂
+│   └── sfx/                   # 音效
+│
+├── tools/                     # Python 工具
+│                              # 地圖生成、本地化、驗證
+│
+└── project.godot
+```
+
+## Important Rules
+
+- 原則上 `.tscn` 放 `scenes/`
+- 原則上 `.gd` 放 `scripts/`
+- 例外：`scenes/main.gd` 為既有入口，暫時保留
+- 每個場景使用同名腳本對應
+- `world_base.gd` 唯一來源：
+  `scripts/world/world_base.gd`
+- 圖片不得放進 `scenes/` 或 `scripts/`
+- `autoload/` 只放全域 singleton
+- 新地圖統一使用：
+  `tools/create_map_template.py`
+- 不手動建立地圖骨架
+- 資源命名優先使用 map_id / character_id
+- localization 不直接手改，透過工具生成
+
 ## Scene Architecture
 
 World scenes should inherit from:
@@ -493,6 +583,19 @@ Before reporting completion:
 4. Re-run validation.
 5. Confirm validation passes.
 
+### Stop Conditions
+
+Stop and ask for review if:
+
+- Validation fails 3 consecutive times
+- More than 10 files changed unexpectedly
+- Story content is being regenerated
+- Scene hierarchy changes unintentionally
+- Commit diff exceeds intended scope
+- More than 3 retries produce different solutions for the same problem
+
+Do not continue blindly.
+
 ### Encoding Validation
 
 Before modifying JSON / dialogue / localization files:
@@ -539,6 +642,63 @@ Common failure order:
 - Logic
 
 Never reverse this order.
+
+### Completion Workflow
+
+After implementation is complete:
+
+1. Validate environment first.
+2. Run project validation.
+3. Fix all failures.
+4. Re-run validation.
+5. Review changed files.
+6. Create a focused commit.
+7. Push only after validation passes.
+
+Required workflow:
+
+```text
+READ
+→ IMPLEMENT
+→ UTF8 CHECK
+→ VALIDATE
+→ FIX
+→ VALIDATE
+→ REVIEW
+→ COMMIT
+→ PUSH
+```
+
+Commit rules:
+
+- Prefer small commits.
+- Commit message should describe player-visible intent.
+- Avoid generic messages:
+  - update
+  - fix stuff
+  - final
+  - cleanup
+
+GOOD:
+
+```text
+feat(prelude): refine Orion discovery pacing
+fix(dialogue): preserve UTF8 localization parsing
+feat(lighthouse): add Orion rescue transition
+```
+
+Push rules:
+
+- Never push if validation fails.
+- Never push unrelated files.
+- Never rewrite history unless explicitly requested.
+
+Completion report should include:
+
+- Changed files
+- Validation result
+- Commit hash
+- Remaining known issues
 
 ### Godot Validation
 
