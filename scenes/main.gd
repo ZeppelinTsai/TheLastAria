@@ -81,11 +81,12 @@ var dialog_debug_small_preview := false
 var dialog_standee_nodes := {}
 
 func _ready():
-	# initialize lumi animation state
-	if lumi:
-		lumi_prev_position = lumi.global_position
-		play_lumi_idle()
-		_ensure_lumi_spriteframes()
+	print("Scene: ", get_tree().current_scene.name)
+	print("Lumi node: ", lumi)
+	lumi_prev_position = lumi.global_position if lumi else Vector2.ZERO  # ← 這幾行是空格縮排
+	play_lumi_idle()
+	_ensure_lumi_spriteframes()
+	lumi_follow_enabled = true
 
 func _physics_process(delta):
 	update_lumi_follow(delta)
@@ -110,6 +111,7 @@ func pulse_orion_light():
 	tween.parallel().tween_property(orion_glow, "modulate:a", ORION_GLOW_DIM_ALPHA, 0.9)
 
 func update_lumi_follow(delta):
+	print("follow enabled: ", lumi_follow_enabled, " | lumi: ", lumi, " | player pos: ", player.global_position if player else "NULL")
 	if not lumi_follow_enabled:
 		return
 
@@ -120,19 +122,20 @@ func update_lumi_follow(delta):
 		cos(lumi_follow_time * LUMI_FOLLOW_DRIFT_SPEED * 0.8)
 	) * LUMI_FOLLOW_DRIFT_DISTANCE
 	var target_position = player.global_position + LUMI_FOLLOW_OFFSET + drift
-	var current_position = lumi_follow_pivot.global_position
-	var distance = current_position.distance_to(target_position)
+	var distance = lumi.global_position.distance_to(target_position)
 
 	if distance <= LUMI_FOLLOW_STOP_DISTANCE:
+		lumi.velocity = Vector2.ZERO
+		lumi.move_and_slide()
 		return
 
-	var next_position = current_position.move_toward(target_position, LUMI_FOLLOW_SPEED * delta)
-	lumi.global_position += next_position - current_position
+	var direction = lumi.global_position.direction_to(target_position)
+	lumi.velocity = direction * LUMI_FOLLOW_SPEED
+	lumi.move_and_slide()
 
-	# update lumi animation based on movement direction
 	var movement = lumi.global_position - prev_pos
 	_update_lumi_animation(movement, delta)
-
+	
 func _input(event):
 	if event is InputEventKey:
 		var key_event := event as InputEventKey

@@ -98,6 +98,8 @@
       "type": "scene_exit",
       "target_scene": "res://scenes/world/sunken_city.tscn",
       "location_title": "Sunken City",
+      "transition_meta_key": "from_lyra_room_to_sunken_city",
+      "transition_meta_value": true,
       "position": [
         0,
         345

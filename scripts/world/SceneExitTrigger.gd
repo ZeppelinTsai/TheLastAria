@@ -3,6 +3,8 @@ extends Area2D
 @export var target_scene: String
 @export var location_title: String = ""
 @export var spawn_point_name: String = ""
+@export var transition_meta_key: String = ""
+@export var transition_meta_value: bool = true
 
 var _is_triggering := false
 
@@ -30,6 +32,9 @@ func _try_trigger(_body: Node2D) -> void:
 		return
 
 	_is_triggering = true
+	var meta_key := transition_meta_key.strip_edges()
+	if meta_key != "":
+		SceneTransition.set_meta(meta_key, transition_meta_value)
 	await SceneTransition.go(scene_path, location_title)
 
 func _is_player_inside_trigger(player: Node) -> bool:

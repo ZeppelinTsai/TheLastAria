@@ -16,6 +16,15 @@
 [ext_resource type="Texture2D" uid="uid://81m2xsdym7y1" path="res://img/sprite/lyra/lyra_tail/Layer 24 copy.png" id="14_3mhfo"]
 [ext_resource type="Texture2D" uid="uid://0l8d64vv6cxm" path="res://img/sprite/lyra/lyra_tail/Layer 19.png" id="15_58jam"]
 [ext_resource type="Texture2D" uid="uid://bkb0gdqxvhvqx" path="res://img/sprite/lyra/lyra_tail/Layer 20.png" id="16_kx6u8"]
+[ext_resource type="Texture2D" uid="uid://bvosffnqfftya" path="res://img/sprite/lumi/default/Layer 5.png" id="17_omc8n"]
+[ext_resource type="Texture2D" uid="uid://cmx5k6eyuhtcm" path="res://img/sprite/lumi/default/Layer 6.png" id="18_3mhfo"]
+[ext_resource type="Texture2D" uid="uid://cdqcp8rm7oay6" path="res://img/sprite/lumi/default/Layer 7.png" id="19_58jam"]
+[ext_resource type="Texture2D" uid="uid://corlv1hdhsmwp" path="res://img/sprite/lumi/default/Layer 11.png" id="20_kx6u8"]
+[ext_resource type="Texture2D" uid="uid://hhqk8jctvmkt" path="res://img/sprite/lumi/default/Layer 12.png" id="21_qdrbp"]
+[ext_resource type="Texture2D" uid="uid://cp2yon8810rfj" path="res://img/sprite/lumi/default/Layer 13.png" id="22_i7rja"]
+[ext_resource type="Texture2D" uid="uid://bk8ma40e5otwt" path="res://img/sprite/lumi/default/Layer 8.png" id="23_4bxcc"]
+[ext_resource type="Texture2D" uid="uid://u4bjis71cr5m" path="res://img/sprite/lumi/default/Layer 9.png" id="24_q2j4t"]
+[ext_resource type="Texture2D" uid="uid://dkhqqxvrevee8" path="res://img/sprite/lumi/default/Layer 10.png" id="25_e1ely"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_storybook"]
 radius = 137.23338
@@ -105,6 +114,81 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
+[sub_resource type="SpriteFrames" id="SpriteFrames_wjmu1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17_omc8n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_3mhfo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_58jam")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17_omc8n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_3mhfo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_58jam")
+}],
+"loop": true,
+"name": &"walk_down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("20_kx6u8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_qdrbp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_i7rja")
+}],
+"loop": true,
+"name": &"walk_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("23_4bxcc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_q2j4t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_e1ely")
+}],
+"loop": true,
+"name": &"walk_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17_omc8n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_3mhfo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_58jam")
+}],
+"loop": true,
+"name": &"walk_up",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_loa3k"]
+
 [node name="Main" type="Node2D" unique_id=958562685]
 script = ExtResource("1_ragq7")
 dialogue_path = "res://data/dialogues/sunken_city_lyra_room.json"
@@ -192,10 +276,9 @@ metadata/_edit_lock_ = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Player" unique_id=516352408]
 position = Vector2(-73.99999, 107.99999)
-scale = Vector2(0.5, 0.5)
+scale = Vector2(0.7, 0.7)
 sprite_frames = SubResource("SpriteFrames_0ld40")
-animation = &"walk_up"
-frame_progress = 0.23627442
+animation = &"walk_right"
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=1064311324]
 
@@ -276,3 +359,16 @@ stream = ExtResource("5_vewyr")
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="WalkableArea" unique_id=1172369346]
 polygon = PackedVector2Array(-414, -297, 177, -282, 579, -196.5, 916.5, 103.5, 937.5, 640.5, -435, 586.5, -477, 465, -712.5, 255, -765, 198, -654, 145.5, -364.5, -48, -519, -196.5)
 metadata/_edit_lock_ = true
+
+[node name="Lumi" type="CharacterBody2D" parent="." unique_id=89059566]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Lumi" unique_id=1334877260]
+scale = Vector2(0.3, 0.3)
+sprite_frames = SubResource("SpriteFrames_wjmu1")
+animation = &"walk_up"
+frame = 2
+frame_progress = 0.5115332
+speed_scale = 0.5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Lumi" unique_id=430374801]
+shape = SubResource("CircleShape2D_loa3k")

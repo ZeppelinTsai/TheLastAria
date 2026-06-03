@@ -1,8 +1,140 @@
 {
-  "sunken_city_intro": [
+  "lyra_room_entry_surface_hint": [
     {
       "speaker": "Lumi",
-      "text": "Lyra，妳醒醒。剛剛的震動不是普通的海流。"
+      "text": "Lyra。\n海上好像有東西。"
+    },
+    {
+      "speaker": "Lumi",
+      "text": "我們去看看。"
+    }
+  ],
+
+  "orion_found_on_surface": [
+    {
+      "speaker": "Lumi",
+      "text": "……"
+    },
+
+    {
+      "speaker": "Lumi",
+      "text": "是人。"
+    },
+
+    {
+      "speaker": "StageDir",
+      "text": "［停頓］"
+    },
+
+    {
+      "speaker": "Lumi",
+      "text": "可是……"
+    },
+
+    {
+      "speaker": "Lumi",
+      "text": "人不是故事裡才有嗎？"
+    },
+
+    {
+      "speaker": "StageDir",
+      "text": "［Lyra 沒說話］"
+    },
+
+    {
+      "speaker": "Lumi",
+      "text": "他還活著。"
+    },
+
+    {
+      "speaker": "Lumi",
+      "text": "像快熄掉的燈。"
+    },
+
+    {
+      "speaker": "Lumi",
+      "text": "……Lyra。"
+    },
+
+    {
+      "speaker": "Lumi",
+      "text": "怎麼辦？",
+
+      "choices": [
+        {
+          "id": "bring_back",
+          "text": "帶回去"
+        },
+
+        {
+          "id": "observe_more",
+          "text": "再觀察一下",
+
+          "response": [
+            {
+              "speaker": "StageDir",
+              "text": "［Lyra 靠近］"
+            },
+
+            {
+              "speaker": "StageDir",
+              "text": "［海浪翻動 Orion 的手］"
+            },
+
+            {
+              "speaker": "Lumi",
+              "text": "……"
+            },
+
+            {
+              "speaker": "Lumi",
+              "text": "他會沉下去的。",
+
+              "choices": [
+                {
+                  "id": "bring_back_after_observe",
+                  "text": "帶回去"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "speaker": "Lumi",
+      "text": "最近的安全帶……"
+    },
+
+    {
+      "speaker": "Lumi",
+      "text": "那邊。"
+    },
+
+    {
+      "speaker": "StageDir",
+      "text": "［遠方燈塔島亮一下］"
+    },
+
+    {
+      "speaker": "Lumi",
+      "text": "先不要讓他死掉。"
+    },
+
+    {
+      "speaker": "Lumi",
+      "text": "剩下的。\n之後再想。"
+    },
+
+    {
+      "speaker": "StageDir",
+      "text": "【轉場】"
+    },
+
+    {
+      "speaker": "StageDir",
+      "text": "黑畫面。\n切燈塔島。"
     }
   ]
 }

@@ -22,6 +22,7 @@ func on_world_ready() -> void:
 	MusicManager.play_context(music_context)
 	if _consume_post_storybook_sequence_meta():
 		call_deferred("_start_post_storybook_sequence")
+	init_lumi_follow()
 
 func _apply_map_data(data: Dictionary) -> void:
 	if data.is_empty():

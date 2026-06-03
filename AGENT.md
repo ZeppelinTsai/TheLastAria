@@ -92,6 +92,31 @@ Avoid:
 
 ---
 
+### Environment First
+
+Before changing story, scenes, or gameplay:
+
+Validate:
+
+- File encoding
+- JSON parsing
+- Scene loading
+- Existing generated assets
+
+Prefer:
+
+Environment issue
+→ Encoding
+→ Validation
+→ Data
+→ Logic
+
+Avoid:
+
+Logic rewrite
+→ Data rewrite
+→ Environment check
+
 ## Type Safety Rules
 
 These rules reduce GDScript parse errors and improve AI-generated code reliability.
@@ -349,9 +374,9 @@ Preferred dialogue entry:
 
 ```json
 {
-    "speaker": "lyra",
-    "text_key": "prologue.lyra.001.text",
-    "text": "Fallback source text"
+  "speaker": "lyra",
+  "text_key": "prologue.lyra.001.text",
+  "text": "Fallback source text"
 }
 ```
 
@@ -468,26 +493,52 @@ Before reporting completion:
 4. Re-run validation.
 5. Confirm validation passes.
 
+### Encoding Validation
+
+Before modifying JSON / dialogue / localization files:
+
+1. Read text using UTF-8 explicitly.
+2. Validate JSON parse before editing.
+3. Never assume corrupted text means corrupted data.
+4. Distinguish encoding failure from content failure.
+
+PowerShell:
+
+```powershell
+Get-Content <file> -Raw -Encoding UTF8 | ConvertFrom-Json
+```
+
+Python:
+
+```python
+from pathlib import Path
+
+text = Path(path).read_text(
+    encoding="utf-8"
+)
+```
+
+If validation fails:
+
+- DO NOT regenerate content.
+- DO NOT rewrite files.
+- Fix encoding or parser issues first.
+- Prefer environment fixes before content changes.
+
 Required command on Windows:
 
 ```powershell
 powershell -ExecutionPolicy Bypass .\tools\validate.ps1
 ```
 
-Validation should include:
+Common failure order:
 
-- Godot headless check
-- GDScript parse
-- Scene loading
-- Shader compilation
-- Python syntax checks when Python tools are modified
+- Encoding
+- Parsing
+- Data
+- Logic
 
-If validation fails:
-
-- DO NOT continue implementation.
-- DO NOT report completion.
-- Fix errors first.
-- Re-run validation until it passes.
+Never reverse this order.
 
 ### Godot Validation
 

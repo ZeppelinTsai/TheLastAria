@@ -46,17 +46,6 @@
   ],
   "events": [
     {
-      "id": "intro",
-      "type": "dialogue",
-      "dialogue_id": "sunken_city_intro",
-      "flag_name": "sunken_city_intro_seen",
-      "position": [
-        36,
-        209
-      ],
-      "radius": 112
-    },
-    {
       "id": "exit_to_lighthouse",
       "type": "scene_exit",
       "target_scene": "res://scenes/world/lighthouse_island.tscn",

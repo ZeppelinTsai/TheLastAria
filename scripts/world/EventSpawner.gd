@@ -71,6 +71,10 @@ static func _spawn_scene_exit_event(event: Dictionary, event_root: Node) -> void
 	trigger.location_title = str(event.get("location_title", "")).strip_edges()
 	if event.has("spawn_point_name"):
 		trigger.spawn_point_name = str(event.get("spawn_point_name", "")).strip_edges()
+	if event.has("transition_meta_key"):
+		trigger.transition_meta_key = str(event.get("transition_meta_key", "")).strip_edges()
+	if event.has("transition_meta_value"):
+		trigger.transition_meta_value = bool(event.get("transition_meta_value", true))
 	trigger.position = _event_position(event)
 	_add_collision_shape(trigger, _event_radius(event))
 	event_root.add_child(trigger)
@@ -132,9 +136,19 @@ static func _has_existing_equivalent(event: Dictionary, event_root: Node) -> boo
 		elif event_type == "scene_exit":
 			if script_path == SCENE_EXIT_TRIGGER_SCRIPT_PATH:
 				if str(child.get("target_scene")) == str(event.get("target_scene", "")):
+					_configure_scene_exit_trigger(child, event)
 					return true
 
 	return false
+
+static func _configure_scene_exit_trigger(trigger: Area2D, event: Dictionary) -> void:
+	trigger.set("location_title", str(event.get("location_title", "")).strip_edges())
+	if event.has("spawn_point_name"):
+		trigger.set("spawn_point_name", str(event.get("spawn_point_name", "")).strip_edges())
+	if event.has("transition_meta_key"):
+		trigger.set("transition_meta_key", str(event.get("transition_meta_key", "")).strip_edges())
+	if event.has("transition_meta_value"):
+		trigger.set("transition_meta_value", bool(event.get("transition_meta_value", true)))
 
 static func _event_node_name(event: Dictionary, fallback: String) -> String:
 	var event_id := str(event.get("id", "")).strip_edges()

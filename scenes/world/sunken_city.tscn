@@ -19,9 +19,15 @@
 [ext_resource type="Shader" uid="uid://ch0l0i4cbehji" path="res://shaders/underwater_fg.gdshader" id="16_underwat"]
 [ext_resource type="Shader" uid="uid://mgag3tij6kl5" path="res://shaders/underwater_light_rays.gdshader" id="17_lightrays"]
 [ext_resource type="Shader" uid="uid://dsh2y6twvmt66" path="res://shaders/underwater_refraction.gdshader" id="18_refract"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_intro"]
-size = Vector2(599, 204.5)
+[ext_resource type="Texture2D" uid="uid://bvosffnqfftya" path="res://img/sprite/lumi/default/Layer 5.png" id="20_dmlyt"]
+[ext_resource type="Texture2D" uid="uid://cmx5k6eyuhtcm" path="res://img/sprite/lumi/default/Layer 6.png" id="21_n7qsj"]
+[ext_resource type="Texture2D" uid="uid://cdqcp8rm7oay6" path="res://img/sprite/lumi/default/Layer 7.png" id="22_av44k"]
+[ext_resource type="Texture2D" uid="uid://corlv1hdhsmwp" path="res://img/sprite/lumi/default/Layer 11.png" id="23_q26ue"]
+[ext_resource type="Texture2D" uid="uid://hhqk8jctvmkt" path="res://img/sprite/lumi/default/Layer 12.png" id="24_l87d2"]
+[ext_resource type="Texture2D" uid="uid://cp2yon8810rfj" path="res://img/sprite/lumi/default/Layer 13.png" id="25_p04eo"]
+[ext_resource type="Texture2D" uid="uid://bk8ma40e5otwt" path="res://img/sprite/lumi/default/Layer 8.png" id="26_habxc"]
+[ext_resource type="Texture2D" uid="uid://u4bjis71cr5m" path="res://img/sprite/lumi/default/Layer 9.png" id="27_mmi2a"]
+[ext_resource type="Texture2D" uid="uid://dkhqqxvrevee8" path="res://img/sprite/lumi/default/Layer 10.png" id="28_gt7q0"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_exit"]
 size = Vector2(80, 120)
@@ -132,6 +138,81 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
+[sub_resource type="SpriteFrames" id="SpriteFrames_63clh"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("20_dmlyt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_n7qsj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_av44k")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("20_dmlyt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_n7qsj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_av44k")
+}],
+"loop": true,
+"name": &"walk_down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("23_q26ue")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_l87d2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_p04eo")
+}],
+"loop": true,
+"name": &"walk_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("26_habxc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("27_mmi2a")
+}, {
+"duration": 1.0,
+"texture": ExtResource("28_gt7q0")
+}],
+"loop": true,
+"name": &"walk_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("20_dmlyt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_n7qsj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_av44k")
+}],
+"loop": true,
+"name": &"walk_up",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_cfb8c"]
+
 [node name="Main" type="Node2D" unique_id=958562685]
 script = ExtResource("1_ragq7")
 dialogue_path = "res://data/dialogues/sunken_city.json"
@@ -142,16 +223,6 @@ texture = ExtResource("2_xf1ny")
 centered = false
 
 [node name="EventRoot" type="Node2D" parent="." unique_id=1349173413]
-
-[node name="IntroTrigger" type="Area2D" parent="EventRoot" unique_id=1844419983]
-position = Vector2(-179, 376)
-script = ExtResource("2_event")
-dialogue_id = "sunken_city_intro"
-flag_name = "sunken_city_intro_seen"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EventRoot/IntroTrigger" unique_id=2015797546]
-position = Vector2(656, -787)
-shape = SubResource("RectangleShape2D_intro")
 
 [node name="ExitTrigger" type="Area2D" parent="EventRoot" unique_id=767568797]
 position = Vector2(553, 379)
@@ -310,3 +381,16 @@ stream = ExtResource("5_vewyr")
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="WalkableArea" unique_id=1804364667]
 polygon = PackedVector2Array(-966, -550, 963, -543, 963, 543, -970, 543)
 metadata/_edit_lock_ = true
+
+[node name="Lumi" type="CharacterBody2D" parent="." unique_id=1659027037]
+position = Vector2(-125, 315)
+metadata/_edit_group_ = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Lumi" unique_id=1822293433]
+scale = Vector2(0.1, 0.1)
+sprite_frames = SubResource("SpriteFrames_63clh")
+animation = &"walk_up"
+speed_scale = 0.5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Lumi" unique_id=1192342685]
+shape = SubResource("CircleShape2D_cfb8c")

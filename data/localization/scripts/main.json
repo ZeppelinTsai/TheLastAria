@@ -1,0 +1,50 @@
+{
+	"en": {
+		"scenes.main.002.text": "",
+		"scenes.main.017.text": "",
+		"scenes.main.018.text": "",
+		"scenes.main.020.text": ""
+	},
+	"ja": {
+		"scenes.main.002.text": "",
+		"scenes.main.017.text": "",
+		"scenes.main.018.text": "",
+		"scenes.main.020.text": ""
+	},
+	"zh_TW": {
+		"scenes.main.002.text": "æéº¼è¾¦â¦â¦ï¼",
+		"scenes.main.017.text": "Confirm Overwrite",
+		"scenes.main.018.text": "Press again to overwrite Slot %d.",
+		"scenes.main.020.text": "This will overwrite existing save data."
+	},
+	"zh_CN": {
+		"scenes.main.002.text": "",
+		"scenes.main.017.text": "",
+		"scenes.main.018.text": "",
+		"scenes.main.020.text": ""
+	},
+	"ko": {
+		"scenes.main.002.text": "",
+		"scenes.main.017.text": "",
+		"scenes.main.018.text": "",
+		"scenes.main.020.text": ""
+	},
+	"fr": {
+		"scenes.main.002.text": "",
+		"scenes.main.017.text": "",
+		"scenes.main.018.text": "",
+		"scenes.main.020.text": ""
+	},
+	"de": {
+		"scenes.main.002.text": "",
+		"scenes.main.017.text": "",
+		"scenes.main.018.text": "",
+		"scenes.main.020.text": ""
+	},
+	"es": {
+		"scenes.main.002.text": "",
+		"scenes.main.017.text": "",
+		"scenes.main.018.text": "",
+		"scenes.main.020.text": ""
+	}
+}
