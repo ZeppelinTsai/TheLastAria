@@ -1,10 +1,10 @@
-extends Node
+﻿extends Node
 class_name DialogueSystem
 
-var owner: Node
+var host: Node
 
 func init(owner_node: Node) -> void:
-    owner = owner_node
+    host = owner_node
 var active_dialogs: Array = []
 var active_dialogue_id: String = ""
 var current_index: int = 0
@@ -22,21 +22,21 @@ func load_dialogue_sets(path: String) -> void:
     if typeof(parsed) != TYPE_DICTIONARY:
         push_warning("Dialogue file data is invalid: %s" % path)
         return
-    owner.dialogue_sets = parsed
+    host.dialogue_sets = parsed
 
 func start_dialog(dialogue_id: String) -> void:
-    if not owner.dialogue_sets.has(dialogue_id):
+    if not host.dialogue_sets.has(dialogue_id):
         push_warning("Dialogue id not found: %s" % dialogue_id)
         return
 
     dialog_active = true
-    if owner.dialog_box:
-        owner.dialog_box.visible = true
+    if host.dialog_box:
+        host.dialog_box.visible = true
     active_dialogue_id = dialogue_id
-    active_dialogs = owner.dialogue_sets[dialogue_id]
+    active_dialogs = host.dialogue_sets[dialogue_id]
     current_index = 0
 
-    var p = owner.get_player() if owner and owner.has_method("get_player") else null
+    var p = host.get_player() if host and host.has_method("get_player") else null
     if p:
         p.can_move = false
 
@@ -52,93 +52,93 @@ func next_dialog() -> void:
 func show_dialog(index: int) -> void:
     var d = active_dialogs[index]
     var speaker_id = str(d.get("speaker", ""))
-    var expression = owner.get_dialog_expression(d, "default") if owner.has_method("get_dialog_expression") else str(d.get("expression", ""))
-    owner.dialog_debug_speaker_id = speaker_id
-    owner.dialog_debug_expression = expression
-    owner.update_prelude_scene(str(d.get("scene", ""))) if owner.has_method("update_prelude_scene") else null
+    var expression = host.get_dialog_expression(d, "default") if host.has_method("get_dialog_expression") else str(d.get("expression", ""))
+    host.dialog_debug_speaker_id = speaker_id
+    host.dialog_debug_expression = expression
+    host.update_prelude_scene(str(d.get("scene", ""))) if host.has_method("update_prelude_scene") else null
     if str(d.get("effect", "")) == "shake":
-        if owner.has_method("shake_scene"): owner.shake_scene()
-    if owner.has_method("configure_dialog_text_style"): owner.configure_dialog_text_style()
-    if owner.speaker_name and owner.has_method("CharacterVisualManager"):
-        owner.speaker_name.text = CharacterVisualManager.get_display_name(speaker_id)
+        if host.has_method("shake_scene"): host.shake_scene()
+    if host.has_method("configure_dialog_text_style"): host.configure_dialog_text_style()
+    if host.speaker_name and host.has_method("CharacterVisualManager"):
+        host.speaker_name.text = CharacterVisualManager.get_display_name(speaker_id)
     full_text = LocalizationManager.get_entry_text(d)
-    if owner.dialog_text:
-        owner.dialog_text.text = ""
-    if owner.has_method("show_dialog_standees"):
-        owner.show_dialog_standees(d, speaker_id, expression)
+    if host.dialog_text:
+        host.dialog_text.text = ""
+    if host.has_method("show_dialog_standees"):
+        host.show_dialog_standees(d, speaker_id, expression)
     is_typing = true
     typing_run_id += 1
     var run_id = typing_run_id
     type_text(full_text, run_id)
-    if owner.has_method("hide_next_indicator"): owner.hide_next_indicator()
+    if host.has_method("hide_next_indicator"): host.hide_next_indicator()
 
 func type_text(text: String, run_id: int) -> void:
     for i in range(text.length()):
         if not is_typing or run_id != typing_run_id:
             break
 
-        if owner.dialog_text:
-            owner.dialog_text.text = text.substr(0, i + 1)
+        if host.dialog_text:
+            host.dialog_text.text = text.substr(0, i + 1)
 
         if text[i] != " ":
-            if owner.type_sound:
-                owner.type_sound.stop()
-                owner.type_sound.play()
+            if host.type_sound:
+                host.type_sound.stop()
+                host.type_sound.play()
 
-        await owner.get_tree().create_timer(0.05).timeout
+        await host.get_tree().create_timer(0.05).timeout
 
     if run_id != typing_run_id:
         return
     is_typing = false
-    if owner.dialog_text:
-        owner.dialog_text.text = text
-    if owner.type_sound:
-        owner.type_sound.stop()
-    if owner.has_method("show_next_indicator"): owner.show_next_indicator()
+    if host.dialog_text:
+        host.dialog_text.text = text
+    if host.type_sound:
+        host.type_sound.stop()
+    if host.has_method("show_next_indicator"): host.show_next_indicator()
 
 func end_dialog() -> void:
     typing_run_id += 1
     is_typing = false
-    if owner.type_sound:
-        owner.type_sound.stop()
+    if host.type_sound:
+        host.type_sound.stop()
     if active_dialogue_id == "prelude_opening":
         SaveManager.set_flag("prelude_opening_complete")
         SaveManager.set_location("亞特蘭提斯")
         SaveManager.autosave(true)
-        if owner.has_method("clear_prelude_overlay"): owner.clear_prelude_overlay()
+        if host.has_method("clear_prelude_overlay"): host.clear_prelude_overlay()
         start_dialog("tutorial")
         return
     elif active_dialogue_id == "tutorial":
         SaveManager.set_flag("tutorial_complete")
     elif active_dialogue_id == "lumi_intro":
         SaveManager.set_flag("talked_to_lumi")
-        if owner.has_method("enable_lumi_follow"):
-            owner.lumi_follow_enabled = true
+        if host.has_method("enable_lumi_follow"):
+            host.lumi_follow_enabled = true
     elif active_dialogue_id == "orion_first_seen":
         SaveManager.set_flag("orion_discovered")
         SaveManager.set_location("墜落地點")
         SaveManager.autosave(true)
         dialog_active = false
-        if owner.dialog_box: owner.dialog_box.visible = false
+        if host.dialog_box: host.dialog_box.visible = false
         # delegate to systems if available, otherwise no-op
-        if owner.has_method("hide_dialog_standees"): owner.hide_dialog_standees()
-        if owner.has_method("hide_next_indicator"): owner.hide_next_indicator()
+        if host.has_method("hide_dialog_standees"): host.hide_dialog_standees()
+        if host.has_method("hide_next_indicator"): host.hide_next_indicator()
         active_dialogue_id = ""
-        if owner.has_method("show_orion_choice"): owner.show_orion_choice()
+        if host.has_method("show_orion_choice"): host.show_orion_choice()
         return
     elif active_dialogue_id == "orion_rescue":
         SaveManager.set_flag("prelude_complete")
         SaveManager.set_location("小島")
-        if owner.has_method("clear_prelude_overlay"): owner.clear_prelude_overlay()
+        if host.has_method("clear_prelude_overlay"): host.clear_prelude_overlay()
         MusicManager.play_context("overworld")
 
     dialog_active = false
-    if owner.dialog_box: owner.dialog_box.visible = false
-    if owner.has_method("hide_dialog_standees"): owner.hide_dialog_standees()
-    if owner.has_method("hide_next_indicator"): owner.hide_next_indicator()
+    if host.dialog_box: host.dialog_box.visible = false
+    if host.has_method("hide_dialog_standees"): host.hide_dialog_standees()
+    if host.has_method("hide_next_indicator"): host.hide_next_indicator()
     active_dialogue_id = ""
 
-    var p = owner.get_player() if owner and owner.has_method("get_player") else null
+    var p = host.get_player() if host and host.has_method("get_player") else null
     if p:
         p.can_move = true
     SaveManager.autosave(true)
@@ -208,8 +208,8 @@ func show_dialog_standees(entry: Dictionary, speaker_id: String, expression: Str
         var layout := CharacterVisualManager.get_dialog_standee_layout(item_character, overrides)
         configure_dialog_standee_node(node, layout, item_character == speaker_id)
         if item_character == speaker_id:
-            if owner.speaker_avatar != null:
-                owner.speaker_avatar = node
+            if host.speaker_avatar != null:
+                host.speaker_avatar = node
             dialog_debug_speaker_id = item_character
             update_dialog_debug_overlay(item_character, layout)
 
@@ -218,12 +218,12 @@ func get_dialog_standee_node(character_id: String) -> TextureRect:
         return dialog_standee_nodes[character_id]
 
     var node: TextureRect
-    if dialog_standee_nodes.is_empty() and owner.speaker_avatar:
-        node = owner.speaker_avatar
+    if dialog_standee_nodes.is_empty() and host.speaker_avatar:
+        node = host.speaker_avatar
     else:
         node = TextureRect.new()
         node.name = "Standee_%s" % character_id
-        owner.dialog_box.add_child(node)
+        host.dialog_box.add_child(node)
 
     dialog_standee_nodes[character_id] = node
     return node
@@ -243,11 +243,11 @@ func get_dialog_expression(source: Dictionary, fallback := "default") -> String:
     return fallback
 
 func configure_dialog_standee_node(standee_node: TextureRect, layout: Dictionary, is_speaking: bool) -> void:
-    if not standee_node or not owner.dialog_box:
+    if not standee_node or not host.dialog_box:
         return
 
     var viewport_size := get_dialog_debug_layout_size()
-    var dialog_height: float = owner.dialog_box.size.y
+    var dialog_height: float = host.dialog_box.size.y
     if dialog_height <= 0.0:
         dialog_height = 262.0
     var texture: Texture2D = standee_node.texture
@@ -297,14 +297,14 @@ func configure_dialog_standee_node(standee_node: TextureRect, layout: Dictionary
     standee_node.mouse_filter = Control.MOUSE_FILTER_IGNORE
     standee_node.focus_mode = Control.FOCUS_NONE
     standee_node.z_index = (-1 if is_speaking else -3) + int(layout.get("z_offset", 0))
-    owner.dialog_box.move_child(standee_node, 0)
+    host.dialog_box.move_child(standee_node, 0)
 
 func configure_dialog_text_style() -> void:
-    if not owner.dialog_box:
+    if not host.dialog_box:
         return
 
     var viewport_size := get_dialog_debug_layout_size()
-    var dialog_height: float = owner.dialog_box.size.y
+    var dialog_height: float = host.dialog_box.size.y
     if dialog_height <= 0.0:
         dialog_height = 262.0
 
@@ -316,32 +316,32 @@ func configure_dialog_text_style() -> void:
     var text_top: float = maxf(62.0, dialog_height * 0.25)
     var text_bottom: float = 34.0
 
-    if owner.speaker_name:
-        owner.speaker_name.set_anchors_preset(Control.PRESET_TOP_LEFT, false)
-        owner.speaker_name.offset_left = content_left
-        owner.speaker_name.offset_top = name_top
-        owner.speaker_name.offset_right = viewport_size.x - content_right
-        owner.speaker_name.offset_bottom = name_top + float(name_font_size + 12)
-        owner.speaker_name.add_theme_font_size_override("font_size", name_font_size)
-        owner.speaker_name.add_theme_color_override("font_color", Color(0.92, 0.96, 1.0, 1.0))
-        owner.speaker_name.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.9))
-        owner.speaker_name.add_theme_constant_override("shadow_offset_x", 2)
-        owner.speaker_name.add_theme_constant_override("shadow_offset_y", 2)
-        owner.speaker_name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+    if host.speaker_name:
+        host.speaker_name.set_anchors_preset(Control.PRESET_TOP_LEFT, false)
+        host.speaker_name.offset_left = content_left
+        host.speaker_name.offset_top = name_top
+        host.speaker_name.offset_right = viewport_size.x - content_right
+        host.speaker_name.offset_bottom = name_top + float(name_font_size + 12)
+        host.speaker_name.add_theme_font_size_override("font_size", name_font_size)
+        host.speaker_name.add_theme_color_override("font_color", Color(0.92, 0.96, 1.0, 1.0))
+        host.speaker_name.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.9))
+        host.speaker_name.add_theme_constant_override("shadow_offset_x", 2)
+        host.speaker_name.add_theme_constant_override("shadow_offset_y", 2)
+        host.speaker_name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 
-    if owner.dialog_text:
-        owner.dialog_text.set_anchors_preset(Control.PRESET_TOP_LEFT, false)
-        owner.dialog_text.offset_left = content_left
-        owner.dialog_text.offset_top = text_top
-        owner.dialog_text.offset_right = viewport_size.x - content_right
-        owner.dialog_text.offset_bottom = dialog_height - text_bottom
-        owner.dialog_text.add_theme_font_size_override("font_size", text_font_size)
-        owner.dialog_text.add_theme_color_override("font_color", Color(0.96, 0.98, 1.0, 1.0))
-        owner.dialog_text.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.95))
-        owner.dialog_text.add_theme_constant_override("shadow_offset_x", 2)
-        owner.dialog_text.add_theme_constant_override("shadow_offset_y", 2)
-        owner.dialog_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-        owner.dialog_text.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+    if host.dialog_text:
+        host.dialog_text.set_anchors_preset(Control.PRESET_TOP_LEFT, false)
+        host.dialog_text.offset_left = content_left
+        host.dialog_text.offset_top = text_top
+        host.dialog_text.offset_right = viewport_size.x - content_right
+        host.dialog_text.offset_bottom = dialog_height - text_bottom
+        host.dialog_text.add_theme_font_size_override("font_size", text_font_size)
+        host.dialog_text.add_theme_color_override("font_color", Color(0.96, 0.98, 1.0, 1.0))
+        host.dialog_text.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.95))
+        host.dialog_text.add_theme_constant_override("shadow_offset_x", 2)
+        host.dialog_text.add_theme_constant_override("shadow_offset_y", 2)
+        host.dialog_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+        host.dialog_text.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 
 func toggle_dialog_debug_overlay() -> void:
     dialog_debug_visible = not dialog_debug_visible
@@ -356,13 +356,13 @@ func toggle_dialog_debug_window_size() -> void:
     configure_dialog_text_style()
     if dialog_debug_speaker_id != "":
         var layout := CharacterVisualManager.get_dialog_standee_layout(dialog_debug_speaker_id)
-        configure_dialog_standee_node(owner.speaker_avatar, layout, true)
+        configure_dialog_standee_node(host.speaker_avatar, layout, true)
         update_dialog_debug_overlay(dialog_debug_speaker_id, layout)
 
 func get_dialog_debug_layout_size() -> Vector2:
     if dialog_debug_visible and dialog_debug_small_preview:
         return Vector2(DIALOG_DEBUG_SMALL_WINDOW_SIZE)
-    return owner.get_viewport_rect().size
+    return host.get_viewport_rect().size
 
 func ensure_dialog_debug_overlay() -> void:
     if dialog_debug_layer:
@@ -371,7 +371,7 @@ func ensure_dialog_debug_overlay() -> void:
     dialog_debug_layer = CanvasLayer.new()
     dialog_debug_layer.name = "DialogDebugLayer"
     dialog_debug_layer.layer = 100
-    owner.add_child(dialog_debug_layer)
+    host.add_child(dialog_debug_layer)
 
     dialog_debug_frame = ColorRect.new()
     dialog_debug_frame.name = "SmallPreviewFrame"
@@ -427,14 +427,14 @@ func update_dialog_debug_overlay(speaker_id: String, layout: Dictionary) -> void
     var avatar_z := 0
     var avatar_child_index := -1
     var avatar_visible := false
-    if owner.speaker_avatar:
-        texture = owner.speaker_avatar.texture
-        avatar_rect = owner.speaker_avatar.get_global_rect()
-        avatar_z = owner.speaker_avatar.z_index
-        avatar_child_index = owner.speaker_avatar.get_index()
-        avatar_visible = owner.speaker_avatar.visible
-        if owner.speaker_avatar.get_parent():
-            avatar_parent = owner.speaker_avatar.get_parent().name
+    if host.speaker_avatar:
+        texture = host.speaker_avatar.texture
+        avatar_rect = host.speaker_avatar.get_global_rect()
+        avatar_z = host.speaker_avatar.z_index
+        avatar_child_index = host.speaker_avatar.get_index()
+        avatar_visible = host.speaker_avatar.visible
+        if host.speaker_avatar.get_parent():
+            avatar_parent = host.speaker_avatar.get_parent().name
     if texture:
         texture_path = texture.resource_path
         texture_size = Vector2i(texture.get_width(), texture.get_height())

@@ -1,4 +1,4 @@
-extends Node
+﻿extends Node
 class_name OrionSystem
 
 const ORION_GLOW_BASE_SCALE := Vector2(1.0, 1.0)
@@ -6,7 +6,7 @@ const ORION_GLOW_PEAK_SCALE := Vector2(1.22, 1.22)
 const ORION_GLOW_DIM_ALPHA := 0.62
 const ORION_GLOW_PEAK_ALPHA := 1.0
 
-var owner: Node
+var host: Node
 var player: Node
 var orion_glow: Node2D
 var orion_light: Light2D
@@ -14,10 +14,10 @@ var choice_layer: CanvasLayer
 var choice_default_button: Button
 
 func init(owner_node: Node) -> void:
-	owner = owner_node
-	player = owner.get_node_or_null("Player")
-	orion_glow = owner.get_node_or_null("OrionTrigger/GlowSprite") as Node2D
-	orion_light = owner.get_node_or_null("OrionTrigger/PointLight2D") as Light2D
+	host = owner_node
+	player = host.get_node_or_null("Player")
+	orion_glow = host.get_node_or_null("OrionTrigger/GlowSprite") as Node2D
+	orion_light = host.get_node_or_null("OrionTrigger/PointLight2D") as Light2D
 
 func pulse_orion_light() -> void:
 	if not orion_light or not orion_glow:
@@ -39,14 +39,14 @@ func pulse_orion_light() -> void:
 func on_orion_trigger_entered(body: Node) -> void:
 	if body.name != "Player":
 		return
-	if not owner or bool(owner.get("dialog_active")):
+	if not host or bool(host.get("dialog_active")):
 		return
 	if SaveManager.has_flag("orion_discovered"):
 		return
 
 	MusicManager.play_context("mystery")
-	if owner.has_method("start_dialog"):
-		owner.start_dialog("orion_first_seen")
+	if host.has_method("start_dialog"):
+		host.start_dialog("orion_first_seen")
 
 func show_orion_choice(layer: CanvasLayer, default_button: Button) -> void:
 	choice_layer = layer
@@ -61,20 +61,20 @@ func show_orion_choice(layer: CanvasLayer, default_button: Button) -> void:
 func on_orion_choice_selected(_choice_id: String) -> void:
 	if choice_layer:
 		choice_layer.visible = false
-	if owner and owner.has_method("start_dialog"):
-		owner.start_dialog("orion_rescue")
+	if host and host.has_method("start_dialog"):
+		host.start_dialog("orion_rescue")
 
 func on_dungeon_area_entered(body: Node) -> void:
 	if body.name != "Player":
 		return
 	SaveManager.set_flag("entered_dungeon_area")
 	MusicManager.play_context("dungeon")
-	if owner:
-		owner.set("lumi_follow_enabled", true)
+	if host:
+		host.set("lumi_follow_enabled", true)
 
 func on_dungeon_area_exited(body: Node) -> void:
 	if body.name != "Player":
 		return
 	MusicManager.play_context("overworld")
-	if owner:
-		owner.set("lumi_follow_enabled", false)
+	if host:
+		host.set("lumi_follow_enabled", false)

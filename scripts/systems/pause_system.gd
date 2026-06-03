@@ -1,7 +1,9 @@
-extends Node
+﻿extends Node
 class_name PauseSystem
 
-var owner: Node
+const SLOT_DOUBLE_PRESS_MS := 450
+
+var host: Node
 var paused: bool = false
 var pause_menu: Control
 var pause_status_label: Label
@@ -15,10 +17,11 @@ var pause_slot_mode := 0
 var pause_overwrite_confirm_slot := -1
 var pause_last_slot_press_slot := -1
 var pause_last_slot_press_msec := 0
+var was_player_movable_before_menu := true
 const PauseSlotMode = { "NONE": 0, "SAVE": 1, "LOAD": 2 }
 
 func init(owner_node: Node) -> void:
-    owner = owner_node
+    host = owner_node
 
 func toggle_pause() -> void:
     paused = not paused
@@ -30,7 +33,7 @@ func is_paused() -> bool:
 func setup_pause_menu() -> void:
     var layer = CanvasLayer.new()
     layer.name = "PauseMenuLayer"
-    owner.add_child(layer)
+    host.add_child(layer)
 
     pause_menu = Control.new()
     pause_menu.name = "PauseMenu"
@@ -168,7 +171,7 @@ func toggle_pause_menu() -> void:
         open_pause_menu()
 
 func open_pause_menu() -> void:
-    var p = owner.get_player() if owner and owner.has_method("get_player") else null
+    var p = host.get_player() if host and host.has_method("get_player") else null
     was_player_movable_before_menu = p.can_move if p else true
     if p:
         p.can_move = false
@@ -180,7 +183,7 @@ func close_pause_menu() -> void:
     close_pause_slot_modal()
     if pause_menu:
         pause_menu.visible = false
-    var p = owner.get_player() if owner and owner.has_method("get_player") else null
+    var p = host.get_player() if host and host.has_method("get_player") else null
     if p:
         p.can_move = was_player_movable_before_menu
 
@@ -266,7 +269,7 @@ func confirm_pause_slot_action() -> void:
             refresh_pause_slots()
             return
 
-        var p = owner.get_player() if owner and owner.has_method("get_player") else null
+        var p = host.get_player() if host and host.has_method("get_player") else null
         if p:
             SaveManager.set_player_position(p.global_position)
         if SaveManager.save_game(pause_selected_slot):
@@ -279,7 +282,7 @@ func confirm_pause_slot_action() -> void:
 
 func quick_confirm_pause_slot_action() -> void:
     if pause_slot_mode == PauseSlotMode.SAVE:
-        var p = owner.get_player() if owner and owner.has_method("get_player") else null
+        var p = host.get_player() if host and host.has_method("get_player") else null
         if p:
             SaveManager.set_player_position(p.global_position)
         if SaveManager.save_game(pause_selected_slot):
@@ -298,8 +301,8 @@ func load_pause_slot() -> void:
         return
 
     var saved_scene = SaveManager.get_saved_scene_path()
-    if saved_scene != owner.get_tree().current_scene.scene_file_path:
-        owner.get_tree().change_scene_to_file(saved_scene)
+    if saved_scene != host.get_tree().current_scene.scene_file_path:
+        host.get_tree().change_scene_to_file(saved_scene)
         return
 
     SaveManager.apply_player_position()
@@ -338,4 +341,4 @@ func format_pause_slot_summary(summary: Dictionary) -> String:
 
 func return_to_title() -> void:
     SaveManager.autosave(true)
-    owner.get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+    host.get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")

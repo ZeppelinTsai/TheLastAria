@@ -1,4 +1,4 @@
-extends Node
+﻿extends Node
 class_name LumiSystem
 
 const LUMI_FOLLOW_OFFSET := Vector2(-42, -34)
@@ -7,17 +7,17 @@ const LUMI_FOLLOW_STOP_DISTANCE := 18.0
 const LUMI_FOLLOW_DRIFT_DISTANCE := 7.0
 const LUMI_FOLLOW_DRIFT_SPEED := 2.2
 
-var owner: Node
+var host: Node
 var player: Node2D
 var lumi: CharacterBody2D
 var follow_enabled := false
 var follow_time := 0.0
 
 func init(owner_node: Node) -> void:
-	owner = owner_node
-	player = owner.get_node_or_null("Player") as Node2D
-	lumi = owner.get_node_or_null("Lumi") as CharacterBody2D
-	follow_enabled = bool(owner.get("lumi_follow_enabled")) if owner else false
+	host = owner_node
+	player = host.get_node_or_null("Player") as Node2D
+	lumi = host.get_node_or_null("Lumi") as CharacterBody2D
+	follow_enabled = bool(host.get("lumi_follow_enabled")) if host else false
 
 func physics_process(delta: float) -> void:
 	update_follow(delta)
@@ -27,12 +27,12 @@ func set_target(target: Node) -> void:
 
 func set_follow_enabled(value: bool) -> void:
 	follow_enabled = value
-	if owner:
-		owner.set("lumi_follow_enabled", value)
+	if host:
+		host.set("lumi_follow_enabled", value)
 
 func update_follow(delta: float) -> void:
-	if owner:
-		follow_enabled = bool(owner.get("lumi_follow_enabled"))
+	if host:
+		follow_enabled = bool(host.get("lumi_follow_enabled"))
 	if not follow_enabled or not lumi or not player:
 		return
 
