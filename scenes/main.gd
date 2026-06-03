@@ -16,6 +16,8 @@ enum PauseSlotMode { NONE, SAVE, LOAD }
 @onready var orion_light = $OrionTrigger/PointLight2D
 @onready var pause_system: PauseSystem = PauseSystem.new()
 @onready var dialogue: DialogueSystem = DialogueSystem.new()
+@onready var lumi_system: LumiSystem = LumiSystem.new()
+@onready var orion_system: OrionSystem = OrionSystem.new()
 var active_dialogs = []
 var prelude_layer: CanvasLayer
 var prelude_shade: ColorRect
@@ -86,14 +88,19 @@ func _ready():
 	print("Scene: ", get_tree().current_scene.name)
 	print("Lumi node: ", lumi)
 	lumi_prev_position = lumi.global_position if lumi else Vector2.ZERO  # ← 這幾行是空格縮排
-	play_lumi_idle()
-	_ensure_lumi_spriteframes()
-	lumi_follow_enabled = true
 	add_child(pause_system)
 	pause_system.init(self)
 	pause_system.setup_pause_menu()
 	add_child(dialogue)
 	dialogue.init(self)
+	add_child(lumi_system)
+	lumi_system.init(self)
+	add_child(orion_system)
+	orion_system.init(self)
+	_ensure_lumi_spriteframes()
+	play_lumi_idle()
+	lumi_follow_enabled = true
+	lumi_system.set_follow_enabled(true)
 
 func _physics_process(delta):
 	update_lumi_follow(delta)
@@ -103,45 +110,10 @@ func _exit_tree() -> void:
 	SaveManager.unregister_player(player)
 
 func pulse_orion_light():
-	orion_light.energy = 2.0
-	orion_glow.scale = ORION_GLOW_BASE_SCALE
-	orion_glow.modulate.a = ORION_GLOW_DIM_ALPHA
-
-	var tween = create_tween().set_loops()
-	tween.set_trans(Tween.TRANS_SINE)
-	tween.set_ease(Tween.EASE_IN_OUT)
-	tween.tween_property(orion_light, "energy", 3.4, 0.9)
-	tween.parallel().tween_property(orion_glow, "scale", ORION_GLOW_PEAK_SCALE, 0.9)
-	tween.parallel().tween_property(orion_glow, "modulate:a", ORION_GLOW_PEAK_ALPHA, 0.9)
-	tween.tween_property(orion_light, "energy", 1.35, 0.9)
-	tween.parallel().tween_property(orion_glow, "scale", ORION_GLOW_BASE_SCALE, 0.9)
-	tween.parallel().tween_property(orion_glow, "modulate:a", ORION_GLOW_DIM_ALPHA, 0.9)
+	orion_system.pulse_orion_light()
 
 func update_lumi_follow(delta):
-	print("follow enabled: ", lumi_follow_enabled, " | lumi: ", lumi, " | player pos: ", player.global_position if player else "NULL")
-	if not lumi_follow_enabled:
-		return
-
-	var prev_pos = lumi.global_position
-	lumi_follow_time += delta
-	var drift = Vector2(
-		sin(lumi_follow_time * LUMI_FOLLOW_DRIFT_SPEED),
-		cos(lumi_follow_time * LUMI_FOLLOW_DRIFT_SPEED * 0.8)
-	) * LUMI_FOLLOW_DRIFT_DISTANCE
-	var target_position = player.global_position + LUMI_FOLLOW_OFFSET + drift
-	var distance = lumi.global_position.distance_to(target_position)
-
-	if distance <= LUMI_FOLLOW_STOP_DISTANCE:
-		lumi.velocity = Vector2.ZERO
-		lumi.move_and_slide()
-		return
-
-	var direction = lumi.global_position.direction_to(target_position)
-	lumi.velocity = direction * LUMI_FOLLOW_SPEED
-	lumi.move_and_slide()
-
-	var movement = lumi.global_position - prev_pos
-	_update_lumi_animation(movement, delta)
+	lumi_system.update_follow(delta)
 	
 func _input(event):
 	if event is InputEventKey:
@@ -480,13 +452,10 @@ func shake_scene() -> void:
 	scene_shake_tween.tween_property(self, "position", Vector2.ZERO, 0.06)
 
 func show_orion_choice() -> void:
-	player.can_move = false
-	choice_layer.visible = true
-	choice_default_button.grab_focus()
+	orion_system.show_orion_choice(choice_layer, choice_default_button)
 
 func _on_orion_choice_selected(_choice_id: String) -> void:
-	choice_layer.visible = false
-	start_dialog("orion_rescue")
+	orion_system.on_orion_choice_selected(_choice_id)
 
 func show_next_indicator():
 
@@ -880,146 +849,13 @@ func update_dialog_debug_overlay(speaker_id: String, layout: Dictionary) -> void
 	dialog_debug_label.text = "\n".join(debug_lines)
 
 func play_lumi_idle():
-	for lumi_sprite in lumi.find_children("*", "AnimatedSprite2D", true, false):
-		if not lumi_sprite or not lumi_sprite.sprite_frames:
-			continue
-
-		var idle_animation = lumi_sprite.animation
-		if not lumi_sprite.sprite_frames.has_animation(idle_animation):
-			if lumi_sprite.sprite_frames.has_animation("idle_down"):
-				idle_animation = "idle_down"
-			elif lumi_sprite.sprite_frames.has_animation("default"):
-				idle_animation = "default"
-			else:
-				continue
-
-		lumi_sprite.play(idle_animation)
+	lumi_system.play_idle()
 
 func _update_lumi_animation(movement: Vector2, delta: float) -> void:
-	if not lumi or movement == Vector2.ZERO:
-		play_lumi_idle()
-		return
-
-	var speed := movement.length() / maxf(delta, 0.0001)
-	var moving_threshold := 8.0
-	if speed < moving_threshold:
-		play_lumi_idle()
-		return
-
-	var dx := movement.x
-	var dy := movement.y
-	var anim := "walk_down"
-	if abs(dx) > abs(dy):
-		if dx > 0:
-			anim = "walk_right"
-		else:
-			anim = "walk_left"
-	else:
-		# in Godot positive y is down
-		if dy < 0:
-			anim = "walk_up"
-		else:
-			anim = "walk_down"
-
-	for lumi_sprite in lumi.find_children("*", "AnimatedSprite2D", true, false):
-		if not lumi_sprite or not lumi_sprite.sprite_frames:
-			continue
-		if lumi_sprite.sprite_frames.has_animation(anim):
-			lumi_sprite.play(anim)
-		else:
-			# fallback to idle or default animation
-			play_lumi_idle()
+	lumi_system.update_animation(movement, delta)
 
 func _ensure_lumi_spriteframes() -> void:
-	if not lumi:
-		return
-	var sprite_node := lumi.get_node_or_null("AnimatedSprite2D")
-	if not sprite_node:
-		return
-	var sf: SpriteFrames = sprite_node.sprite_frames
-	var need_build := false
-	if not sf or not (sf is SpriteFrames):
-		need_build = true
-	else:
-		# ensure required animations exist
-		for name in ["walk_up", "walk_down", "walk_left", "walk_right", "idle_down"]:
-			if not sf.has_animation(name):
-				need_build = true
-				break
-
-	if not need_build:
-		return
-
-	var new_sf := SpriteFrames.new()
-
-	# mapping based on asset naming: 2-4 up, 5-7 down, 8-10 right, 11-13 left
-	var up := []
-	for i in [2, 3, 4]:
-		var path = "res://img/sprite/lumi/default/Layer %d.png" % i
-		var t = load(path)
-		if t:
-			up.append(t)
-
-	var down := []
-	for i in [5, 6, 7]:
-		var path = "res://img/sprite/lumi/default/Layer %d.png" % i
-		var t = load(path)
-		if t:
-			down.append(t)
-
-	var right := []
-	for i in [8, 9, 10]:
-		var path = "res://img/sprite/lumi/default/Layer %d.png" % i
-		var t = load(path)
-		if t:
-			right.append(t)
-
-	var left := []
-	for i in [11, 12, 13]:
-		var path = "res://img/sprite/lumi/default/Layer %d.png" % i
-		var t = load(path)
-		if t:
-			left.append(t)
-
-	if down.size() > 0:
-		new_sf.add_animation("idle_down")
-		for t in down:
-			new_sf.add_frame("idle_down", t)
-		new_sf.set_animation_speed("idle_down", 5.0)
-		new_sf.set_animation_loop("idle_down", true)
-
-	if down.size() > 0:
-		new_sf.add_animation("walk_down")
-		for t in down:
-			new_sf.add_frame("walk_down", t)
-		new_sf.set_animation_speed("walk_down", 8.0)
-		new_sf.set_animation_loop("walk_down", true)
-
-	if up.size() > 0:
-		new_sf.add_animation("walk_up")
-		for t in up:
-			new_sf.add_frame("walk_up", t)
-		new_sf.set_animation_speed("walk_up", 8.0)
-		new_sf.set_animation_loop("walk_up", true)
-
-	if right.size() > 0:
-		new_sf.add_animation("walk_right")
-		for t in right:
-			new_sf.add_frame("walk_right", t)
-		new_sf.set_animation_speed("walk_right", 8.0)
-		new_sf.set_animation_loop("walk_right", true)
-
-	if left.size() > 0:
-		new_sf.add_animation("walk_left")
-		for t in left:
-			new_sf.add_frame("walk_left", t)
-		new_sf.set_animation_speed("walk_left", 8.0)
-		new_sf.set_animation_loop("walk_left", true)
-
-	# assign
-	sprite_node.sprite_frames = new_sf
-	# ensure default idle
-	sprite_node.animation = "idle_down" if new_sf.has_animation("idle_down") else sprite_node.animation
+	lumi_system.ensure_spriteframes()
 
 func setup_pause_menu() -> void:
 	pause_system.setup_pause_menu()
@@ -1087,19 +923,12 @@ func _on_lumi_body_exited(body: Node2D) -> void:
 
 
 func _on_orion_trigger_body_entered(body: Node2D) -> void:
-	if body.name == "Player" and not dialog_active and not SaveManager.has_flag("orion_discovered"):
-		MusicManager.play_context("mystery")
-		start_dialog("orion_first_seen")
+	orion_system.on_orion_trigger_entered(body)
 
 
 func _on_dungeon_area_body_entered(body: Node2D) -> void:
-	if body.name == "Player":
-		SaveManager.set_flag("entered_dungeon_area")
-		MusicManager.play_context("dungeon")
-		lumi_follow_enabled = true
+	orion_system.on_dungeon_area_entered(body)
 
 
 func _on_dungeon_area_body_exited(body: Node2D) -> void:
-	if body.name == "Player":
-		MusicManager.play_context("overworld")
-		lumi_follow_enabled = false
+	orion_system.on_dungeon_area_exited(body)

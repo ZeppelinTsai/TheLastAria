@@ -25,8 +25,8 @@ func _physics_process(delta: float) -> void:
     # Delegate physics updates to systems that need them
     lumi.physics_process(delta)
 
-func start_dialog(dialogue_data: Dictionary) -> void:
-    dialogue.start_dialog(dialogue_data)
+func start_dialog(dialogue_id: String) -> void:
+    dialogue.start_dialog(dialogue_id)
 
 func toggle_pause() -> void:
     pause_system.toggle_pause()

@@ -449,12 +449,14 @@ Completed:
 - `DialogueSystem` — migrated dialogue flow, standees, debug overlay, text styling, choices, typing, and dialog completion callbacks.
 - `PauseSystem` — implemented focused pause menu handling.
 - `SaveSystem` — implemented focused save/load adapter around existing `SaveManager`.
+- `LumiSystem` — migrated follow movement, idle/walk animation switching, and runtime SpriteFrames setup.
+- `OrionSystem` — migrated Orion glow pulse, discovery trigger, rescue choice, and dungeon music/follow triggers.
 - `GameSceneController` — created orchestrator scaffold in `scripts/world/game_scene.gd`.
 
 In progress:
 
 - `scenes/main.gd` — currently acts as a delegation layer with fallback compatibility while migration remains safe.
-- `LumiSystem` and `OrionSystem` — scaffolded for staged migration.
+- `LumiSystem` and `OrionSystem` — first-stage migration completed; keep monitoring scene compatibility before deleting legacy constants/signals.
 
 Current migration rule:
 
