@@ -145,6 +145,7 @@ Rules:
 - Avoid `:=` in exported variables, scene state, shader parameters, or values crossing node boundaries.
 - Allow `:=` only for local immutable values where type is obvious.
 - Never rely on Variant inference for scene logic.
+- Do not declare `owner` as a member variable in scripts extending `Node`; `owner` is already a native `Node` property. Use `host`, `scene_root`, or `controller` instead.
 - Functions should specify return types whenever possible.
 - Avoid multiline assignment immediately after `=`.
 - Prefer intermediate variables over deeply nested expressions.
