@@ -1,0 +1,60 @@
+{
+  "id": "lighthouse_island_shore",
+  "name": "燈塔島岸邊",
+  "player_spawn": [
+    -106,
+    241
+  ],
+  "background": "res://img/bg/lighthouse_island_shore.png",
+  "dialogue_path": "res://data/dialogues/lighthouse_island.json",
+  "music_context": "overworld",
+  "walkable_polygons": [
+    [
+      [
+        -422,
+        330
+      ],
+      [
+        -381,
+        -216
+      ],
+      [
+        60,
+        -302
+      ],
+      [
+        732,
+        -143
+      ],
+      [
+        759,
+        278
+      ],
+      [
+        782,
+        505
+      ],
+      [
+        -751,
+        510
+      ],
+      [
+        -750,
+        415
+      ]
+    ]
+  ],
+  "events": [
+    {
+      "id": "exit_to_lighthouse",
+      "type": "scene_exit",
+      "target_scene": "res://scenes/world/lighthouse_island.tscn",
+      "location_title": "燈塔島",
+      "position": [
+        553,
+        379
+      ],
+      "radius": 80
+    }
+  ]
+}

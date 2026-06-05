@@ -18,7 +18,7 @@ const SURFACE_HINT_RADIUS := 68.0
 const SURFACE_HINT_FLAG := "sunken_city_surface_hint_found"
 const ORION_PRELUDE_IMAGE_PATH := "res://img/prelude/9.png"
 const ORION_CG_MUSIC_CONTEXT := "orion_cg"
-const LIGHTHOUSE_SCENE_PATH := "res://scenes/world/lighthouse_island.tscn"
+const LIGHTHOUSE_SHORE_SCENE_PATH := "res://scenes/world/lighthouse_island_shore.tscn"
 
 var map_data: Dictionary = {}
 var music_context := "overworld"
@@ -253,7 +253,7 @@ func _transition_to_lighthouse() -> void:
 	hide_orion_prelude_image()
 	await SceneTransition.fade_to_black(0.8)
 	await get_tree().create_timer(1.2).timeout
-	await SceneTransition.go(LIGHTHOUSE_SCENE_PATH, "燈塔島")
+	await SceneTransition.go(LIGHTHOUSE_SHORE_SCENE_PATH, "燈塔島岸邊")
 
 func setup_swim_depth_effect() -> void:
 	swim_depth_background = get_node_or_null("Background") as Node2D

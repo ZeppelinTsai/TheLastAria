@@ -1,0 +1,397 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/world/lighthouse_island_shore.gd" id="1_ragq7"]
+[ext_resource type="Script" uid="uid://3coemwwc2wj8" path="res://scripts/world/EventTrigger.gd" id="2_event"]
+[ext_resource type="Texture2D" path="res://img/bg/lighthouse_island_shore.png" id="2_xf1ny"]
+[ext_resource type="Script" uid="uid://wmwqvlml1da7" path="res://scripts/world/SceneExitTrigger.gd" id="3_exit"]
+[ext_resource type="Script" uid="uid://b12dyjrtbc0s5" path="res://scenes/player.gd" id="3_pt7ew"]
+[ext_resource type="AudioStream" uid="uid://dkyvtknblt5m8" path="res://audio/sfx/468927__malakme__medium-text-blip.ogg" id="5_vewyr"]
+[ext_resource type="Texture2D" uid="uid://oovk6xoqmqrv" path="res://img/sprite/lyra/lyra_tail/Layer 16.png" id="6_meygl"]
+[ext_resource type="Texture2D" uid="uid://dj22u7gkle482" path="res://img/sprite/lyra/lyra_tail/Layer 17.png" id="7_faftc"]
+[ext_resource type="Texture2D" uid="uid://brfve14dhftmg" path="res://img/sprite/lyra/lyra_tail/Layer 22.png" id="8_f4e86"]
+[ext_resource type="Texture2D" uid="uid://c3s8t8e15hvw5" path="res://img/sprite/lyra/lyra_tail/Layer 23.png" id="9_xf1ny"]
+[ext_resource type="Texture2D" uid="uid://dchpfb8imrf88" path="res://img/sprite/lyra/lyra_tail/Layer 24.png" id="10_xwmki"]
+[ext_resource type="Texture2D" uid="uid://cnsp6sp31g0ya" path="res://img/sprite/lyra/lyra_tail/Layer 22 copy.png" id="11_ut407"]
+[ext_resource type="Texture2D" uid="uid://7ebb8eypwy3l" path="res://img/sprite/lyra/lyra_tail/Layer 23 copy.png" id="12_8yntf"]
+[ext_resource type="Texture2D" uid="uid://81m2xsdym7y1" path="res://img/sprite/lyra/lyra_tail/Layer 24 copy.png" id="13_hwcu7"]
+[ext_resource type="Texture2D" uid="uid://0l8d64vv6cxm" path="res://img/sprite/lyra/lyra_tail/Layer 19.png" id="14_2rml8"]
+[ext_resource type="Texture2D" uid="uid://bkb0gdqxvhvqx" path="res://img/sprite/lyra/lyra_tail/Layer 20.png" id="15_heaad"]
+[ext_resource type="Shader" uid="uid://ch0l0i4cbehji" path="res://shaders/underwater_fg.gdshader" id="16_underwat"]
+[ext_resource type="Shader" uid="uid://mgag3tij6kl5" path="res://shaders/underwater_light_rays.gdshader" id="17_lightrays"]
+[ext_resource type="Shader" uid="uid://dsh2y6twvmt66" path="res://shaders/underwater_refraction.gdshader" id="18_refract"]
+[ext_resource type="Texture2D" uid="uid://bvosffnqfftya" path="res://img/sprite/lumi/default/Layer 5.png" id="20_dmlyt"]
+[ext_resource type="Texture2D" uid="uid://cmx5k6eyuhtcm" path="res://img/sprite/lumi/default/Layer 6.png" id="21_n7qsj"]
+[ext_resource type="Texture2D" uid="uid://cdqcp8rm7oay6" path="res://img/sprite/lumi/default/Layer 7.png" id="22_av44k"]
+[ext_resource type="Texture2D" uid="uid://corlv1hdhsmwp" path="res://img/sprite/lumi/default/Layer 11.png" id="23_q26ue"]
+[ext_resource type="Texture2D" uid="uid://hhqk8jctvmkt" path="res://img/sprite/lumi/default/Layer 12.png" id="24_l87d2"]
+[ext_resource type="Texture2D" uid="uid://cp2yon8810rfj" path="res://img/sprite/lumi/default/Layer 13.png" id="25_p04eo"]
+[ext_resource type="Texture2D" uid="uid://bk8ma40e5otwt" path="res://img/sprite/lumi/default/Layer 8.png" id="26_habxc"]
+[ext_resource type="Texture2D" uid="uid://u4bjis71cr5m" path="res://img/sprite/lumi/default/Layer 9.png" id="27_mmi2a"]
+[ext_resource type="Texture2D" uid="uid://dkhqqxvrevee8" path="res://img/sprite/lumi/default/Layer 10.png" id="28_gt7q0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_exit"]
+size = Vector2(80, 120)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sgp6g"]
+size = Vector2(41, 27)
+
+[sub_resource type="ParticleProcessMaterial" id="18"]
+direction = Vector3(0, -1, 0)
+spread = 10.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.0
+scale_max = 0.0
+color = Color(0.65882355, 0.9372549, 1, 0.4)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0ld40"]
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_meygl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_faftc")
+}],
+"loop": true,
+"name": &"walk_down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_f4e86")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_xf1ny")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_xwmki")
+}],
+"loop": true,
+"name": &"walk_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_ut407")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_8yntf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_hwcu7")
+}],
+"loop": true,
+"name": &"walk_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("14_2rml8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_heaad")
+}],
+"loop": true,
+"name": &"walk_up",
+"speed": 5.0
+}]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_refraction"]
+shader = ExtResource("18_refract")
+shader_parameter/strength = 0.001
+shader_parameter/speed = 0.25
+shader_parameter/wave_scale_x = 14.0
+shader_parameter/wave_scale_y = 18.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_underwater"]
+shader = ExtResource("16_underwat")
+shader_parameter/time_scale = 1.0
+shader_parameter/bubble_count = 40.0
+shader_parameter/bubble_size = 0.01
+shader_parameter/bubble_color = Color(0.6, 0.85, 1, 0.28)
+shader_parameter/caustic_color = Color(0.4, 0.7, 1, 0.1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lightrays"]
+shader = ExtResource("17_lightrays")
+shader_parameter/intensity = 1.6
+shader_parameter/speed = 0.5
+shader_parameter/depth = 0.0
+shader_parameter/debug_marker_enabled = false
+shader_parameter/debug_marker_position = Vector2(0.5, 0.18)
+shader_parameter/debug_marker_radius = 0.08
+shader_parameter/ray_color = Color(0.9, 0.98, 1, 0.38)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jyhfs"]
+bg_color = Color(0.039215688, 0.08627451, 0.15686275, 0.8)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35686275, 0.78431374, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_63clh"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("20_dmlyt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_n7qsj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_av44k")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("20_dmlyt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_n7qsj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_av44k")
+}],
+"loop": true,
+"name": &"walk_down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("23_q26ue")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_l87d2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_p04eo")
+}],
+"loop": true,
+"name": &"walk_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("26_habxc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("27_mmi2a")
+}, {
+"duration": 1.0,
+"texture": ExtResource("28_gt7q0")
+}],
+"loop": true,
+"name": &"walk_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("20_dmlyt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_n7qsj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_av44k")
+}],
+"loop": true,
+"name": &"walk_up",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_cfb8c"]
+
+[node name="Main" type="Node2D" unique_id=958562685]
+script = ExtResource("1_ragq7")
+dialogue_path = "res://data/dialogues/lighthouse_island.json"
+map_data_path = "res://data/maps/lighthouse_island_shore.json"
+
+[node name="Background" type="Sprite2D" parent="." unique_id=38697303]
+position = Vector2(-742, -517)
+texture = ExtResource("2_xf1ny")
+centered = false
+
+[node name="EventRoot" type="Node2D" parent="." unique_id=1349173413]
+
+[node name="ExitTrigger" type="Area2D" parent="EventRoot" unique_id=767568797]
+position = Vector2(553, 379)
+script = ExtResource("3_exit")
+target_scene = "res://scenes/world/lighthouse_island.tscn"
+location_title = "燈塔島"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EventRoot/ExitTrigger" unique_id=1445620776]
+position = Vector2(0, 0)
+shape = SubResource("RectangleShape2D_exit")
+
+[node name="Player" type="CharacterBody2D" parent="." unique_id=358588103 node_paths=PackedStringArray("walkable_area")]
+position = Vector2(-106, 241)
+script = ExtResource("3_pt7ew")
+walkable_area = NodePath("../WalkableArea")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=2024028112]
+position = Vector2(-73, 135)
+shape = SubResource("RectangleShape2D_sgp6g")
+
+[node name="FootPoint" type="Marker2D" parent="Player" unique_id=1060826215]
+position = Vector2(-73, 149)
+
+[node name="Camera2D" type="Camera2D" parent="Player" unique_id=1547181586]
+limit_left = -768
+limit_top = -512
+limit_right = 768
+limit_bottom = 512
+position_smoothing_enabled = true
+position_smoothing_speed = 4.0
+metadata/_edit_lock_ = true
+
+[node name="BubbleParticles" type="GPUParticles2D" parent="Player" unique_id=2100000002]
+modulate = Color(0.65882355, 0.9372549, 1, 0.4)
+scale = Vector2(0.3, 0.3)
+emitting = false
+amount = 25
+lifetime = 5.0
+process_material = SubResource("18")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Player" unique_id=516352408]
+position = Vector2(-74.99999, 108.99999)
+scale = Vector2(0.2657143, 0.2657143)
+sprite_frames = SubResource("SpriteFrames_0ld40")
+animation = &"walk_up"
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=1064311324]
+
+[node name="WaterDistortion" type="ColorRect" parent="UI" unique_id=2100000003]
+z_index = 830
+material = SubResource("ShaderMaterial_refraction")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/_edit_lock_ = true
+
+[node name="UnderwaterFG" type="ColorRect" parent="UI" unique_id=2100000000]
+z_index = 850
+material = SubResource("ShaderMaterial_underwater")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/_edit_lock_ = true
+
+[node name="LightRays" type="ColorRect" parent="UI" unique_id=2100000001]
+z_index = 900
+material = SubResource("ShaderMaterial_lightrays")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/_edit_lock_ = true
+
+[node name="DialogBox" type="Panel" parent="UI" unique_id=296463956]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -262.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_jyhfs")
+metadata/_edit_use_anchors_ = true
+
+[node name="SpeakerName" type="Label" parent="UI/DialogBox" unique_id=129658207]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.33800438
+anchor_top = 0.09173284
+anchor_right = 0.33800438
+anchor_bottom = 0.09936642
+offset_left = -81.39203
+offset_top = -17.034002
+offset_right = 80.61896
+offset_bottom = 16.965998
+grow_horizontal = 2
+grow_vertical = 2
+vertical_alignment = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="DialogText" type="Label" parent="UI/DialogBox" unique_id=180396839]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.63100004
+anchor_top = 0.597
+anchor_right = 0.63100004
+anchor_bottom = 0.597
+offset_left = -415.91205
+offset_top = -102.414
+offset_right = 415.08795
+offset_bottom = 90.586
+
+[node name="SpeakerAvatar" type="TextureRect" parent="UI/DialogBox" unique_id=367731687]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -289.0
+offset_right = 289.0
+grow_vertical = 0
+expand_mode = 1
+
+[node name="NextIndicator" type="Control" parent="UI/DialogBox" unique_id=1551030761]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -43.0
+offset_top = -30.0
+offset_right = -3.0
+offset_bottom = -7.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="Arrow" type="Polygon2D" parent="UI/DialogBox/NextIndicator" unique_id=2046101594]
+position = Vector2(20, 12)
+polygon = PackedVector2Array(-8, -4, 8, -4, 0, 6)
+
+[node name="TypeSound" type="AudioStreamPlayer" parent="." unique_id=1205766608]
+stream = ExtResource("5_vewyr")
+
+[node name="WalkableArea" type="Area2D" parent="." unique_id=280883501]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="WalkableArea" unique_id=1804364667]
+polygon = PackedVector2Array(-966, -550, 963, -543, 963, 543, -970, 543)
+metadata/_edit_lock_ = true
+
+[node name="Lumi" type="CharacterBody2D" parent="." unique_id=1659027037]
+position = Vector2(-125, 315)
+metadata/_edit_group_ = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Lumi" unique_id=1822293433]
+scale = Vector2(0.1, 0.1)
+sprite_frames = SubResource("SpriteFrames_63clh")
+animation = &"walk_up"
+speed_scale = 0.5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Lumi" unique_id=1192342685]
+shape = SubResource("CircleShape2D_cfb8c")

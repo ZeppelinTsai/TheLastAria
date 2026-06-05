@@ -17,6 +17,7 @@ func _apply_map_data(data: Dictionary) -> void:
 		return
 
 	apply_background_from_map_data(data)
+	apply_player_spawn_from_map_data(data)
 
 	var map_dialogue_path := str(data.get("dialogue_path", "")).strip_edges()
 	if map_dialogue_path != "":
@@ -32,3 +33,14 @@ func _apply_map_data(data: Dictionary) -> void:
 		music_context = map_music_context
 	else:
 		push_warning("Map data missing music_context: %s" % map_data_path)
+
+func apply_player_spawn_from_map_data(data: Dictionary) -> void:
+	if not player:
+		return
+
+	var spawn_data = data.get("player_spawn", [])
+	if typeof(spawn_data) != TYPE_ARRAY or spawn_data.size() < 2:
+		push_warning("Map data missing player_spawn: %s" % map_data_path)
+		return
+
+	player.global_position = Vector2(float(spawn_data[0]), float(spawn_data[1]))

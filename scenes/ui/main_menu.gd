@@ -2,7 +2,7 @@ extends Control
 
 const GAME_SCENE_PATH = "res://scenes/world/prelude_storybook.tscn"
 const NEW_GAME_LOCATION_TITLE = "序章・童話書"
-const BACKGROUND_PATH = "res://img/bg/sunken_city.png"
+const BACKGROUND_PATH = "res://img/bg/the_last_aria_keyart.png"
 const SLOT_DOUBLE_PRESS_MS = 450
 
 enum SlotMode { NONE, NEW_GAME, LOAD_GAME }
@@ -56,23 +56,17 @@ func build_menu() -> void:
 
 	var menu = VBoxContainer.new()
 	menu.custom_minimum_size = Vector2(380, 0)
-	menu.alignment = BoxContainer.ALIGNMENT_CENTER
+	menu.alignment = BoxContainer.ALIGNMENT_END
 	menu.add_theme_constant_override("separation", 10)
-	menu.anchor_left = 0.5
-	menu.anchor_top = 0.52
-	menu.anchor_right = 0.5
-	menu.anchor_bottom = 0.52
-	menu.offset_left = -190
-	menu.offset_top = -120
-	menu.offset_right = 190
-	menu.offset_bottom = 120
+	menu.anchor_left = 0.0
+	menu.anchor_top = 1.0
+	menu.anchor_right = 0.0
+	menu.anchor_bottom = 1.0
+	menu.offset_left = 48
+	menu.offset_top = -248
+	menu.offset_right = 428
+	menu.offset_bottom = -48
 	add_child(menu)
-
-	var title = Label.new()
-	title.text = "The Last Aria"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	title.add_theme_font_size_override("font_size", 42)
-	menu.add_child(title)
 
 	status_label = Label.new()
 	status_label.text = ""
