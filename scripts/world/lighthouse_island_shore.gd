@@ -12,7 +12,7 @@ func _place_lumi_near_player() -> void:
 	if not lumi or not player:
 		return
 
-	lumi.global_position = player.global_position + shore_lumi_spawn_offset
+	lumi.global_position = player.global_position + shore_lumi_spawn_offset * get_lumi_follow_scale_factor()
 
 func _hide_underwater_effects() -> void:
 	for node_path in [

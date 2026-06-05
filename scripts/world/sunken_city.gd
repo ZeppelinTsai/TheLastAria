@@ -13,7 +13,7 @@ const LYRA_ROOM_TRANSITION_META := "from_lyra_room_to_sunken_city"
 const LYRA_ROOM_ENTRY_DIALOGUE_ID := "lyra_room_entry_surface_hint"
 const ORION_FOUND_DIALOGUE_ID := "orion_found_on_surface"
 const SUNKEN_CITY_CENTER_POSITION := Vector2(0, 0)
-const SURFACE_HINT_POSITION := Vector2(610, -500)
+const SURFACE_HINT_POSITION := Vector2(610, -420)
 const SURFACE_HINT_RADIUS := 68.0
 const SURFACE_HINT_FLAG := "sunken_city_surface_hint_found"
 const ORION_PRELUDE_IMAGE_PATH := "res://img/prelude/9.png"
@@ -133,7 +133,7 @@ func _place_player_at_sunken_city_center() -> void:
 	if player.has_method("pull_inside_walkable_area"):
 		player.pull_inside_walkable_area()
 	if lumi:
-		lumi.global_position = SUNKEN_CITY_CENTER_POSITION + swim_depth_lumi_follow_offset_near
+		lumi.global_position = SUNKEN_CITY_CENTER_POSITION + swim_depth_lumi_follow_offset_near * get_swim_depth_scene_scale_factor()
 	SaveManager.set_player_position(player.global_position)
 
 func _show_surface_hint() -> void:
@@ -323,18 +323,18 @@ func update_lumi_depth_follow(delta: float) -> void:
 	var depth_amount: float = get_swim_depth_amount()
 	lumi_follow_time += delta
 
-	var visual_scale: float = lerp(1.0, swim_depth_lumi_far_scale, depth_amount)
+	var scene_scale_factor := get_swim_depth_scene_scale_factor()
 	var drift_factor: float = lerp(1.0, swim_depth_lumi_drift_far_factor, depth_amount)
 
 	var drift: Vector2 = Vector2(
 		sin(lumi_follow_time * LUMI_FOLLOW_DRIFT_SPEED),
 		cos(lumi_follow_time * LUMI_FOLLOW_DRIFT_SPEED * 0.8)
-	) * LUMI_FOLLOW_DRIFT_DISTANCE * drift_factor
+	) * LUMI_FOLLOW_DRIFT_DISTANCE * scene_scale_factor * drift_factor
 
 	var scaled_offset: Vector2 = swim_depth_lumi_follow_offset_near.lerp(
 		swim_depth_lumi_follow_offset_far,
 		depth_amount
-	)
+	) * scene_scale_factor
 
 	var follow_origin: Vector2 = player.global_position
 	if swim_depth_player_sprite:
@@ -343,7 +343,7 @@ func update_lumi_depth_follow(delta: float) -> void:
 	var target: Vector2 = follow_origin + scaled_offset + drift
 	var distance: float = lumi.global_position.distance_to(target)
 
-	var snap_distance: float = lerp(90.0, 28.0, depth_amount)
+	var snap_distance: float = lerp(90.0, 28.0, depth_amount) * scene_scale_factor
 	var follow_lerp: float = clamp(10.0 * delta, 0.0, 1.0)
 
 	if distance > snap_distance:
@@ -355,3 +355,8 @@ func update_lumi_depth_follow(delta: float) -> void:
 		lumi.velocity = (lumi.global_position - old_position) / maxf(delta, 0.0001)
 
 	_update_lumi_animation(lumi.velocity, delta)
+
+func get_swim_depth_scene_scale_factor() -> float:
+	if swim_depth_player_sprite:
+		return get_lumi_follow_scale_factor_for_scale(swim_depth_player_sprite_base_scale)
+	return get_lumi_follow_scale_factor()

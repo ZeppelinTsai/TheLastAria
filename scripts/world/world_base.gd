@@ -88,6 +88,7 @@ const LUMI_FOLLOW_SPEED = 165.0
 const LUMI_FOLLOW_STOP_DISTANCE = 18.0
 const LUMI_FOLLOW_DRIFT_DISTANCE = 7.0
 const LUMI_FOLLOW_DRIFT_SPEED = 2.2
+const LUMI_FOLLOW_REFERENCE_PLAYER_VISUAL_SCALE = 0.2657143
 
 var lumi: CharacterBody2D = null
 var lumi_follow_enabled := false
@@ -1360,18 +1361,39 @@ func update_lumi_follow(delta: float) -> void:
 	if not lumi_follow_enabled or not lumi or not player:
 		return
 	lumi_follow_time += delta
+	var follow_scale := get_lumi_follow_scale_factor()
 	var drift = Vector2(
 		sin(lumi_follow_time * LUMI_FOLLOW_DRIFT_SPEED),
 		cos(lumi_follow_time * LUMI_FOLLOW_DRIFT_SPEED * 0.8)
-	) * LUMI_FOLLOW_DRIFT_DISTANCE
-	var target = player.global_position + LUMI_FOLLOW_OFFSET + drift
+	) * LUMI_FOLLOW_DRIFT_DISTANCE * follow_scale
+	var target = player.global_position + LUMI_FOLLOW_OFFSET * follow_scale + drift
 	var distance = lumi.global_position.distance_to(target)
-	if distance <= LUMI_FOLLOW_STOP_DISTANCE:
+	if distance <= LUMI_FOLLOW_STOP_DISTANCE * follow_scale:
 		lumi.velocity = Vector2.ZERO
 	else:
-		lumi.velocity = lumi.global_position.direction_to(target) * LUMI_FOLLOW_SPEED
+		lumi.velocity = lumi.global_position.direction_to(target) * LUMI_FOLLOW_SPEED * follow_scale
 	lumi.move_and_slide()
 	_update_lumi_animation(lumi.velocity, delta)
+
+func get_lumi_follow_scale_factor() -> float:
+	var visual_node := get_player_visual_node()
+	if not visual_node:
+		return 1.0
+	return get_lumi_follow_scale_factor_for_scale(visual_node.global_scale)
+
+func get_lumi_follow_scale_factor_for_scale(visual_scale: Vector2) -> float:
+	var uniform_scale := (absf(visual_scale.x) + absf(visual_scale.y)) * 0.5
+	if uniform_scale <= 0.0:
+		return 1.0
+	return uniform_scale / LUMI_FOLLOW_REFERENCE_PLAYER_VISUAL_SCALE
+
+func get_player_visual_node() -> Node2D:
+	if not player:
+		return null
+	var sprite := player.get_node_or_null("AnimatedSprite2D")
+	if sprite and sprite is Node2D:
+		return sprite as Node2D
+	return player
 
 func play_lumi_idle() -> void:
 	if not lumi:
